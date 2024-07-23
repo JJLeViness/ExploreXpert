@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "221771983451",
+    "project_id": "explorexpert-fab82",
+    "storage_bucket": "explorexpert-fab82.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:221771983451:android:826ac030d966427f026d7e",
+        "android_client_info": {
+          "package_name": "com.leviness.explorexpert"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDlPV2dmAqaOzVDXAincJbiWyeys7-6zNI"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
