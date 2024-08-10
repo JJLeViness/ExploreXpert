@@ -6,6 +6,10 @@
     <string name="second_fragment_label">Second Fragment</string>
     <string name="next">Next</string>
     <string name="previous">Previous</string>
+    <string name="logo_desc">App logo</string>
+    <string name="map_desc">Map Placeholder</string>
+    <string name="newsfeed_desc">News Feed Placeholder</string>
+    <string name="menu_button_desc">Menu Button</string>
 
     <string name="lorem_ipsum">
         Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nam in scelerisque sem. Mauris
