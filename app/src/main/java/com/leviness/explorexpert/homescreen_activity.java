@@ -77,7 +77,7 @@ public class homescreen_activity extends AppCompatActivity {
                     // Handle logout logic here
                 }
 
-                menuNavigation.closeDrawer(GravityCompat.START);
+                menuNavigation.closeDrawer(GravityCompat.END);
                 return true;
             }
         });
