@@ -15,18 +15,20 @@
     android:layout_height="match_parent">
 
     <!-- Banner -->
+
+    <!-- Map Placeholder -->
     <LinearLayout
         android:id="@+id/banner"
-        android:layout_width="496dp"
-        android:layout_height="82dp"
+        android:layout_width="514dp"
+        android:layout_height="101dp"
         android:background="#F25858"
         android:orientation="horizontal"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
+
     </LinearLayout>
 
-    <!-- Map Placeholder -->
     <ImageView
         android:id="@+id/map"
         android:layout_width="747dp"
@@ -115,17 +117,6 @@
         app:layout_constraintTop_toBottomOf="@id/navigateButton" />
 
     <ImageView
-        android:id="@+id/bannerLogo"
-        android:layout_width="127dp"
-        android:layout_height="114dp"
-        android:layout_gravity="center_vertical"
-        android:contentDescription="@string/logo_desc"
-        android:src="@drawable/logo"
-        app:layout_constraintBottom_toTopOf="@+id/fromLabel"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-
-    <ImageView
         android:id="@+id/menuButton"
         android:layout_width="63dp"
         android:layout_height="55dp"
@@ -137,6 +128,20 @@
         android:src="@drawable/menubutton"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
+
+    <ImageView
+        android:id="@+id/bannerLogo"
+        android:layout_width="250dp"
+        android:layout_height="123dp"
+        android:contentDescription="@string/logo_desc"
+        android:src="@drawable/headerlogo"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/banner"
+        app:layout_constraintVertical_bias="0.2"
+        android:layout_marginTop="-70dp"
+        android:layout_marginLeft="10dp"
+    />
+
 
 
 

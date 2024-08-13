@@ -14,6 +14,9 @@
         <string name="navigation_drawer_close">Close navigation drawer</string>
 
 
+=======
+    <string name="profile_picture_desc"> Profile Picture</string>
+>>>>>>> Stashed changes
 
     <string name="lorem_ipsum">
         Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nam in scelerisque sem. Mauris
