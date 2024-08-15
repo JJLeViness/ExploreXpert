@@ -2,6 +2,7 @@ package com.leviness.explorexpert;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.EditText;
@@ -15,7 +16,18 @@ import androidx.appcompat.widget.AppCompatButton;
 import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 
+import com.google.android.gms.common.api.Status;
+import com.google.android.libraries.places.api.Places;
+import com.google.android.libraries.places.api.net.PlacesClient;
+import com.google.android.libraries.places.widget.Autocomplete;
+import com.google.android.libraries.places.widget.AutocompleteActivity;
+import com.google.android.libraries.places.widget.model.AutocompleteActivityMode;
+import com.google.android.libraries.places.api.model.Place;
+
 import com.google.android.material.navigation.NavigationView;
+
+import java.util.Arrays;
+import java.util.List;
 
 public class homescreen_activity extends AppCompatActivity {
 
@@ -28,11 +40,20 @@ public class homescreen_activity extends AppCompatActivity {
     private ActionBarDrawerToggle toggle;
     private NavigationView navigationView;
 
+    private static final int AUTOCOMPLETE_REQUEST_CODE_FROM = 1;
+    private static final int AUTOCOMPLETE_REQUEST_CODE_TO = 2;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_homescreen);
+
+        if (!Places.isInitialized()) {
+            Places.initialize(getApplicationContext(), getString(R.string.maps_api_key));
+        }
+
+        PlacesClient placesClient = Places.createClient(this);
 
 
         fromSearch = findViewById(R.id.fromSearch);
@@ -42,6 +63,9 @@ public class homescreen_activity extends AppCompatActivity {
         menuButton = findViewById(R.id.menuButton);
         menuNavigation = findViewById(R.id.drawer_layout);
         navigationView = findViewById(R.id.menu_navigation);
+
+        fromSearch.setOnClickListener(v -> openAutocomplete(AUTOCOMPLETE_REQUEST_CODE_FROM));
+        toSearch.setOnClickListener(v -> openAutocomplete(AUTOCOMPLETE_REQUEST_CODE_TO));
 
         toggle = new ActionBarDrawerToggle(this, menuNavigation, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
         menuNavigation.addDrawerListener(toggle);
@@ -86,6 +110,34 @@ public class homescreen_activity extends AppCompatActivity {
 
 
 
+    }
+
+    private void openAutocomplete(int requestCode) {
+        List<Place.Field> fields = Arrays.asList(Place.Field.ID, Place.Field.NAME, Place.Field.LAT_LNG);
+        Intent intent = new Autocomplete.IntentBuilder(AutocompleteActivityMode.OVERLAY, fields)
+                .build(this);
+        startActivityForResult(intent, requestCode);
+    }
+
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        if (requestCode == AUTOCOMPLETE_REQUEST_CODE_FROM || requestCode == AUTOCOMPLETE_REQUEST_CODE_TO) {
+            if (resultCode == RESULT_OK) {
+                Place place = Autocomplete.getPlaceFromIntent(data);
+                if (requestCode == AUTOCOMPLETE_REQUEST_CODE_FROM) {
+                    fromSearch.setText(place.getName());
+                } else if (requestCode == AUTOCOMPLETE_REQUEST_CODE_TO) {
+                    toSearch.setText(place.getName());
+                }
+            } else if (resultCode == AutocompleteActivity.RESULT_ERROR) {
+                Status status = Autocomplete.getStatusFromIntent(data);
+                Log.e("AutocompleteError", status.getStatusMessage());
+
+            } else if (resultCode == RESULT_CANCELED) {
+
+            }
+        }
     }
 }
 
