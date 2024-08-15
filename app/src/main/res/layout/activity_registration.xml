@@ -1,0 +1,223 @@
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:layout_editor_absoluteX="48dp"
+    tools:layout_editor_absoluteY="-30dp">
+
+    <LinearLayout
+        android:id="@+id/banner"
+        android:layout_width="514dp"
+        android:layout_height="101dp"
+        android:background="#F25858"
+        android:orientation="horizontal"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <ImageView
+        android:id="@+id/menuButton"
+        android:layout_width="70dp"
+        android:layout_height="51dp"
+        android:layout_marginTop="25dp"
+        android:layout_marginEnd="16dp"
+        android:clickable="true"
+        android:contentDescription="@string/menu_button_desc"
+        android:focusable="true"
+        android:src="@drawable/menuicon"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <ImageView
+        android:id="@+id/bannerLogo"
+        android:layout_width="250dp"
+        android:layout_height="123dp"
+        android:layout_marginLeft="10dp"
+        android:layout_marginTop="-70dp"
+        android:contentDescription="@string/logo_desc"
+        android:src="@drawable/headerlogo"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/banner"
+        app:layout_constraintVertical_bias="0.2" />
+
+
+    <TextView
+        android:id="@+id/registerHeader"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="40dp"
+        android:fontFamily="@font/bungeeshade"
+        android:text="Register"
+        android:textColor="#000000"
+        android:textSize="50sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/banner" />
+
+    <EditText
+        android:id="@+id/name"
+        android:layout_width="247dp"
+        android:layout_height="24dp"
+        android:layout_marginStart="4dp"
+        android:background="@drawable/textbox"
+        app:layout_constraintBottom_toBottomOf="@+id/nameHeader"
+        app:layout_constraintStart_toEndOf="@id/nameHeader"
+        app:layout_constraintTop_toTopOf="@+id/nameHeader" />
+
+    <EditText
+        android:id="@+id/dob"
+        android:layout_width="247dp"
+        android:layout_height="24dp"
+        android:layout_marginStart="4dp"
+        android:layout_marginTop="8dp"
+        android:background="@drawable/textbox"
+        app:layout_constraintBottom_toBottomOf="@+id/dobHeader"
+        app:layout_constraintStart_toEndOf="@id/dobHeader"
+        app:layout_constraintStart_toStartOf="@+id/name"
+        app:layout_constraintTop_toTopOf="@+id/dobHeader" />
+
+
+    <EditText
+        android:id="@+id/email"
+        android:layout_width="247dp"
+        android:layout_height="24dp"
+        android:layout_marginStart="4dp"
+        android:layout_marginTop="16dp"
+        android:background="@drawable/textbox"
+        app:layout_constraintBottom_toBottomOf="@+id/emailHeader"
+        app:layout_constraintStart_toEndOf="@id/emailHeader"
+        app:layout_constraintStart_toStartOf="@+id/dob"
+        app:layout_constraintTop_toTopOf="@+id/emailHeader" />
+
+
+    <EditText
+        android:id="@+id/username"
+        android:layout_width="247dp"
+        android:layout_height="24dp"
+        android:layout_marginStart="4dp"
+        android:layout_marginTop="8dp"
+        android:background="@drawable/textbox"
+        app:layout_constraintBottom_toBottomOf="@+id/usernameHeader"
+        app:layout_constraintStart_toEndOf="@id/usernameHeader"
+        app:layout_constraintStart_toStartOf="@+id/email"
+        app:layout_constraintTop_toTopOf="@+id/usernameHeader" />
+
+
+    <TextView
+        android:id="@+id/usernameHeader"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"
+        android:layout_marginEnd="4dp"
+        android:fontFamily="@font/bungeespice"
+        android:text="Username"
+        android:textColor="#528f8f"
+        android:textSize="15sp"
+        app:layout_constraintEnd_toEndOf="@+id/passwordHeader"
+        app:layout_constraintTop_toBottomOf="@id/emailHeader" />
+
+    <TextView
+        android:id="@+id/passwordHeader"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="12dp"
+        android:fontFamily="@font/bungeespice"
+        android:text="Password"
+        android:textColor="#528f8f"
+        android:textSize="15sp"
+        app:layout_constraintTop_toBottomOf="@id/usernameHeader"
+        tools:layout_editor_absoluteX="28dp" />
+
+    <TextView
+        android:id="@+id/emailHeader"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:fontFamily="@font/bungeespice"
+        android:text="Email"
+        android:textColor="#528f8f"
+        android:textSize="15sp"
+        app:layout_constraintEnd_toEndOf="@+id/usernameHeader"
+        app:layout_constraintTop_toBottomOf="@id/dobHeader" />
+
+    <TextView
+        android:id="@+id/dobHeader"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:fontFamily="@font/bungeespice"
+        android:text="DOB"
+        android:textColor="#528f8f"
+        android:textSize="15sp"
+        app:layout_constraintEnd_toEndOf="@+id/emailHeader"
+        app:layout_constraintTop_toBottomOf="@id/nameHeader" />
+
+    <TextView
+        android:id="@+id/nameHeader"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="32dp"
+        android:fontFamily="@font/bungeespice"
+        android:text="Name"
+        android:textColor="#528f8f"
+        android:textSize="15sp"
+        app:layout_constraintEnd_toEndOf="@+id/dobHeader"
+        app:layout_constraintTop_toBottomOf="@id/registerHeader" />
+
+    <EditText
+        android:id="@+id/password"
+        android:layout_width="247dp"
+        android:layout_height="24dp"
+        android:layout_marginTop="4dp"
+        android:background="@drawable/textbox"
+        app:layout_constraintStart_toEndOf="@id/passwordHeader"
+        app:layout_constraintStart_toStartOf="@+id/username"
+        app:layout_constraintTop_toTopOf="@id/passwordHeader" />
+
+
+    <androidx.appcompat.widget.AppCompatButton
+        android:id="@+id/registerButton"
+        android:layout_width="239dp"
+        android:layout_height="52dp"
+        android:layout_gravity="center"
+        android:layout_marginTop="608dp"
+        android:background="@drawable/rounded_button"
+        android:padding="1dp"
+        android:text="Register"
+        android:textColor="#FFFFFF"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/banner" />
+
+    <LinearLayout
+        android:id="@+id/emailUpdatesLayout"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="24dp"
+        android:gravity="center_vertical"
+        android:orientation="horizontal"
+        app:layout_constraintBottom_toTopOf="@id/registerButton"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent">
+
+    <RadioButton
+        android:id="@+id/emailUpdatesRadioButton"
+        android:layout_width="29dp"
+        android:layout_height="25dp"
+        android:buttonTint="#528f8f"
+        app:layout_constraintBottom_toBottomOf="@+id/emailUpdatesText"
+        app:layout_constraintTop_toTopOf="@+id/emailUpdatesText"
+        tools:layout_editor_absoluteX="93dp" />
+
+    <TextView
+        android:id="@+id/emailUpdatesText"
+        android:layout_width="249dp"
+        android:layout_height="35dp"
+        android:autoLink="web"
+        android:text="Yes, sign me up. I would like to receive email updates from ExploreXpert!"
+        android:textColor="#528f8f"
+        android:textSize="14sp"
+        tools:layout_editor_absoluteX="126dp"
+        tools:layout_editor_absoluteY="728dp" />
+</androidx.constraintlayout.widget.ConstraintLayout>
