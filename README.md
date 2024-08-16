@@ -18,7 +18,7 @@ Google Places API: Allows users to search for places and display information abo
 Installation
 To install and run ExploreXpert:
 Clone the repository:
-git clone 
+git clone https://github.com/JJLeViness/ExploreXpert.git
 Open the project in Android Studio.
 Make sure you have an Android device or emulator configured.
 Obtain API keys for Google Maps SDK and Google Places API, and add them to the AndroidManifest.xml file:
@@ -32,7 +32,7 @@ Development Setup
 For developers looking to use our program:
 Install Android Studio (version 4.0 or higher).
 Clone the repository:
-git clone 
+git clone https://github.com/JJLeViness/ExploreXpert.git
 Import the project into Android Studio.
 Configure your environment to use Java .
 Obtain and set up the required API keys for Google Maps and Google Places.
