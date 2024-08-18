@@ -38,8 +38,8 @@ For developers looking to use our program:
 6. Sync the project with Gradle files and ensure all dependencies are up to date.
 7. Run the project using a connected device or emulator to verify the setup.
 
-License
-
+License-
+Google
 
 Contributors
 Jennifer LeViness, 
