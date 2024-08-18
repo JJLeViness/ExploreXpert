@@ -33,6 +33,19 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
+        <ImageView
+            android:id="@+id/menuButton"
+            android:layout_width="63dp"
+            android:layout_height="55dp"
+            android:layout_marginTop="16dp"
+            android:layout_marginEnd="16dp"
+            android:clickable="true"
+            android:contentDescription="@string/menu_button_desc"
+            android:focusable="true"
+            android:src="@drawable/menubutton"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
         <ScrollView
             android:id="@+id/scrollView"
             android:layout_width="0dp"
@@ -47,11 +60,11 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content">
 
-                <!-- Total Points Section -->
                 <TextView
                     android:id="@+id/totalPoints"
-                    android:layout_width="65dp"
-                    android:layout_height="79dp"
+                    android:layout_width="70dp"
+                    android:layout_height="70dp"
+                    android:layout_marginStart="16dp"
                     android:fontFamily="@font/bungeeregular"
                     android:text="50"
                     android:textColor="#528f8f"
@@ -59,10 +72,21 @@
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent" />
 
+                <View
+                    android:layout_width="159dp"
+                    android:layout_height="13dp"
+                    android:layout_marginTop="64dp"
+                    android:background="#ffea77"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintHorizontal_bias="0.0"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+
                 <TextView
                     android:id="@+id/totalPointsLabel"
-                    android:layout_width="113dp"
-                    android:layout_height="64dp"
+                    android:layout_width="121dp"
+                    android:layout_height="58dp"
+                    android:layout_marginStart="16dp"
                     android:fontFamily="@font/bungeeregular"
                     android:text="TOTAL POINTS"
                     android:textColor="#528f8f"
@@ -70,7 +94,6 @@
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@id/totalPoints" />
 
-                <!-- Username -->
                 <ImageView
                     android:id="@+id/profileImage"
                     android:layout_width="88dp"
@@ -83,7 +106,6 @@
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent" />
 
-                <!-- Edit Button -->
                 <TextView
                     android:id="@+id/username"
                     android:layout_width="wrap_content"
@@ -133,7 +155,6 @@
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintEnd_toEndOf="parent" />
 
-                <!-- My Points and Achievements Section -->
                 <Button
                     android:id="@+id/myPointsLabel"
                     android:layout_width="289dp"
@@ -147,8 +168,6 @@
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@id/map" />
 
-
-                <!-- My Scavenger Hunts Section -->
                 <TextView
                     android:id="@+id/myScavengerHuntsLabel"
                     android:layout_width="wrap_content"
@@ -196,7 +215,6 @@
                     android:text="Example Hunt 3"
                     android:textSize="18sp" />
 
-                <!-- Past Scavenger Hunts Section -->
                 <TextView
                     android:id="@+id/pastScavengerHuntsLabel"
                     android:layout_width="wrap_content"
@@ -208,7 +226,6 @@
                     android:text="Past Scavenger Hunts"
                     android:textSize="24sp" />
 
-                <!-- Past Hunt Items -->
                 <TextView
                     android:id="@+id/pastHunt1"
                     android:layout_width="wrap_content"
@@ -247,20 +264,6 @@
 
             </androidx.constraintlayout.widget.ConstraintLayout>
         </ScrollView>
-
-        <ImageView
-            android:id="@+id/menuButton"
-            android:layout_width="63dp"
-            android:layout_height="55dp"
-            android:layout_marginTop="16dp"
-            android:layout_marginEnd="16dp"
-            android:clickable="true"
-            android:contentDescription="@string/menu_button_desc"
-            android:focusable="true"
-            android:src="@drawable/menubutton"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
-
     </androidx.constraintlayout.widget.ConstraintLayout>
     <com.google.android.material.navigation.NavigationView
 

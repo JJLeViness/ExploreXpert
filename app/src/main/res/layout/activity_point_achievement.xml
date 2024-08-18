@@ -105,6 +105,16 @@
         app:layout_constraintBottom_toTopOf="@+id/totalPointsLabel"
         app:layout_constraintStart_toStartOf="parent" />
 
+    <View
+        android:layout_width="159dp"
+        android:layout_height="13dp"
+        android:layout_marginTop="156dp"
+        android:background="#ffea77"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.174"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
     <TextView
         android:id="@+id/totalPointsLabel"
         android:layout_width="121dp"

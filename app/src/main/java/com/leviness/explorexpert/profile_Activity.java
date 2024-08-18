@@ -3,25 +3,23 @@ package com.leviness.explorexpert;
 import android.Manifest;
 import android.content.Intent;
 import android.content.pm.PackageManager;
-import android.location.Location;
 import android.os.Bundle;
 import android.util.Log;
-import android.view.MenuItem;
-import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
+
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
+
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
-import com.google.android.gms.maps.SupportMapFragment;
+
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
-import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.material.navigation.NavigationView;
 import androidx.appcompat.app.ActionBarDrawerToggle;
 import com.google.android.gms.location.FusedLocationProviderClient;
@@ -32,11 +30,10 @@ public class profile_Activity extends AppCompatActivity implements OnMapReadyCal
     private static final int LOCATION_PERMISSION_REQUEST_CODE = 1;
 
     private GoogleMap mMap;
+    private CustomMapView mapView;
     private FusedLocationProviderClient fusedLocationClient;
 
     private DrawerLayout drawerLayout;
-    private ImageView menuButton;
-    private NavigationView navigationView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -44,17 +41,14 @@ public class profile_Activity extends AppCompatActivity implements OnMapReadyCal
         setContentView(R.layout.activity_profile);
 
         Button myPointsButton = findViewById(R.id.myPointsLabel);
-        myPointsButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(profile_Activity.this, point_achievement_Activity.class);
-                startActivity(intent);
-            }
+        myPointsButton.setOnClickListener(v -> {
+            Intent intent = new Intent(profile_Activity.this, point_achievement_Activity.class);
+            startActivity(intent);
         });
 
         drawerLayout = findViewById(R.id.drawer_layout);
-        navigationView = findViewById(R.id.menu_navigation);
-        menuButton = findViewById(R.id.menuButton);
+        NavigationView navigationView = findViewById(R.id.menu_navigation);
+        ImageView menuButton = findViewById(R.id.menuButton);
 
         // Set up the ActionBarDrawerToggle to sync the drawer state
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
@@ -63,55 +57,42 @@ public class profile_Activity extends AppCompatActivity implements OnMapReadyCal
         toggle.syncState();
 
         // Set the menu button to open/close the drawer
-        menuButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (drawerLayout.isDrawerOpen(GravityCompat.END)) {
-                    drawerLayout.closeDrawer(GravityCompat.END);
-                } else {
-                    drawerLayout.openDrawer(GravityCompat.END);
-                }
+        menuButton.setOnClickListener(v -> {
+            if (drawerLayout.isDrawerOpen(GravityCompat.END)) {
+                drawerLayout.closeDrawer(GravityCompat.END);
+            } else {
+                drawerLayout.openDrawer(GravityCompat.END);
             }
         });
 
         // Set up the navigation view listener for menu item clicks
-        navigationView.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
-            @Override
-            public boolean onNavigationItemSelected(@NonNull MenuItem item) {
-                int id = item.getItemId();
+        navigationView.setNavigationItemSelectedListener(item -> {
+            int id = item.getItemId();
 
-                if (id == R.id.nav_home) {
-                    startActivity(new Intent(profile_Activity.this, homescreen_activity.class));
-                } else if (id == R.id.nav_map) {
-                    startActivity(new Intent(profile_Activity.this, Map_Activity.class));
-                } else if (id == R.id.nav_profile) {
-                    // Current activity
-                } else if (id == R.id.nav_scavenger_hunt) {
-                    startActivity(new Intent(profile_Activity.this, scavenger_Hunt_Activity.class));
-                } else if (id == R.id.nav_settings) {
-                    startActivity(new Intent(profile_Activity.this, settings_Activity.class));
-                } else if (id == R.id.nav_logout) {
-                    // Handle logout logic here
-                }
-
-                drawerLayout.closeDrawer(GravityCompat.END);
-                return true;
+            if (id == R.id.nav_home) {
+                startActivity(new Intent(profile_Activity.this, homescreen_activity.class));
+            } else if (id == R.id.nav_map) {
+                startActivity(new Intent(profile_Activity.this, Map_Activity.class));
+            } else if (id == R.id.nav_scavenger_hunt) {
+                startActivity(new Intent(profile_Activity.this, scavenger_Hunt_Activity.class));
+            } else if (id == R.id.nav_settings) {
+                startActivity(new Intent(profile_Activity.this, settings_Activity.class));
             }
+
+            drawerLayout.closeDrawer(GravityCompat.END);
+            return true;
         });
 
-        // Initialize the location client
         fusedLocationClient = LocationServices.getFusedLocationProviderClient(this);
 
-        // Set up the map
-        SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
-                .findFragmentById(R.id.map);
-        if (mapFragment != null) {
-            mapFragment.getMapAsync(this);
-        }
+        // Set up the MapView
+        mapView = findViewById(R.id.map);
+        mapView.onCreate(savedInstanceState);
+        mapView.getMapAsync(this);
     }
 
     @Override
-    public void onMapReady(GoogleMap googleMap) {
+    public void onMapReady(@NonNull GoogleMap googleMap) {
         mMap = googleMap;
 
         // Check for location permissions
@@ -121,28 +102,23 @@ public class profile_Activity extends AppCompatActivity implements OnMapReadyCal
             ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, LOCATION_PERMISSION_REQUEST_CODE);
             return;
         }
-
         centerOnMyLocation();
     }
 
     private void centerOnMyLocation() {
-        // Enable My Location layer if permission is granted
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED ||
                 ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
 
             mMap.setMyLocationEnabled(true);
 
             fusedLocationClient.getLastLocation()
-                    .addOnSuccessListener(this, new OnSuccessListener<Location>() {
-                        @Override
-                        public void onSuccess(Location location) {
-                            if (location != null) {
-                                LatLng myLocation = new LatLng(location.getLatitude(), location.getLongitude());
-                                mMap.addMarker(new MarkerOptions().position(myLocation).title("You are here"));
-                                mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(myLocation, 15));
-                            } else {
-                                Log.e(TAG, "Location is null");
-                            }
+                    .addOnSuccessListener(this, location -> {
+                        if (location != null) {
+                            LatLng myLocation = new LatLng(location.getLatitude(), location.getLongitude());
+                            mMap.addMarker(new MarkerOptions().position(myLocation).title("You are here"));
+                            mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(myLocation, 15));
+                        } else {
+                            Log.e(TAG, "Location is null");
                         }
                     });
         } else {
@@ -160,5 +136,35 @@ public class profile_Activity extends AppCompatActivity implements OnMapReadyCal
                 Log.e(TAG, "Location permission denied");
             }
         }
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        mapView.onResume();
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        mapView.onPause();
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        mapView.onDestroy();
+    }
+
+    @Override
+    public void onLowMemory() {
+        super.onLowMemory();
+        mapView.onLowMemory();
+    }
+
+    @Override
+    protected void onSaveInstanceState(@NonNull Bundle outState) {
+        super.onSaveInstanceState(outState);
+        mapView.onSaveInstanceState(outState);
     }
 }
