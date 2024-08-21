@@ -7,7 +7,6 @@ import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageView;
 
-
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.app.AppCompatActivity;
@@ -15,6 +14,9 @@ import androidx.appcompat.widget.AppCompatButton;
 import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 
+import com.google.android.gms.maps.GoogleMap;
+import com.google.android.gms.maps.OnMapReadyCallback;
+import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.material.navigation.NavigationView;
 
 public class homescreen_activity extends AppCompatActivity {
@@ -22,23 +24,19 @@ public class homescreen_activity extends AppCompatActivity {
     private EditText fromSearch;
     private EditText toSearch;
     private AppCompatButton navigateButton;
-    private ImageView map;
     private ImageView menuButton;
     private DrawerLayout menuNavigation;
     private ActionBarDrawerToggle toggle;
     private NavigationView navigationView;
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_homescreen);
 
-
         fromSearch = findViewById(R.id.fromSearch);
         toSearch = findViewById(R.id.toSearch);
         navigateButton = findViewById(R.id.navigateButton);
-        map = findViewById(R.id.map);
         menuButton = findViewById(R.id.menuButton);
         menuNavigation = findViewById(R.id.drawer_layout);
         navigationView = findViewById(R.id.menu_navigation);
@@ -82,9 +80,14 @@ public class homescreen_activity extends AppCompatActivity {
             }
         });
 
-
-
+        // Initialize the map fragment
+        SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
+                .findFragmentById(R.id.mapFragment);
+        mapFragment.getMapAsync(new OnMapReadyCallback() {
+            @Override
+            public void onMapReady(GoogleMap googleMap) {
+                // Configure the map (e.g., set markers, camera position, etc.)
+            }
+        });
     }
 }
-
-
