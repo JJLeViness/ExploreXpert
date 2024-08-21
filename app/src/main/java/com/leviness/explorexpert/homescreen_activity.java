@@ -71,6 +71,8 @@ public class homescreen_activity extends AppCompatActivity {
                     startActivity(new Intent(homescreen_activity.this, scavenger_Hunt_Activity.class));
                 } else if (id == R.id.nav_settings) {
                     startActivity(new Intent(homescreen_activity.this, settings_Activity.class));
+                    } else if (id == R.id.nav_login) {
+                    startActivity(new Intent(homescreen_activity.this, login_Activity.class));
                 } else if (id == R.id.nav_logout) {
                     // Handle logout logic here
                 }
