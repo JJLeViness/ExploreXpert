@@ -68,4 +68,5 @@ dependencies {
     implementation(libs.play.services.location)
     implementation(libs.places)
     implementation(libs.core)
+    implementation (libs.circleimageview)
 }

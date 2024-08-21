@@ -11,75 +11,53 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
-        <androidx.appcompat.widget.Toolbar
-            android:id="@+id/toolbar"
-            android:layout_width="match_parent"
-            android:layout_height="82dp"
-            android:background="#F25858"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:popupTheme="@style/ThemeOverlay.AppCompat.Light">
-        </androidx.appcompat.widget.Toolbar>
-
-        <ImageView
-            android:id="@+id/bannerLogo"
-            android:layout_width="115dp"
-            android:layout_height="76dp"
-            android:layout_gravity="center_vertical"
-            android:layout_marginTop="4dp"
-            android:contentDescription="@string/logo_desc"
-            android:src="@drawable/logo"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
-
-        <ImageView
-            android:id="@+id/menuButton"
-            android:layout_width="63dp"
-            android:layout_height="55dp"
-            android:layout_marginTop="16dp"
-            android:layout_marginEnd="16dp"
-            android:clickable="true"
-            android:contentDescription="@string/menu_button_desc"
-            android:focusable="true"
-            android:src="@drawable/menubutton"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
-
         <ScrollView
             android:id="@+id/scrollView"
             android:layout_width="0dp"
             android:layout_height="0dp"
-            android:padding="16dp"
-            app:layout_constraintTop_toBottomOf="@id/toolbar"
             app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent">
+            app:layout_constraintTop_toTopOf="parent">
 
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content">
 
-                <TextView
-                    android:id="@+id/totalPoints"
-                    android:layout_width="70dp"
-                    android:layout_height="70dp"
-                    android:layout_marginStart="16dp"
-                    android:fontFamily="@font/bungeeregular"
-                    android:text="50"
-                    android:textColor="#528f8f"
-                    android:textSize="36sp"
+                <LinearLayout
+                    android:id="@+id/banner"
+                    android:layout_width="514dp"
+                    android:layout_height="101dp"
+                    android:background="#F25858"
+                    android:orientation="horizontal"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" >
+
+                </LinearLayout>
+
+                <ImageView
+                    android:id="@+id/bannerLogo"
+                    android:layout_width="250dp"
+                    android:layout_height="123dp"
+                    android:layout_marginStart="10dp"
+                    android:layout_marginTop="31.5dp"
+                    android:contentDescription="@string/logo_desc"
+                    android:src="@drawable/headerlogo"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent" />
 
-                <View
-                    android:layout_width="159dp"
-                    android:layout_height="13dp"
-                    android:layout_marginTop="64dp"
-                    android:background="#ffea77"
+                <ImageView
+                    android:id="@+id/menuButton"
+                    android:layout_width="70dp"
+                    android:layout_height="51dp"
+                    android:layout_marginTop="25dp"
+                    android:layout_marginEnd="16dp"
+                    android:clickable="true"
+                    android:contentDescription="@string/menu_button_desc"
+                    android:focusable="true"
+                    android:src="@drawable/menubutton"
                     app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintHorizontal_bias="0.0"
-                    app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent" />
 
                 <TextView
@@ -87,6 +65,7 @@
                     android:layout_width="121dp"
                     android:layout_height="58dp"
                     android:layout_marginStart="16dp"
+                    android:layout_marginTop="8dp"
                     android:fontFamily="@font/bungeeregular"
                     android:text="TOTAL POINTS"
                     android:textColor="#528f8f"
@@ -94,66 +73,72 @@
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@id/totalPoints" />
 
-                <ImageView
-                    android:id="@+id/profileImage"
-                    android:layout_width="88dp"
-                    android:layout_height="88dp"
-                    android:layout_marginTop="4dp"
-                    android:layout_marginEnd="8dp"
-                    android:src="@drawable/default_profile_image"
+                <TextView
+                    android:id="@+id/totalPoints"
+                    android:layout_width="70dp"
+                    android:layout_height="70dp"
+                    android:layout_marginStart="16dp"
+                    android:layout_marginTop="24dp"
+                    android:fontFamily="@font/bungeeregular"
+                    android:text="50"
+                    android:textColor="#528f8f"
+                    android:textSize="36sp"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/banner" />
+
+                <View
+                    android:layout_width="159dp"
+                    android:layout_height="13dp"
+                    android:layout_marginTop="192dp"
+                    android:background="#ffea77"
                     app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintHorizontal_bias="1.0"
+                    app:layout_constraintHorizontal_bias="0.045"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent" />
+
 
                 <TextView
                     android:id="@+id/username"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="16dp"
                     android:gravity="center"
                     android:text="Username"
                     android:textColor="@color/black"
                     android:textSize="18sp"
                     app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintHorizontal_bias="0.949"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@id/profileImage" />
-
+                    app:layout_constraintTop_toBottomOf="@+id/profileImage" />
 
                 <Button
                     android:id="@+id/edit_button"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="8dp"
                     android:background="?android:attr/selectableItemBackground"
                     android:gravity="center"
                     android:text="Edit"
+                    android:textSize="18sp"
                     android:textColor="@color/black"
                     app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintHorizontal_bias="0.972"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@id/username" />
+                    app:layout_constraintTop_toBottomOf="@+id/username" />
 
                 <TextView
                     android:id="@+id/currentLocationLabel"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="16dp"
-                    app:layout_constraintTop_toBottomOf="@id/totalPointsLabel"
-                    app:layout_constraintStart_toStartOf="parent"
                     android:fontFamily="@font/bungeeregular"
                     android:text="Current Location"
                     android:textColor="#528f8f"
-                    android:textSize="20sp" />
+                    android:textSize="20sp"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/totalPointsLabel" />
 
                 <com.leviness.explorexpert.CustomMapView
                     android:id="@+id/map"
                     android:layout_width="match_parent"
                     android:layout_height="200dp"
-                    app:layout_constraintTop_toBottomOf="@id/currentLocationLabel"
+                    app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintEnd_toEndOf="parent" />
+                    app:layout_constraintTop_toBottomOf="@id/currentLocationLabel" />
 
                 <Button
                     android:id="@+id/myPointsLabel"
@@ -173,106 +158,112 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginBottom="8dp"
-                    app:layout_constraintTop_toBottomOf="@id/myPointsLabel"
-                    app:layout_constraintStart_toStartOf="parent"
                     android:fontFamily="@font/bungeeshade"
                     android:text="My Scavenger Hunts"
-                    android:textSize="24sp" />
+                    android:textSize="24sp"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/myPointsLabel" />
 
                 <TextView
                     android:id="@+id/exampleHunt1"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginBottom="4dp"
-                    app:layout_constraintTop_toBottomOf="@id/myScavengerHuntsLabel"
-                    app:layout_constraintStart_toStartOf="parent"
                     android:fontFamily="@font/bungeeregular"
-                    android:textColor="#528f8f"
                     android:text="Example Hunt 1"
-                    android:textSize="18sp" />
+                    android:textColor="#528f8f"
+                    android:textSize="18sp"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/myScavengerHuntsLabel" />
 
                 <TextView
                     android:id="@+id/exampleHunt2"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginBottom="4dp"
-                    app:layout_constraintTop_toBottomOf="@id/exampleHunt1"
-                    app:layout_constraintStart_toStartOf="parent"
                     android:fontFamily="@font/bungeeregular"
-                    android:textColor="#528f8f"
                     android:text="Example Hunt 2"
-                    android:textSize="18sp" />
+                    android:textColor="#528f8f"
+                    android:textSize="18sp"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/exampleHunt1" />
 
                 <TextView
                     android:id="@+id/exampleHunt3"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginBottom="16dp"
-                    app:layout_constraintTop_toBottomOf="@id/exampleHunt2"
-                    app:layout_constraintStart_toStartOf="parent"
                     android:fontFamily="@font/bungeeregular"
-                    android:textColor="#528f8f"
                     android:text="Example Hunt 3"
-                    android:textSize="18sp" />
+                    android:textColor="#528f8f"
+                    android:textSize="18sp"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/exampleHunt2" />
 
                 <TextView
                     android:id="@+id/pastScavengerHuntsLabel"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginBottom="8dp"
-                    app:layout_constraintTop_toBottomOf="@id/exampleHunt3"
-                    app:layout_constraintStart_toStartOf="parent"
                     android:fontFamily="@font/bungeeshade"
                     android:text="Past Scavenger Hunts"
-                    android:textSize="24sp" />
+                    android:textSize="24sp"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/exampleHunt3" />
 
                 <TextView
                     android:id="@+id/pastHunt1"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginBottom="4dp"
-                    app:layout_constraintTop_toBottomOf="@id/pastScavengerHuntsLabel"
-                    app:layout_constraintStart_toStartOf="parent"
                     android:fontFamily="@font/bungeeregular"
-                    android:textColor="#528f8f"
                     android:text="Example Hunt 1"
-                    android:textSize="18sp" />
+                    android:textColor="#528f8f"
+                    android:textSize="18sp"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/pastScavengerHuntsLabel" />
 
                 <TextView
                     android:id="@+id/pastHunt2"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginBottom="4dp"
-                    app:layout_constraintTop_toBottomOf="@id/pastHunt1"
-                    app:layout_constraintStart_toStartOf="parent"
                     android:fontFamily="@font/bungeeregular"
-                    android:textColor="#528f8f"
                     android:text="Example Hunt 2"
-                    android:textSize="18sp" />
+                    android:textColor="#528f8f"
+                    android:textSize="18sp"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/pastHunt1" />
 
                 <TextView
                     android:id="@+id/pastHunt3"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginBottom="16dp"
-                    app:layout_constraintTop_toBottomOf="@id/pastHunt2"
-                    app:layout_constraintStart_toStartOf="parent"
                     android:fontFamily="@font/bungeeregular"
-                    android:textColor="#528f8f"
                     android:text="Example Hunt 3"
-                    android:textSize="18sp" />
+                    android:textColor="#528f8f"
+                    android:textSize="18sp"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/pastHunt2" />
+
+                <de.hdodenhof.circleimageview.CircleImageView
+                    android:id="@+id/profileImage"
+                    android:layout_width="100dp"
+                    android:layout_height="100dp"
+                    android:src="@drawable/profilepic"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/banner" /> <!-- Use a placeholder image here -->
 
             </androidx.constraintlayout.widget.ConstraintLayout>
         </ScrollView>
     </androidx.constraintlayout.widget.ConstraintLayout>
-    <com.google.android.material.navigation.NavigationView
 
+    <com.google.android.material.navigation.NavigationView
         android:id="@+id/menu_navigation"
         android:layout_width="wrap_content"
         android:layout_height="match_parent"
         android:layout_gravity="end"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
         app:menu="@menu/drawer_menu" />
 
 </androidx.drawerlayout.widget.DrawerLayout>
