@@ -32,20 +32,8 @@
                     android:orientation="horizontal"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent" >
+                    app:layout_constraintTop_toTopOf="parent"></LinearLayout>
 
-                </LinearLayout>
-
-                <ImageView
-                    android:id="@+id/bannerLogo"
-                    android:layout_width="250dp"
-                    android:layout_height="123dp"
-                    android:layout_marginStart="10dp"
-                    android:layout_marginTop="31.5dp"
-                    android:contentDescription="@string/logo_desc"
-                    android:src="@drawable/headerlogo"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent" />
 
                 <ImageView
                     android:id="@+id/menuButton"
@@ -56,9 +44,21 @@
                     android:clickable="true"
                     android:contentDescription="@string/menu_button_desc"
                     android:focusable="true"
-                    android:src="@drawable/menubutton"
+                    android:src="@drawable/menuicon"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintTop_toTopOf="parent" />
+
+                <ImageView
+                    android:id="@+id/bannerLogo"
+                    android:layout_width="250dp"
+                    android:layout_height="123dp"
+                    android:layout_marginLeft="10dp"
+                    android:layout_marginTop="-70dp"
+                    android:contentDescription="@string/logo_desc"
+                    android:src="@drawable/headerlogo"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/banner"
+                    app:layout_constraintVertical_bias="0.2" />
 
                 <TextView
                     android:id="@+id/totalPointsLabel"
