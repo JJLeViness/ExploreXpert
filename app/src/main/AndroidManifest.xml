@@ -51,6 +51,9 @@
             android:name=".point_achievement_Activity"
             android:exported="false" />
 
+        <activity android:name=".registration_Activity" />
+
+
         <meta-data
             android:name="com.google.android.geo.API_KEY"
             android:value="@string/maps_api_key"/>
