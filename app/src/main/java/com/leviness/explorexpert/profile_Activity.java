@@ -1,6 +1,7 @@
 package com.leviness.explorexpert;
 
 import android.Manifest;
+import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -14,6 +15,8 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
@@ -41,6 +44,7 @@ public class profile_Activity extends AppCompatActivity implements OnMapReadyCal
     private GoogleMap mMap;
     private CustomMapView mapView;
     private FusedLocationProviderClient fusedLocationClient;
+    private ActivityResultLauncher<Intent> pickImageLauncher;
 
     private DrawerLayout drawerLayout;
 
@@ -84,10 +88,23 @@ public class profile_Activity extends AppCompatActivity implements OnMapReadyCal
             } else if (id == R.id.nav_settings) {
                 startActivity(new Intent(profile_Activity.this, settings_Activity.class));
             }
-
             drawerLayout.closeDrawer(GravityCompat.END);
             return true;
         });
+
+        pickImageLauncher = registerForActivityResult(
+                new ActivityResultContracts.StartActivityForResult(),
+                result -> {
+                    if (result.getResultCode() == Activity.RESULT_OK) {
+                        Intent data = result.getData();
+                        if (data != null) {
+                            Uri selectedImageUri = data.getData();
+                            ImageView profileImageView = findViewById(R.id.profileImage);
+                            profileImageView.setImageURI(selectedImageUri);
+                        }
+                    }
+                }
+        );
 
         fusedLocationClient = LocationServices.getFusedLocationProviderClient(this);
 
@@ -102,27 +119,37 @@ public class profile_Activity extends AppCompatActivity implements OnMapReadyCal
             builder.setView(dialogView);
 
             EditText editUsername = dialogView.findViewById(R.id.edit_username);
+            EditText editEmail = dialogView.findViewById(R.id.edit_email); // Added editEmail
             Button changeProfilePic = dialogView.findViewById(R.id.change_profile_pic);
             Button saveChanges = dialogView.findViewById(R.id.save_changes);
 
+            AlertDialog dialog = builder.create();
+
             changeProfilePic.setOnClickListener(view -> {
                 Intent intent = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
-                startActivityForResult(intent, PICK_IMAGE_REQUEST);
+                pickImageLauncher.launch(intent);
             });
 
             saveChanges.setOnClickListener(view -> {
                 String newUsername = editUsername.getText().toString().trim();
+                String newEmail = editEmail.getText().toString().trim();
+
                 if (!newUsername.isEmpty()) {
                     TextView usernameTextView = findViewById(R.id.username);
                     usernameTextView.setText(newUsername);
                 }
+
+                if (!newEmail.isEmpty()) {
+                    TextView emailTextView = findViewById(R.id.email);
+                    emailTextView.setText(newEmail);
+                }
+
+                dialog.dismiss();
             });
 
-            AlertDialog dialog = builder.create();
             dialog.show();
         });
     }
-
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {

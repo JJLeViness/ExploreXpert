@@ -100,7 +100,7 @@
             android:layout_height="58dp"
             android:layout_gravity="center"
             android:layout_marginStart="16dp"
-            android:layout_marginBottom="24dp"
+            android:layout_marginBottom="28dp"
             android:fontFamily="@font/bungeeregular"
             android:text="TOTAL POINTS"
             android:textColor="#528f8f"
@@ -111,10 +111,10 @@
         <View
             android:layout_width="159dp"
             android:layout_height="13dp"
-            android:layout_marginTop="204dp"
+            android:layout_marginTop="192dp"
             android:background="#ffea77"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.039"
+            app:layout_constraintHorizontal_bias="0.045"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
@@ -124,6 +124,7 @@
             android:layout_height="70dp"
             android:layout_gravity="center"
             android:layout_marginStart="16dp"
+            android:layout_marginBottom="8dp"
             android:fontFamily="@font/bungeeregular"
             android:text="50"
             android:textColor="#528f8f"

@@ -17,26 +17,32 @@
             android:id="@+id/edit_username"
             android:layout_width="384dp"
             android:layout_height="59dp"
-            android:hint="Enter new username" />
+            android:hint="Enter new username"
+            android:maxLength="20" />
+
+        <EditText
+            android:id="@+id/edit_email"
+            android:layout_width="384dp"
+            android:layout_height="59dp"
+            android:hint="Enter new email"
+            android:layout_marginTop="16dp" />
 
         <Button
             android:id="@+id/change_profile_pic"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="20dp"
-            android:text="Change Profile Picture" />
-
+            android:text="Change Profile Picture"
+            android:textColor="@color/black"
+            android:backgroundTint="@color/grey"/>
         <Button
             android:id="@+id/save_changes"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Save username" />
+            android:text="Save"
+            android:textColor="@color/black"
+            android:backgroundTint="@color/grey"/>
 
-        <Button
-            android:id="@+id/button"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Change Email" />
     </LinearLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>
