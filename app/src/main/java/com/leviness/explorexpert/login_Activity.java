@@ -23,6 +23,7 @@ public class login_Activity extends AppCompatActivity {
     private EditText username, password;
     private Button loginButton;
     private Button logoutButton;
+    private TextView forgotPassword;
     private TextView createAccount;
     private FirebaseAuth mAuth;
 
@@ -40,6 +41,7 @@ public class login_Activity extends AppCompatActivity {
         loginButton = findViewById(R.id.loginButton);
         logoutButton = findViewById(R.id.logoutButton);
         createAccount = findViewById(R.id.createAccount);
+        forgotPassword = findViewById(R.id.forgotPassword);
 
         //Test to see if user is logged in
         FirebaseUser currentUser = FirebaseAuth.getInstance().getCurrentUser();
@@ -69,6 +71,12 @@ public class login_Activity extends AppCompatActivity {
             Intent intent = new Intent(login_Activity.this, homescreen_activity.class);
             startActivity(intent);
             finish(); // Prevents returning to the previous activity on back press
+
+        });
+
+        forgotPassword.setOnClickListener(v -> {
+            Intent intent = new Intent(login_Activity.this, forgotpassword_activity.class);
+            startActivity(intent);
 
         });
 

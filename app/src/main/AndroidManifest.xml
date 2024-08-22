@@ -52,6 +52,7 @@
             android:exported="false" />
 
         <activity android:name=".registration_Activity" />
+        <activity android:name=".forgotpassword_activity" />
 
 
         <meta-data
