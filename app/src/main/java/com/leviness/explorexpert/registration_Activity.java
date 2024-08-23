@@ -19,6 +19,7 @@ import com.google.android.material.navigation.NavigationView;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.QuerySnapshot;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -65,7 +66,7 @@ public class registration_Activity extends AppCompatActivity {
             String name = nameEditText.getText().toString();
             String dob = dobEditText.getText().toString();
             String username = usernameEditText.getText().toString();
-            registerUser(email, password, name, dob, username);
+            checkUsernameAvailability(email, password, name, dob, username);
 
         });
 
@@ -149,6 +150,26 @@ public class registration_Activity extends AppCompatActivity {
                 .addOnFailureListener(e -> {
                     // Error
                     Toast.makeText(registration_Activity.this, "Failed to save user data: " + e.getMessage(), Toast.LENGTH_LONG).show();
+                });
+    }
+
+    private void checkUsernameAvailability(String email, String password, String name, String dob, String username) {
+        db.collection("users")
+                .whereEqualTo("username", username)
+                .get()
+                .addOnCompleteListener(task -> {
+                    if (task.isSuccessful()) {
+                        QuerySnapshot querySnapshot = task.getResult();
+                        if (querySnapshot != null && !querySnapshot.isEmpty()) {
+                            // Username is already taken
+                            Toast.makeText(registration_Activity.this, "Username is already taken. Please choose another one.", Toast.LENGTH_SHORT).show();
+                        } else {
+                            // Username is available, proceed with registration
+                            registerUser(email, password, name, dob, username);
+                        }
+                    } else {
+                        Toast.makeText(registration_Activity.this, "Error checking username availability: " + task.getException().getMessage(), Toast.LENGTH_LONG).show();
+                    }
                 });
     }
 }
