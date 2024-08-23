@@ -99,6 +99,7 @@ public class registration_Activity extends AppCompatActivity {
                     startActivity(new Intent(registration_Activity.this, login_Activity.class));
                 } else if (id == R.id.nav_logout) {
                     // Handle logout logic here, May be removed from menu drawer. Logout Logic in login_Activity.
+
                 }
 
                 menuNavigation.closeDrawer(GravityCompat.END);

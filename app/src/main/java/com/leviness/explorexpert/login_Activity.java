@@ -17,6 +17,7 @@ import androidx.core.view.WindowInsetsCompat;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.firestore.FirebaseFirestore;
 
 public class login_Activity extends AppCompatActivity {
 
@@ -89,7 +90,7 @@ public class login_Activity extends AppCompatActivity {
 
         //Set error if either field is empty
            if (user.isEmpty()) {
-               username.setError("Email is required!");
+               username.setError("Username is required!");
                username.requestFocus();
                return;
            }
@@ -100,19 +101,31 @@ public class login_Activity extends AppCompatActivity {
                return;
            }
 
-           mAuth.signInWithEmailAndPassword(user, pass).addOnCompleteListener(task -> {
-               if (task.isSuccessful()) {
-                   // Sign in success
-                   Toast.makeText(login_Activity.this, "Login successful", Toast.LENGTH_SHORT).show();
-                   //Send user to homescreen, may change to profile activity.
-                   Intent intent = new Intent(login_Activity.this, homescreen_activity.class);
-                   startActivity(intent);
-                   finish(); // Prevents returning to login activity on back press
-               } else {
-                   // If sign in fails, display a message to the user.
-                   Toast.makeText(login_Activity.this, "Login failed: " + task.getException().getMessage(), Toast.LENGTH_LONG).show();
-               }
-           });
+           FirebaseFirestore db = FirebaseFirestore.getInstance();
+
+           db.collection("users")
+                   .whereEqualTo("username", user)
+                   .get()
+                   .addOnCompleteListener(task -> {
+                       if (task.isSuccessful() && !task.getResult().isEmpty()) {
+                           // Username found, get the associated email
+                           String email = task.getResult().getDocuments().get(0).getString("email");
+
+                           mAuth.signInWithEmailAndPassword(email, pass).addOnCompleteListener(authTask -> {
+                               if (authTask.isSuccessful()) {
+                                   Toast.makeText(login_Activity.this, "Login successful", Toast.LENGTH_SHORT).show();
+                                   Intent intent = new Intent(login_Activity.this, homescreen_activity.class);
+                                   startActivity(intent);
+                                   finish(); // Prevents returning to login activity on back press
+                               } else {
+                                   Toast.makeText(login_Activity.this, "Login failed: " + authTask.getException().getMessage(), Toast.LENGTH_LONG).show();
+                               }
+                           });
+                       } else {
+                           // Username not found
+                           Toast.makeText(login_Activity.this, "Username not found!", Toast.LENGTH_LONG).show();
+                       }
+                   });
        }
 
     }
