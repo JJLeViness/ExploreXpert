@@ -114,7 +114,7 @@
                     android:layout_marginEnd="13.5dp"
                     android:textSize="18sp"
                     app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/profileImage" />
+                    app:layout_constraintTop_toBottomOf="@+id/profileImage"/>
 
                 <Button
                     android:id="@+id/edit_button"
