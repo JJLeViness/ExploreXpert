@@ -1,12 +1,18 @@
 package com.leviness.explorexpert;
 
 import android.Manifest;
+import android.app.AlertDialog;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.net.Uri;
 import android.os.Bundle;
+import android.provider.MediaStore;
 import android.util.Log;
+import android.view.View;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
@@ -17,7 +23,6 @@ import androidx.drawerlayout.widget.DrawerLayout;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
-
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.material.navigation.NavigationView;
@@ -25,9 +30,13 @@ import androidx.appcompat.app.ActionBarDrawerToggle;
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationServices;
 
+import de.hdodenhof.circleimageview.CircleImageView;
+
+
 public class profile_Activity extends AppCompatActivity implements OnMapReadyCallback {
     private static final String TAG = "profile_Activity";
     private static final int LOCATION_PERMISSION_REQUEST_CODE = 1;
+    private static final int PICK_IMAGE_REQUEST = 1;
 
     private GoogleMap mMap;
     private CustomMapView mapView;
@@ -50,13 +59,11 @@ public class profile_Activity extends AppCompatActivity implements OnMapReadyCal
         NavigationView navigationView = findViewById(R.id.menu_navigation);
         ImageView menuButton = findViewById(R.id.menuButton);
 
-        // Set up the ActionBarDrawerToggle to sync the drawer state
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
                 this, drawerLayout, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
         drawerLayout.addDrawerListener(toggle);
         toggle.syncState();
 
-        // Set the menu button to open/close the drawer
         menuButton.setOnClickListener(v -> {
             if (drawerLayout.isDrawerOpen(GravityCompat.END)) {
                 drawerLayout.closeDrawer(GravityCompat.END);
@@ -65,7 +72,6 @@ public class profile_Activity extends AppCompatActivity implements OnMapReadyCal
             }
         });
 
-        // Set up the navigation view listener for menu item clicks
         navigationView.setNavigationItemSelectedListener(item -> {
             int id = item.getItemId();
 
@@ -85,17 +91,56 @@ public class profile_Activity extends AppCompatActivity implements OnMapReadyCal
 
         fusedLocationClient = LocationServices.getFusedLocationProviderClient(this);
 
-        // Set up the MapView
         mapView = findViewById(R.id.map);
         mapView.onCreate(savedInstanceState);
         mapView.getMapAsync(this);
+
+        Button editButton = findViewById(R.id.edit_button);
+        editButton.setOnClickListener(v -> {
+            AlertDialog.Builder builder = new AlertDialog.Builder(this);
+            View dialogView = getLayoutInflater().inflate(R.layout.dialog_edit_profile, null);
+            builder.setView(dialogView);
+
+            EditText editUsername = dialogView.findViewById(R.id.edit_username);
+            Button changeProfilePic = dialogView.findViewById(R.id.change_profile_pic);
+            Button saveChanges = dialogView.findViewById(R.id.save_changes);
+
+            changeProfilePic.setOnClickListener(view -> {
+                Intent intent = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+                startActivityForResult(intent, PICK_IMAGE_REQUEST);
+            });
+
+            saveChanges.setOnClickListener(view -> {
+                String newUsername = editUsername.getText().toString().trim();
+                if (!newUsername.isEmpty()) {
+                    TextView usernameTextView = findViewById(R.id.username);
+                    usernameTextView.setText(newUsername);
+                }
+            });
+
+            AlertDialog dialog = builder.create();
+            dialog.show();
+        });
+    }
+
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        if (requestCode == PICK_IMAGE_REQUEST && resultCode == RESULT_OK && data != null) {
+            Uri imageUri = data.getData();
+            if (imageUri != null) {
+                CircleImageView profileImageView = findViewById(R.id.profileImage);
+                profileImageView.setImageURI(imageUri);
+            }
+        }
     }
 
     @Override
     public void onMapReady(@NonNull GoogleMap googleMap) {
         mMap = googleMap;
 
-        // Check for location permissions
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED &&
                 ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
 
@@ -125,6 +170,7 @@ public class profile_Activity extends AppCompatActivity implements OnMapReadyCal
             Log.e(TAG, "Location permission not granted");
         }
     }
+
 
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {

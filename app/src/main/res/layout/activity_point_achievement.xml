@@ -1,157 +1,167 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.drawerlayout.widget.DrawerLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/drawer_layout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".point_achievement_Activity">
 
-    <!-- Toolbar with Logo, Menu Button, and Total Points -->
-    <androidx.appcompat.widget.Toolbar
-        android:id="@+id/toolbar"
+    <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="82dp"
-        android:background="#F25858"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:popupTheme="@style/ThemeOverlay.AppCompat.Light">
+        android:layout_height="match_parent">
 
-        <!-- Logo on the Left Side -->
+        <LinearLayout
+            android:id="@+id/banner"
+            android:layout_width="514dp"
+            android:layout_height="101dp"
+            android:background="#F25858"
+            android:orientation="horizontal"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
         <ImageView
             android:id="@+id/bannerLogo"
-            android:layout_width="115dp"
-            android:layout_height="76dp"
-            android:layout_gravity="center_vertical"
-            android:layout_marginStart="16dp"
-            android:layout_marginTop="4dp"
+            android:layout_width="250dp"
+            android:layout_height="123dp"
+            android:layout_marginStart="10dp"
+            android:layout_marginTop="31.5dp"
             android:contentDescription="@string/logo_desc"
-            android:src="@drawable/logo" />
+            android:src="@drawable/headerlogo"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
 
         <ImageView
             android:id="@+id/menuButton"
-            android:layout_width="63dp"
-            android:layout_height="55dp"
-            android:layout_gravity="end"
+            android:layout_width="70dp"
+            android:layout_height="51dp"
+            android:layout_marginTop="25dp"
             android:layout_marginEnd="16dp"
-            android:layout_marginTop="16dp"
             android:clickable="true"
             android:contentDescription="@string/menu_button_desc"
             android:focusable="true"
-            android:src="@drawable/menubutton" />
+            android:src="@drawable/menuicon"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
 
-    </androidx.appcompat.widget.Toolbar>
+        <TextView
+            android:id="@+id/my_achievements_label"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="12dp"
+            android:layout_marginBottom="8dp"
+            android:fontFamily="@font/bungeeshade"
+            android:text="MY ACHIEVEMENTS"
+            android:textSize="24sp"
+            app:layout_constraintBottom_toTopOf="@+id/achievement_example"
+            app:layout_constraintStart_toStartOf="parent" />
 
-    <TextView
-        android:id="@+id/my_achievements_label"
+        <TextView
+            android:id="@+id/my_points_label"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="12dp"
+            android:layout_marginTop="188dp"
+            android:fontFamily="@font/bungeeshade"
+            android:text="MY POINTS"
+            android:textSize="24sp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/banner" />
+
+        <TextView
+            android:id="@+id/point_example"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="28dp"
+            android:layout_marginTop="4dp"
+            android:fontFamily="@font/bungeeregular"
+            android:text="EXAMPLE HUNT"
+            android:textColor="#528f8f"
+            android:textSize="18sp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/my_points_label" />
+
+        <LinearLayout
+            android:id="@+id/points_list"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="36dp"
+            android:layout_marginTop="12dp"
+            android:orientation="vertical"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/my_points_label">
+
+        </LinearLayout>
+
+        <TextView
+            android:id="@+id/totalPointsLabel"
+            android:layout_width="121dp"
+            android:layout_height="58dp"
+            android:layout_gravity="center"
+            android:layout_marginStart="16dp"
+            android:layout_marginBottom="24dp"
+            android:fontFamily="@font/bungeeregular"
+            android:text="TOTAL POINTS"
+            android:textColor="#528f8f"
+            android:textSize="18sp"
+            app:layout_constraintBottom_toTopOf="@+id/my_points_label"
+            app:layout_constraintStart_toStartOf="parent" />
+
+        <View
+            android:layout_width="159dp"
+            android:layout_height="13dp"
+            android:layout_marginTop="204dp"
+            android:background="#ffea77"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.039"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <TextView
+            android:id="@+id/totalPoints"
+            android:layout_width="70dp"
+            android:layout_height="70dp"
+            android:layout_gravity="center"
+            android:layout_marginStart="16dp"
+            android:fontFamily="@font/bungeeregular"
+            android:text="50"
+            android:textColor="#528f8f"
+            android:textSize="36sp"
+            app:layout_constraintBottom_toTopOf="@+id/totalPointsLabel"
+            app:layout_constraintStart_toStartOf="parent" />
+
+        <TextView
+            android:id="@+id/achievement_example"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="28dp"
+            android:layout_marginBottom="180dp"
+            android:fontFamily="@font/bungeeregular"
+            android:text="EXAMPLE ACHIEVEMENT"
+            android:textColor="#528f8f"
+            android:textSize="18sp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent" />
+
+        <LinearLayout
+            android:id="@+id/achievements_list"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="44dp"
+            android:layout_marginTop="108dp"
+            android:orientation="vertical"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/my_achievements_label">
+        </LinearLayout>
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <com.google.android.material.navigation.NavigationView
+        android:id="@+id/menu_navigation"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="22dp"
-        android:layout_marginBottom="4dp"
-        android:fontFamily="@font/bungeeshade"
-        android:text="MY ACHIEVEMENTS"
-        android:textSize="24sp"
-        app:layout_constraintBottom_toTopOf="@+id/achievement_example"
-        app:layout_constraintStart_toStartOf="parent" />
+        android:layout_height="match_parent"
+        android:layout_gravity="end"
+        android:fitsSystemWindows="true"
+        app:menu="@menu/drawer_menu" />
 
-    <TextView
-        android:id="@+id/achievement_example"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="37dp"
-        android:layout_marginBottom="228dp"
-        android:fontFamily="@font/bungeeregular"
-        android:text="EXAMPLE ACHIEVEMENT"
-        android:textColor="#528f8f"
-        android:textSize="18sp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toStartOf="parent" />
-
-    <TextView
-        android:id="@+id/my_points_label"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="22dp"
-        android:layout_marginTop="148dp"
-        android:fontFamily="@font/bungeeshade"
-        android:text="MY POINTS"
-        android:textSize="24sp"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/toolbar" />
-
-    <TextView
-        android:id="@+id/point_example"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="37dp"
-        android:fontFamily="@font/bungeeregular"
-        android:textColor="#528f8f"
-        android:text="EXAMPLE HUNT"
-        android:textSize="18sp"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/my_points_label" />
-
-    <TextView
-        android:id="@+id/totalPoints"
-        android:layout_width="70dp"
-        android:layout_height="70dp"
-        android:layout_gravity="center"
-        android:layout_marginStart="50dp"
-        android:layout_marginBottom="4dp"
-        android:fontFamily="@font/bungeeregular"
-        android:text="50"
-        android:textColor="#528f8f"
-        android:textSize="36sp"
-        app:layout_constraintBottom_toTopOf="@+id/totalPointsLabel"
-        app:layout_constraintStart_toStartOf="parent" />
-
-    <View
-        android:layout_width="159dp"
-        android:layout_height="13dp"
-        android:layout_marginTop="156dp"
-        android:background="#ffea77"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.174"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-
-    <TextView
-        android:id="@+id/totalPointsLabel"
-        android:layout_width="121dp"
-        android:layout_height="58dp"
-        android:layout_gravity="center"
-        android:layout_marginStart="50dp"
-        android:layout_marginBottom="12dp"
-        android:fontFamily="@font/bungeeregular"
-        android:text="TOTAL POINTS"
-        android:textColor="#528f8f"
-        android:textSize="18sp"
-        app:layout_constraintBottom_toTopOf="@+id/my_points_label"
-        app:layout_constraintStart_toStartOf="parent" />
-
-    <LinearLayout
-        android:id="@+id/achievements_list"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="44dp"
-        android:layout_marginTop="108dp"
-        android:orientation="vertical"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/my_achievements_label">
-
-    </LinearLayout>
-
-    <LinearLayout
-        android:id="@+id/points_list"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="44dp"
-        android:layout_marginTop="20dp"
-        android:orientation="vertical"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/my_points_label">
-
-    </LinearLayout>
-
-
-</androidx.constraintlayout.widget.ConstraintLayout>
+</androidx.drawerlayout.widget.DrawerLayout>

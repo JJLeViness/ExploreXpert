@@ -8,6 +8,9 @@
     tools:context=".homescreen_activity">
 
 <androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
@@ -23,17 +26,21 @@
         app:layout_constraintTop_toTopOf="parent">
     </LinearLayout>
 
-    <fragment
-        android:id="@+id/mapFragment"
-        android:name="com.google.android.gms.maps.SupportMapFragment"
-        android:layout_width="399dp"
-        android:layout_height="239dp"
-        app:layout_constraintBottom_toBottomOf="@id/newsFeed"
+    <!-- Map Placeholder -->
+    <ImageView
+        android:id="@+id/map"
+        android:layout_width="747dp"
+        android:layout_height="328dp"
+        android:contentDescription="@string/map_desc"
+        android:src="@drawable/map"
+        app:layout_constraintBottom_toTopOf="@id/newsFeed"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.498"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="@id/toSearch"
-        app:layout_constraintVertical_bias="0.331" />
+        app:layout_constraintTop_toBottomOf="@id/toSearch"
+        app:layout_constraintVertical_bias="0.153" />
 
+    <!-- Search Labels and Boxes -->
     <TextView
         android:id="@+id/fromLabel"
         android:layout_width="wrap_content"
@@ -78,24 +85,22 @@
 
 
     <!-- Button for Navigation -->
-
-    <!-- News Feed -->
-
     <androidx.appcompat.widget.AppCompatButton
         android:id="@+id/navigateButton"
         android:layout_width="239dp"
         android:layout_height="52dp"
         android:layout_gravity="center"
-        android:layout_marginTop="588dp"
+        android:layout_marginTop="16dp"
         android:background="@drawable/rounded_button"
         android:padding="1dp"
         android:text="To the Destination"
         android:textColor="#FFFFFF"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.392"
+        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="@+id/toSearch"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toBottomOf="@id/map" />
 
+    <!-- News Feed -->
     <ImageView
         android:id="@+id/newsFeed"
         android:layout_width="336dp"
