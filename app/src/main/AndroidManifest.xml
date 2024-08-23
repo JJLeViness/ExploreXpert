@@ -46,7 +46,6 @@
             android:exported="false"
             android:theme="@style/Theme.ExploreXpert" />
 
-        <!-- Add the point_achievement_Activity entry -->
         <activity
             android:name=".point_achievement_Activity"
             android:exported="false" />
