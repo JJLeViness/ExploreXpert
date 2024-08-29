@@ -2,11 +2,8 @@ package com.leviness.explorexpert;
 
 import android.content.Intent;
 import android.content.pm.PackageManager;
-import android.graphics.Color;
 import android.os.Bundle;
 import android.Manifest;
-import android.text.Html;
-import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
@@ -26,32 +23,21 @@ import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.maps.GoogleMap;
-import com.google.android.gms.maps.MapView;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
-import com.google.android.gms.maps.model.PolylineOptions;
 import com.google.android.material.navigation.NavigationView;
-import com.leviness.explorexpert.network.RetrofitClient;
-import com.leviness.explorexpert.network.RoutesApiService;
-import com.leviness.explorexpert.network.RoutesResponse;
-import com.leviness.explorexpert.network.RouteRequestBody;
-import java.util.ArrayList;
-import java.util.List;
-
-import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.Response;
+import com.leviness.explorexpert.network.RoutesApiTask;
 
 public class Map_Activity extends AppCompatActivity implements OnMapReadyCallback {
     private GoogleMap mMap;
-    private RoutesApiService routesApiService;
     private FusedLocationProviderClient fusedLocationClient;
     private ImageView menuButton;
     private DrawerLayout menuNavigation;
     private ActionBarDrawerToggle toggle;
     private NavigationView navigationView;
+    private LatLng currentLocation;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -67,7 +53,7 @@ public class Map_Activity extends AppCompatActivity implements OnMapReadyCallbac
         menuButton = findViewById(R.id.map_menuButton);
         menuNavigation = findViewById(R.id.drawer_layout);
         navigationView = findViewById(R.id.menu_navigation);
-        routesApiService = RetrofitClient.getClient().create(RoutesApiService.class); //For RoutesAPI
+
 
         //Menu drawer
         toggle = new ActionBarDrawerToggle(this, menuNavigation, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
@@ -130,29 +116,12 @@ public class Map_Activity extends AppCompatActivity implements OnMapReadyCallbac
 
                         mMap.addMarker(new MarkerOptions().position(currentLocation).title("You are here"));
 
-                       /* String origin = location.getLatitude() + "," + location.getLongitude();
+
+
+                        String origin = currentLocation.latitude + "," + currentLocation.longitude;
                         String destination = "37.7749,-122.4194"; // Example destination (San Francisco coordinates)
-                        String travelMode = "DRIVE";
-                        String apiKey = getString(R.string.maps_api_key);
-                        fetchDirections(origin, destination);
-                        routesApiService.getRoute(origin, destination, travelMode, apiKey).enqueue(new Callback<RoutesResponse>() {
-                            @Override
-                            public void onResponse(Call<RoutesResponse> call, Response<RoutesResponse> response) {
-                                if (response.isSuccessful() && response.body() != null) {
-                                    Log.d("API Success", "Routes found: " + response.body().routes.size());
+                        new RoutesApiTask(this, mMap).execute(origin, destination);
 
-
-                                } else {
-                                    Log.e("API Error", "API response was not successful.");
-                                    Log.e("API Error", "Response: " + response.errorBody());
-                                }
-                            }
-
-                            @Override
-                            public void onFailure(Call<RoutesResponse> call, Throwable t) {
-                                Log.e("API Error", "Request failed: " + t.getMessage());
-                            }
-                        });*/
 
                     }
                 });
@@ -189,110 +158,7 @@ public class Map_Activity extends AppCompatActivity implements OnMapReadyCallbac
 
     }
 
-    private void fetchDirections(double originLat, double originLng, double destinationLat, double destinationLng) {
-        RouteRequestBody requestBody = new RouteRequestBody();
-        requestBody.origin = new RouteRequestBody.Location(originLat, originLng);
-        requestBody.destination = new RouteRequestBody.Location(destinationLat, destinationLng);
-
-        Call<RoutesResponse> call = routesApiService.getRoute(requestBody);
-        call.enqueue(new Callback<RoutesResponse>() {
-            @Override
-            public void onResponse(Call<RoutesResponse> call, Response<RoutesResponse> response) {
-                if (response.isSuccessful() && response.body() != null) {
-                    RoutesResponse.Route route = response.body().routes.get(0);
-                    if (route != null) {
-                        drawRouteOnMap(route);
-                        showStepByStepInstructions(route.legs.get(0).steps);
-                    } else {
-                        Log.d("MapActivity", "No route found in response.");
-                    }
-                } else {
-                    Log.e("API Error", "API response was not successful: " + response.errorBody());
-                }
-            }
-
-            @Override
-            public void onFailure(Call<RoutesResponse> call, Throwable t) {
-                Log.e("API Error", "Request failed: " + t.getMessage());
-            }
-        });
-    }
 
 
-
-
-
-
-    private void drawRoute(RoutesResponse routesResponse) {
-        if (routesResponse != null && routesResponse.routes != null) {
-            for (RoutesResponse.Route route : routesResponse.routes) {
-                PolylineOptions polylineOptions = new PolylineOptions();
-                for (RoutesResponse.Leg leg : route.legs) {
-                    for (RoutesResponse.Step step : leg.steps) {
-                        polylineOptions.add(new LatLng(step.startLocation.latitude, step.startLocation.longitude));
-                        polylineOptions.add(new LatLng(step.endLocation.latitude, step.endLocation.longitude));
-                    }
-                }
-                mMap.addPolyline(polylineOptions);
-            }
-        }
-
-
-    }
-
-    private List<LatLng> decodePolyline(String encoded) {
-        List<LatLng> poly = new ArrayList<>();
-        int index = 0, len = encoded.length();
-        int lat = 0, lng = 0;
-
-        while (index < len) {
-            int b, shift = 0, result = 0;
-            do {
-                b = encoded.charAt(index++) - 63;
-                result |= (b & 0x1f) << shift;
-                shift += 5;
-            } while (b >= 0x20);
-            int dlat = ((result & 1) != 0 ? ~(result >> 1) : (result >> 1));
-            lat += dlat;
-
-            shift = 0;
-            result = 0;
-            do {
-                b = encoded.charAt(index++) - 63;
-                result |= (b & 0x1f) << shift;
-                shift += 5;
-            } while (b >= 0x20);
-            int dlng = ((result & 1) != 0 ? ~(result >> 1) : (result >> 1));
-            lng += dlng;
-
-            LatLng p = new LatLng((((double) lat / 1E5)),
-                    (((double) lng / 1E5)));
-            poly.add(p);
-        }
-
-        return poly;
-    }
-
-    private void drawRouteOnMap(RoutesResponse.Route route) {
-        for (RoutesResponse.Leg leg : route.legs) {
-            for (RoutesResponse.Step step : leg.steps) {
-                List<LatLng> decodedPath = decodePolyline(step.polyline.points);
-
-                // Add the polyline to the map
-                mMap.addPolyline(new PolylineOptions().addAll(decodedPath).color(Color.BLUE).width(10f));
-            }
-        }
-    }
-    private void showStepByStepInstructions(List<RoutesResponse.Step> steps) {
-        for (RoutesResponse.Step step : steps) {
-            LatLng position = new LatLng(step.startLocation.latitude, step.startLocation.longitude);
-            String instruction = android.text.Html.fromHtml(step.instructions).toString();
-
-            // Add a marker for each step
-            mMap.addMarker(new MarkerOptions().position(position).title(instruction));
-
-
-        }
-    }
 
 }

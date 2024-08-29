@@ -18,7 +18,9 @@ firebaseDatabase = "21.0.0"
 firebaseFirestore = "25.0.0"
 places = "3.5.0"
 playServicesLocation = "21.3.0"
+playServicesLocationVersion = "21.0.1"
 playServicesMaps = "19.0.0"
+playServicesMapsVersion = "18.0.2"
 retrofit = "2.9.0"
 
 [libraries]
@@ -40,7 +42,9 @@ firebase-database = { group = "com.google.firebase", name = "firebase-database",
 firebase-firestore = { group = "com.google.firebase", name = "firebase-firestore", version.ref = "firebaseFirestore" }
 places = { module = "com.google.android.libraries.places:places", version.ref = "places" }
 play-services-location = { module = "com.google.android.gms:play-services-location", version.ref = "playServicesLocation" }
+play-services-location-v2101 = { module = "com.google.android.gms:play-services-location", version.ref = "playServicesLocationVersion" }
 play-services-maps = { module = "com.google.android.gms:play-services-maps", version.ref = "playServicesMaps" }
+play-services-maps-v1802 = { module = "com.google.android.gms:play-services-maps", version.ref = "playServicesMapsVersion" }
 retrofit = { module = "com.squareup.retrofit2:retrofit", version.ref = "retrofit" }
 
 [plugins]

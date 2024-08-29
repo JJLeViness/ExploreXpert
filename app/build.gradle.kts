@@ -64,11 +64,12 @@ dependencies {
     testImplementation(libs.junit)
     androidTestImplementation(libs.ext.junit)
     androidTestImplementation(libs.espresso.core)
-    implementation(libs.play.services.maps)
-    implementation(libs.play.services.location)
     implementation(libs.places)
     implementation(libs.core)
     implementation(libs.retrofit)
     implementation(libs.converter.gson)
+    implementation(libs.play.services.maps.v1802)
+    implementation(libs.play.services.location.v2101)
+
 
 }
