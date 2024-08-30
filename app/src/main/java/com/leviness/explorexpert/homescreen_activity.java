@@ -68,7 +68,18 @@ public class homescreen_activity extends AppCompatActivity {
         menuNavigation = findViewById(R.id.drawer_layout);
         navigationView = findViewById(R.id.menu_navigation);
 
+        fromSearch.setOnFocusChangeListener((v, hasFocus) -> {
+            if (hasFocus) {
+                openAutocomplete(AUTOCOMPLETE_REQUEST_CODE_FROM);
+            }
+        });
         fromSearch.setOnClickListener(v -> openAutocomplete(AUTOCOMPLETE_REQUEST_CODE_FROM));
+
+        toSearch.setOnFocusChangeListener((v, hasFocus) -> {
+            if (hasFocus) {
+                openAutocomplete(AUTOCOMPLETE_REQUEST_CODE_TO);
+            }
+        });
         toSearch.setOnClickListener(v -> openAutocomplete(AUTOCOMPLETE_REQUEST_CODE_TO));
 
         toggle = new ActionBarDrawerToggle(this, menuNavigation, R.string.navigation_drawer_open, R.string.navigation_drawer_close);

@@ -8,6 +8,7 @@ import android.util.Log;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.model.PolylineOptions;
 import com.leviness.explorexpert.R;
 
@@ -26,6 +27,7 @@ public class RoutesApiTask extends AsyncTask<String, Void, String> {
     private GoogleMap mMap;
     private String apiKey;
     private LatLng originLatLng;
+    private LatLng destinationLatLng;
 
     public RoutesApiTask(Context context, GoogleMap googleMap) {
         this.mMap = googleMap;
@@ -39,6 +41,7 @@ public class RoutesApiTask extends AsyncTask<String, Void, String> {
         String mode = "driving"; // Mode of travel
 
         originLatLng = parseLatLng(origin); // Parse the origin string into a LatLng object
+        destinationLatLng = parseLatLng(destination); // Parse the destination string into a LatLng object
 
         try {
             // Construct the URL for the API request
@@ -93,6 +96,27 @@ public class RoutesApiTask extends AsyncTask<String, Void, String> {
                                 .color(Color.BLUE));
 
                         mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(originLatLng, 15)); //snap camera to origin.
+
+                        // Add a marker at the origin
+                        mMap.addMarker(new MarkerOptions().position(originLatLng).title("Start"));
+
+                        // Add a marker at the destination
+                        mMap.addMarker(new MarkerOptions().position(destinationLatLng).title("Destination"));
+
+                        // Add markers for each step in the directions for testing purposes
+                        JSONArray legs = route.getJSONArray("legs");
+                        if (legs.length() > 0) {
+                            JSONArray steps = legs.getJSONObject(0).getJSONArray("steps");
+                            for (int i = 0; i < steps.length(); i++) {
+                                JSONObject step = steps.getJSONObject(i);
+                                JSONObject startLocation = step.getJSONObject("start_location");
+                                LatLng stepLatLng = new LatLng(
+                                        startLocation.getDouble("lat"),
+                                        startLocation.getDouble("lng")
+                                );
+                                mMap.addMarker(new MarkerOptions().position(stepLatLng).title("Step " + (i + 1)));
+                            }
+                        }
                     }
                 }
             } catch (JSONException e) {
