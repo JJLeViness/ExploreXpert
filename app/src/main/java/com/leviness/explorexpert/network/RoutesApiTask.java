@@ -114,7 +114,9 @@ public class RoutesApiTask extends AsyncTask<String, Void, String> {
                                         startLocation.getDouble("lat"),
                                         startLocation.getDouble("lng")
                                 );
-                                mMap.addMarker(new MarkerOptions().position(stepLatLng).title("Step " + (i + 1)));
+                                String instruction = step.getString("html_instructions"); // Get instruction text
+
+                                mMap.addMarker(new MarkerOptions().position(stepLatLng).title(htmlToString(instruction)));// Add a marker for each step TESTING PURPOSES
                             }
                         }
                     }
@@ -164,5 +166,9 @@ public class RoutesApiTask extends AsyncTask<String, Void, String> {
         double lat = Double.parseDouble(parts[0]);
         double lng = Double.parseDouble(parts[1]);
         return new LatLng(lat, lng);
+    }
+
+    private String htmlToString(String html) {
+        return android.text.Html.fromHtml(html).toString();
     }
 }
