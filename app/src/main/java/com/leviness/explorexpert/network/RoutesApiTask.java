@@ -5,6 +5,7 @@ import android.graphics.Color;
 import android.os.AsyncTask;
 import android.util.Log;
 
+import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.PolylineOptions;
@@ -24,6 +25,7 @@ public class RoutesApiTask extends AsyncTask<String, Void, String> {
     private static final String TAG = "RoutesApiTask";
     private GoogleMap mMap;
     private String apiKey;
+    private LatLng originLatLng;
 
     public RoutesApiTask(Context context, GoogleMap googleMap) {
         this.mMap = googleMap;
@@ -35,6 +37,8 @@ public class RoutesApiTask extends AsyncTask<String, Void, String> {
         String origin = params[0]; // Starting point
         String destination = params[1]; // Ending point
         String mode = "driving"; // Mode of travel
+
+        originLatLng = parseLatLng(origin); // Parse the origin string into a LatLng object
 
         try {
             // Construct the URL for the API request
@@ -87,6 +91,8 @@ public class RoutesApiTask extends AsyncTask<String, Void, String> {
                                 .addAll(points)
                                 .width(20)
                                 .color(Color.BLUE));
+
+                        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(originLatLng, 15)); //snap camera to origin.
                     }
                 }
             } catch (JSONException e) {
@@ -127,5 +133,12 @@ public class RoutesApiTask extends AsyncTask<String, Void, String> {
         }
 
         return poly;
+    }
+
+    private LatLng parseLatLng(String latLngString) {
+        String[] parts = latLngString.split(",");
+        double lat = Double.parseDouble(parts[0]);
+        double lng = Double.parseDouble(parts[1]);
+        return new LatLng(lat, lng);
     }
 }

@@ -104,27 +104,36 @@ public class Map_Activity extends AppCompatActivity implements OnMapReadyCallbac
         mMap.getUiSettings().setScrollGesturesEnabled(true); // Ensures that the user can scroll/pan the map
         mMap.getUiSettings().setZoomGesturesEnabled(true);   // Allows zooming
 
-        fusedLocationClient.getLastLocation()
-                .addOnSuccessListener(this, location -> {
-                    if (location != null) {
+        String fromLatLng = getIntent().getStringExtra("fromLatLng");
+        String toLatLng = getIntent().getStringExtra("toLatLng");  //Retrieve to and from location from home screen, for testing purposes
 
-                        LatLng currentLocation = new LatLng(location.getLatitude(), location.getLongitude());
+        if (fromLatLng != null && toLatLng != null) {
+            new RoutesApiTask(this, mMap).execute(fromLatLng, toLatLng);
 
+        }else {
+            fusedLocationClient.getLastLocation()
+                    .addOnSuccessListener(this, location -> {
+                        if (location != null) {
 
-                        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(currentLocation, 15));
-
-
-                        mMap.addMarker(new MarkerOptions().position(currentLocation).title("You are here"));
-
-
-
-                        String origin = currentLocation.latitude + "," + currentLocation.longitude;
-                        String destination = "37.7749,-122.4194"; // Example destination (San Francisco coordinates)
-                        new RoutesApiTask(this, mMap).execute(origin, destination);
+                            LatLng currentLocation = new LatLng(location.getLatitude(), location.getLongitude());
 
 
-                    }
-                });
+                            mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(currentLocation, 15));
+
+
+                            mMap.addMarker(new MarkerOptions().position(currentLocation).title("You are here"));
+
+
+                            String origin = currentLocation.latitude + "," + currentLocation.longitude;
+                            String destination = "37.7749,-122.4194"; // Example destination (San Francisco coordinates)
+                            new RoutesApiTask(this, mMap).execute(origin, destination);
+
+
+                        }
+
+                    });
+        }
+
 //Menu Drawer logic
         navigationView.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
             @Override

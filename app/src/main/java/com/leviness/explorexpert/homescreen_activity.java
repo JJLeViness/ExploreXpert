@@ -28,6 +28,7 @@ import com.google.android.material.navigation.NavigationView;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.Objects;
 
 public class homescreen_activity extends AppCompatActivity {
 
@@ -42,6 +43,9 @@ public class homescreen_activity extends AppCompatActivity {
 
     private static final int AUTOCOMPLETE_REQUEST_CODE_FROM = 1;
     private static final int AUTOCOMPLETE_REQUEST_CODE_TO = 2;
+
+    private String fromLatLng = null;
+    private String toLatLng = null;
 
 
     @Override
@@ -80,6 +84,14 @@ public class homescreen_activity extends AppCompatActivity {
                     menuNavigation.openDrawer(GravityCompat.END);
                 }
             }
+        });
+
+        navigateButton.setOnClickListener(v -> {  //Currently moves the user  to map Activity with entered info from to and from text
+            //For testing purposes of places and routes API. Function will change later.
+            Intent intent = new Intent(homescreen_activity.this, Map_Activity.class);
+            intent.putExtra("fromLatLng", fromLatLng);
+            intent.putExtra("toLatLng", toLatLng);
+            startActivity(intent);
         });
 
         navigationView.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
@@ -127,8 +139,10 @@ public class homescreen_activity extends AppCompatActivity {
                 Place place = Autocomplete.getPlaceFromIntent(data);
                 if (requestCode == AUTOCOMPLETE_REQUEST_CODE_FROM) {
                     fromSearch.setText(place.getName());
+                    fromLatLng = Objects.requireNonNull(place.getLatLng()).latitude + "," + place.getLatLng().longitude;
                 } else if (requestCode == AUTOCOMPLETE_REQUEST_CODE_TO) {
                     toSearch.setText(place.getName());
+                    toLatLng = Objects.requireNonNull(place.getLatLng()).latitude + "," + place.getLatLng().longitude;
                 }
             } else if (resultCode == AutocompleteActivity.RESULT_ERROR) {
                 Status status = Autocomplete.getStatusFromIntent(data);
