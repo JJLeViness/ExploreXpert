@@ -23,22 +23,21 @@ import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.maps.GoogleMap;
-import com.google.android.gms.maps.MapView;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.material.navigation.NavigationView;
+import com.leviness.explorexpert.network.RoutesTask;
 
 public class Map_Activity extends AppCompatActivity implements OnMapReadyCallback {
-
-    private MapView mapView;
-    private static final String MAPVIEW_BUNDLE_KEY = "MapViewBundleKey";
+    private GoogleMap mMap;
     private FusedLocationProviderClient fusedLocationClient;
     private ImageView menuButton;
     private DrawerLayout menuNavigation;
     private ActionBarDrawerToggle toggle;
     private NavigationView navigationView;
+    private LatLng currentLocation;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -54,6 +53,7 @@ public class Map_Activity extends AppCompatActivity implements OnMapReadyCallbac
         menuButton = findViewById(R.id.map_menuButton);
         menuNavigation = findViewById(R.id.drawer_layout);
         navigationView = findViewById(R.id.menu_navigation);
+
 
         //Menu drawer
         toggle = new ActionBarDrawerToggle(this, menuNavigation, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
@@ -81,6 +81,10 @@ public class Map_Activity extends AppCompatActivity implements OnMapReadyCallbac
 //Map Logic and snap to current location
     @Override
     public void onMapReady(GoogleMap googleMap) {
+
+
+
+        mMap = googleMap;
         // Check if the location permissions are granted
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED
                 && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
@@ -91,26 +95,45 @@ public class Map_Activity extends AppCompatActivity implements OnMapReadyCallbac
         }
 
 
-        googleMap.setMyLocationEnabled(true);
-
-        googleMap.getUiSettings().setZoomControlsEnabled(true);
-        googleMap.getUiSettings().setMyLocationButtonEnabled(true);
-        googleMap.getUiSettings().setScrollGesturesEnabled(true); // Ensures that the user can scroll/pan the map
-        googleMap.getUiSettings().setZoomGesturesEnabled(true);   // Allows zooming
-
-        fusedLocationClient.getLastLocation()
-                .addOnSuccessListener(this, location -> {
-                    if (location != null) {
-
-                        LatLng currentLocation = new LatLng(location.getLatitude(), location.getLongitude());
 
 
-                        googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(currentLocation, 15));
+        mMap.setMyLocationEnabled(true);
+
+        mMap.getUiSettings().setZoomControlsEnabled(true);
+        mMap.getUiSettings().setMyLocationButtonEnabled(true);
+        mMap.getUiSettings().setScrollGesturesEnabled(true); // Ensures that the user can scroll/pan the map
+        mMap.getUiSettings().setZoomGesturesEnabled(true);   // Allows zooming
+
+        String fromLatLng = getIntent().getStringExtra("fromLatLng");
+        String toLatLng = getIntent().getStringExtra("toLatLng");  //Retrieve to and from location from home screen, for testing purposes
+
+        if (fromLatLng != null && toLatLng != null) {
+            new RoutesTask(this, mMap).execute(fromLatLng, toLatLng);
+
+        }else {
+            fusedLocationClient.getLastLocation()
+                    .addOnSuccessListener(this, location -> {
+                        if (location != null) {
+
+                            LatLng currentLocation = new LatLng(location.getLatitude(), location.getLongitude());
 
 
-                        googleMap.addMarker(new MarkerOptions().position(currentLocation).title("You are here"));
-                    }
-                });
+                            mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(currentLocation, 15));
+
+
+                            mMap.addMarker(new MarkerOptions().position(currentLocation).title("You are here"));
+
+
+                            String origin = currentLocation.latitude + "," + currentLocation.longitude;
+                            String destination = "37.7749,-122.4194"; // Example destination (San Francisco coordinates)
+                            new RoutesTask(this, mMap).execute(origin, destination);
+
+
+                        }
+
+                    });
+        }
+
 //Menu Drawer logic
         navigationView.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
             @Override
@@ -139,6 +162,12 @@ public class Map_Activity extends AppCompatActivity implements OnMapReadyCallbac
         });
 
 
+
+
+
     }
+
+
+
 
 }
