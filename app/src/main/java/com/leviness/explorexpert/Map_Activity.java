@@ -28,7 +28,7 @@ import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.material.navigation.NavigationView;
-import com.leviness.explorexpert.network.RoutesApiTask;
+import com.leviness.explorexpert.network.RoutesTask;
 
 public class Map_Activity extends AppCompatActivity implements OnMapReadyCallback {
     private GoogleMap mMap;
@@ -108,7 +108,7 @@ public class Map_Activity extends AppCompatActivity implements OnMapReadyCallbac
         String toLatLng = getIntent().getStringExtra("toLatLng");  //Retrieve to and from location from home screen, for testing purposes
 
         if (fromLatLng != null && toLatLng != null) {
-            new RoutesApiTask(this, mMap).execute(fromLatLng, toLatLng);
+            new RoutesTask(this, mMap).execute(fromLatLng, toLatLng);
 
         }else {
             fusedLocationClient.getLastLocation()
@@ -126,7 +126,7 @@ public class Map_Activity extends AppCompatActivity implements OnMapReadyCallbac
 
                             String origin = currentLocation.latitude + "," + currentLocation.longitude;
                             String destination = "37.7749,-122.4194"; // Example destination (San Francisco coordinates)
-                            new RoutesApiTask(this, mMap).execute(origin, destination);
+                            new RoutesTask(this, mMap).execute(origin, destination);
 
 
                         }

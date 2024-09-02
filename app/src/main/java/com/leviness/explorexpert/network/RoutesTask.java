@@ -22,14 +22,14 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 
-public class RoutesApiTask extends AsyncTask<String, Void, String> {
+public class RoutesTask extends AsyncTask<String, Void, String> {
     private static final String TAG = "RoutesApiTask";
     private GoogleMap mMap;
     private String apiKey;
     private LatLng originLatLng;
     private LatLng destinationLatLng;
 
-    public RoutesApiTask(Context context, GoogleMap googleMap) {
+    public RoutesTask(Context context, GoogleMap googleMap) {
         this.mMap = googleMap;
         this.apiKey = context.getString(R.string.maps_api_key); // Fetch API key from resources
     }
