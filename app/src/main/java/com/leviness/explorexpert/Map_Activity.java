@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.Manifest;
+import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
@@ -19,6 +20,7 @@ import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 
+import com.google.android.gms.common.api.ApiException;
 import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.location.FusedLocationProviderClient;
@@ -27,8 +29,16 @@ import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.android.libraries.places.api.Places;
+import com.google.android.libraries.places.api.model.Place;
+import com.google.android.libraries.places.api.model.PlaceLikelihood;
+import com.google.android.libraries.places.api.net.FindCurrentPlaceRequest;
+import com.google.android.libraries.places.api.net.PlacesClient;
 import com.google.android.material.navigation.NavigationView;
 import com.leviness.explorexpert.network.RoutesTask;
+
+import java.util.Arrays;
+import java.util.List;
 
 public class Map_Activity extends AppCompatActivity implements OnMapReadyCallback {
     private GoogleMap mMap;
@@ -37,6 +47,7 @@ public class Map_Activity extends AppCompatActivity implements OnMapReadyCallbac
     private DrawerLayout menuNavigation;
     private ActionBarDrawerToggle toggle;
     private NavigationView navigationView;
+    private PlacesClient placesClient;
     private LatLng currentLocation;
 
     @Override
@@ -53,6 +64,11 @@ public class Map_Activity extends AppCompatActivity implements OnMapReadyCallbac
         menuButton = findViewById(R.id.map_menuButton);
         menuNavigation = findViewById(R.id.drawer_layout);
         navigationView = findViewById(R.id.menu_navigation);
+//Places API
+        if (!Places.isInitialized()) {
+            Places.initialize(getApplicationContext(), getString(R.string.maps_api_key));
+        }
+        placesClient = Places.createClient(this);
 
 
         //Menu drawer
@@ -124,9 +140,7 @@ public class Map_Activity extends AppCompatActivity implements OnMapReadyCallbac
                             mMap.addMarker(new MarkerOptions().position(currentLocation).title("You are here"));
 
 
-                            String origin = currentLocation.latitude + "," + currentLocation.longitude;
-                            String destination = "37.7749,-122.4194"; // Example destination (San Francisco coordinates)
-                            new RoutesTask(this, mMap).execute(origin, destination);
+                            markNearbyPOIs(currentLocation);
 
 
                         }
@@ -165,6 +179,34 @@ public class Map_Activity extends AppCompatActivity implements OnMapReadyCallbac
 
 
 
+    }
+
+    private void markNearbyPOIs(LatLng location) {
+        List<Place.Field> placeFields = Arrays.asList(Place.Field.NAME, Place.Field.LAT_LNG, Place.Field.TYPES);
+        FindCurrentPlaceRequest request = FindCurrentPlaceRequest.newInstance(placeFields);
+
+        // Call findCurrentPlace and handle the response
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED
+                && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            return;
+        }
+        placesClient.findCurrentPlace(request).addOnSuccessListener((response) -> {
+            for (PlaceLikelihood placeLikelihood : response.getPlaceLikelihoods()) {
+                Place place = placeLikelihood.getPlace();
+                LatLng latLng = place.getLatLng();
+                if (latLng != null) {
+                    mMap.addMarker(new MarkerOptions()
+                            .position(latLng)
+                            .title(place.getName())
+                            .snippet(place.getTypes().toString()));
+                }
+            }
+        }).addOnFailureListener((exception) -> {
+            if (exception instanceof ApiException) {
+                ApiException apiException = (ApiException) exception;
+                Log.e("Map_Activity", "Place not found: " + apiException.getStatusCode());
+            }
+        });
     }
 
 
