@@ -18,6 +18,7 @@ import androidx.drawerlayout.widget.DrawerLayout;
 import com.google.android.material.navigation.NavigationView;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.auth.UserProfileChangeRequest;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QuerySnapshot;
 
@@ -67,6 +68,7 @@ public class registration_Activity extends AppCompatActivity {
             String dob = dobEditText.getText().toString();
             String username = usernameEditText.getText().toString();
             checkUsernameAvailability(email, password, name, dob, username);
+
 
         });
 
@@ -123,8 +125,24 @@ public class registration_Activity extends AppCompatActivity {
                         if (user != null) {
                             String userId = user.getUid(); // Get the user's ID
                             storeAdditionalUserData(userId, name, dob, username);
+                            UserProfileChangeRequest profileUpdates = new UserProfileChangeRequest.Builder()
+                                    .setDisplayName(username)
+                                    .build();
+
+                            user.updateProfile(profileUpdates)
+                                    .addOnCompleteListener(profileUpdateTask -> {
+                                        if (profileUpdateTask.isSuccessful()) {
+                                            Toast.makeText(registration_Activity.this, "Registration successful!", Toast.LENGTH_SHORT).show();
+                                            // Proceed to next activity or main screen
+                                        } else {
+                                            Toast.makeText(registration_Activity.this, "Profile update failed: " + profileUpdateTask.getException().getMessage(), Toast.LENGTH_LONG).show();
+                                        }
+                                    });
+
                         }
                         Toast.makeText(registration_Activity.this, "Registration successful!", Toast.LENGTH_SHORT).show();
+                        Intent intent = new Intent(registration_Activity.this, login_Activity.class);
+                        startActivity(intent);
 
                     } else {
                         // registration fails, display message to user.
@@ -171,5 +189,5 @@ public class registration_Activity extends AppCompatActivity {
                         Toast.makeText(registration_Activity.this, "Error checking username availability: " + task.getException().getMessage(), Toast.LENGTH_LONG).show();
                     }
                 });
+        }
     }
-}

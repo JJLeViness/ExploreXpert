@@ -12,6 +12,7 @@
     <string name="menu_button_desc">Menu Button</string>
         <string name="navigation_drawer_open">Open navigation drawer</string>
         <string name="navigation_drawer_close">Close navigation drawer</string>
+    <string name="filter_prompt">Select a filter</string>
 
 
 =======
@@ -54,4 +55,5 @@
         libero vel nunc consequat, quis tincidunt nisl eleifend. Cras bibendum enim a justo luctus
         vestibulum. Fusce dictum libero quis erat maximus, vitae volutpat diam dignissim.
     </string>
+    <string name="place_photo" />
 </resources>

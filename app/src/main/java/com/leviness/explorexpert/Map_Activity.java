@@ -2,16 +2,26 @@ package com.leviness.explorexpert;
 
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.graphics.Bitmap;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.Manifest;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.RatingBar;
+import android.widget.Spinner;
+import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBarDrawerToggle;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.core.graphics.Insets;
@@ -27,18 +37,36 @@ import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
+import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.libraries.places.api.Places;
+import com.google.android.libraries.places.api.model.PhotoMetadata;
 import com.google.android.libraries.places.api.model.Place;
 import com.google.android.libraries.places.api.model.PlaceLikelihood;
+import com.google.android.libraries.places.api.net.FetchPhotoRequest;
+import com.google.android.libraries.places.api.net.FetchPlaceRequest;
 import com.google.android.libraries.places.api.net.FindCurrentPlaceRequest;
 import com.google.android.libraries.places.api.net.PlacesClient;
 import com.google.android.material.navigation.NavigationView;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.firestore.FirebaseFirestore;
 import com.leviness.explorexpert.network.RoutesTask;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
+import java.net.HttpURLConnection;
+import java.net.URL;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class Map_Activity extends AppCompatActivity implements OnMapReadyCallback {
     private GoogleMap mMap;
@@ -46,9 +74,13 @@ public class Map_Activity extends AppCompatActivity implements OnMapReadyCallbac
     private ImageView menuButton;
     private DrawerLayout menuNavigation;
     private ActionBarDrawerToggle toggle;
+    private Spinner filterSpinner;
     private NavigationView navigationView;
     private PlacesClient placesClient;
     private LatLng currentLocation;
+    private String[] placeTypes = {"restaurant", "cafe", "store", "shopping_mall", "museum", "amusement_park", "movie_theater", "things_to_do"};
+
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -64,6 +96,9 @@ public class Map_Activity extends AppCompatActivity implements OnMapReadyCallbac
         menuButton = findViewById(R.id.map_menuButton);
         menuNavigation = findViewById(R.id.drawer_layout);
         navigationView = findViewById(R.id.menu_navigation);
+
+        filterSpinner = findViewById(R.id.filterSpinner);
+
 //Places API
         if (!Places.isInitialized()) {
             Places.initialize(getApplicationContext(), getString(R.string.maps_api_key));
@@ -94,13 +129,124 @@ public class Map_Activity extends AppCompatActivity implements OnMapReadyCallbac
 
     }
 
-//Map Logic and snap to current location
+    private void setupFilterSpinner() {
+        ArrayAdapter<String> adapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, placeTypes);
+        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        filterSpinner.setAdapter(adapter);
+        filterSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parentView, View selectedItemView, int position, long id) {
+                String selectedPlaceType = placeTypes[position];
+                if (currentLocation != null) {
+                    markNearbyPOIs(currentLocation, selectedPlaceType);
+                } else {
+                    Log.w("Spinner", "currentLocation is null. Cannot mark nearby POIs.");
+                }
+
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parentView) {
+                // Do nothing
+            }
+        });
+    }
+
+    //Map Logic and snap to current location
     @Override
     public void onMapReady(GoogleMap googleMap) {
 
 
-
         mMap = googleMap;
+
+
+        mMap.setInfoWindowAdapter(new GoogleMap.InfoWindowAdapter() {
+            @Override
+            public View getInfoWindow(Marker marker) {
+                return null; // Use default InfoWindow frame
+            }
+
+            @Override
+            public View getInfoContents(Marker marker) {
+                View infoWindowView = getLayoutInflater().inflate(R.layout.info_window, null);
+
+                ImageView placePhoto = infoWindowView.findViewById(R.id.place_photo);
+                TextView title = infoWindowView.findViewById(R.id.title);
+                RatingBar placeRating = infoWindowView.findViewById(R.id.place_rating);
+
+                title.setText(marker.getTitle());
+
+                String placeId = marker.getSnippet();
+
+                // Firestore logic to retrieve and set rating
+                FirebaseFirestore db = FirebaseFirestore.getInstance();
+                db.collection("locations").document(placeId).get().addOnSuccessListener(documentSnapshot -> {
+                    if (documentSnapshot.exists()) {
+                        Double rating = documentSnapshot.getDouble("rating");
+                        if (rating != null) {
+                            placeRating.setRating(rating.floatValue());
+                        } else {
+                            placeRating.setRating(0);
+                        }
+                    } else {
+                        placeRating.setRating(0);
+                        Map<String, Object> locationData = new HashMap<>();
+                        locationData.put("name", marker.getTitle());
+                        locationData.put("rating", 0.0);
+
+                        db.collection("locations").document(placeId)
+                                .set(locationData)
+                                .addOnSuccessListener(aVoid -> Log.d("InfoWindow", "Document successfully created with default rating."))
+                                .addOnFailureListener(e -> Log.e("InfoWindow", "Error creating document", e));
+                    }
+                }).addOnFailureListener(e -> {
+                    placeRating.setRating(0);
+                    Log.e("InfoWindow", "Error fetching rating from Firestore: " + e.getMessage());
+                });
+
+                placePhoto.setImageResource(R.drawable.default_profile_image);
+
+                // Fetch place details from Google Places API
+                List<Place.Field> placeFields = Arrays.asList(Place.Field.PHOTO_METADATAS);
+                FetchPlaceRequest request = FetchPlaceRequest.newInstance(placeId, placeFields);
+
+                placesClient.fetchPlace(request).addOnSuccessListener((response) -> {
+                    Place place = response.getPlace();
+                    List<PhotoMetadata> photoMetadataList = place.getPhotoMetadatas();
+                    if (photoMetadataList != null && !photoMetadataList.isEmpty()) {
+                        PhotoMetadata photoMetadata = photoMetadataList.get(0);
+                        FetchPhotoRequest photoRequest = FetchPhotoRequest.builder(photoMetadata)
+                                .setMaxWidth(500)
+                                .setMaxHeight(300)
+                                .build();
+
+                        placesClient.fetchPhoto(photoRequest).addOnSuccessListener((fetchPhotoResponse) -> {
+                            Bitmap bitmap = fetchPhotoResponse.getBitmap();
+                            placePhoto.setImageBitmap(bitmap);
+                            if (marker.isInfoWindowShown()) {
+                                marker.showInfoWindow();
+                            }
+                        }).addOnFailureListener((exception) -> {
+                            placePhoto.setImageResource(R.drawable.default_profile_image);
+                        });
+                    } else {
+                        placePhoto.setImageResource(R.drawable.default_profile_image);
+                    }
+                }).addOnFailureListener((exception) -> {
+                    placePhoto.setImageResource(R.drawable.default_profile_image);
+                });
+
+                return infoWindowView;
+            }
+        });
+
+        mMap.setOnInfoWindowClickListener(marker -> {
+
+            String placeId = marker.getSnippet();
+            showRatingDialog(placeId, marker.getTitle());
+
+        });
+
         // Check if the location permissions are granted
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED
                 && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
@@ -126,7 +272,7 @@ public class Map_Activity extends AppCompatActivity implements OnMapReadyCallbac
         if (fromLatLng != null && toLatLng != null) {
             new RoutesTask(this, mMap).execute(fromLatLng, toLatLng);
 
-        }else {
+        } else {
             fusedLocationClient.getLastLocation()
                     .addOnSuccessListener(this, location -> {
                         if (location != null) {
@@ -140,7 +286,11 @@ public class Map_Activity extends AppCompatActivity implements OnMapReadyCallbac
                             mMap.addMarker(new MarkerOptions().position(currentLocation).title("You are here"));
 
 
-                            markNearbyPOIs(currentLocation);
+
+                            this.currentLocation = currentLocation;
+
+
+                            setupFilterSpinner();
 
 
                         }
@@ -176,40 +326,177 @@ public class Map_Activity extends AppCompatActivity implements OnMapReadyCallbac
         });
 
 
-
-
-
     }
 
-    private void markNearbyPOIs(LatLng location) {
-        List<Place.Field> placeFields = Arrays.asList(Place.Field.NAME, Place.Field.LAT_LNG, Place.Field.TYPES);
-        FindCurrentPlaceRequest request = FindCurrentPlaceRequest.newInstance(placeFields);
+    private void markNearbyPOIs(LatLng location, String placeType) {
+        // Clear existing markers
+        mMap.clear();
 
-        // Call findCurrentPlace and handle the response
-        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED
-                && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-            return;
+        // Add user's current location marker
+        mMap.addMarker(new MarkerOptions().position(location).title("You are here"));
+
+        // Nearby Places API request
+        String apiKey = this.getString(R.string.maps_api_key);
+        String url = "https://maps.googleapis.com/maps/api/place/nearbysearch/json?location="
+                + location.latitude + "," + location.longitude
+                + "&radius=1500&type=" + placeType
+                + "&key=" + apiKey;
+
+        new GetNearbyPlacesTask().execute(url);
+    }
+
+    private class GetNearbyPlacesTask extends AsyncTask<String, Void, String> {
+        @Override
+        protected String doInBackground(String... urls) {
+            try {
+                URL url = new URL(urls[0]);
+                HttpURLConnection urlConnection = (HttpURLConnection) url.openConnection();
+                urlConnection.setRequestMethod("GET");
+                urlConnection.connect();
+
+                BufferedReader reader = new BufferedReader(new InputStreamReader(urlConnection.getInputStream()));
+                StringBuilder stringBuilder = new StringBuilder();
+                String line;
+                while ((line = reader.readLine()) != null) {
+                    stringBuilder.append(line);
+                }
+                reader.close();
+                return stringBuilder.toString();
+            } catch (Exception e) {
+                Log.e("GetNearbyPlacesTask", "Error in getting nearby places", e);
+                return null;
+            }
         }
-        placesClient.findCurrentPlace(request).addOnSuccessListener((response) -> {
-            for (PlaceLikelihood placeLikelihood : response.getPlaceLikelihoods()) {
-                Place place = placeLikelihood.getPlace();
-                LatLng latLng = place.getLatLng();
-                if (latLng != null) {
-                    mMap.addMarker(new MarkerOptions()
-                            .position(latLng)
-                            .title(place.getName())
-                            .snippet(place.getTypes().toString()));
+
+        @Override
+        protected void onPostExecute(String result) {
+            if (result != null) {
+                try {
+                    JSONObject jsonObject = new JSONObject(result);
+                    JSONArray results = jsonObject.getJSONArray("results");
+
+                    for (int i = 0; i < results.length(); i++) {
+                        JSONObject place = results.getJSONObject(i);
+                        String placeName = place.getString("name");
+                        String placeId = place.getString("place_id");
+                        JSONObject geometry = place.getJSONObject("geometry");
+                        JSONObject location = geometry.getJSONObject("location");
+
+                        LatLng latLng = new LatLng(location.getDouble("lat"), location.getDouble("lng"));
+
+                        // Add marker for each place
+                        mMap.addMarker(new MarkerOptions().position(latLng).title(placeName).snippet(placeId).icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_AZURE)));
+                    }
+
+                } catch (JSONException e) {
+                    Log.e("GetNearbyPlacesTask", "Error parsing JSON", e);
                 }
             }
-        }).addOnFailureListener((exception) -> {
-            if (exception instanceof ApiException) {
-                ApiException apiException = (ApiException) exception;
-                Log.e("Map_Activity", "Place not found: " + apiException.getStatusCode());
+        }
+
+
+    }
+    private void showRatingDialog(String placeId, String placeName) {
+        // Create a new dialog to let the user input a new rating
+        AlertDialog.Builder builder = new AlertDialog.Builder(Map_Activity.this);
+        builder.setTitle("Rate " + placeName);
+
+        final RatingBar ratingBar = new RatingBar(Map_Activity.this);
+        LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(
+                LinearLayout.LayoutParams.WRAP_CONTENT,
+                LinearLayout.LayoutParams.WRAP_CONTENT
+        );
+        ratingBar.setLayoutParams(layoutParams);
+        ratingBar.setNumStars(5);
+        ratingBar.setStepSize(0.5f);
+
+        LinearLayout layout = new LinearLayout(Map_Activity.this);
+        layout.setOrientation(LinearLayout.VERTICAL);
+        layout.addView(ratingBar);
+
+        builder.setView(layout);
+
+        builder.setPositiveButton("Submit", (dialog, which) -> {
+            float newRating = ratingBar.getRating();
+
+            // Get the currently logged-in user
+            FirebaseAuth auth = FirebaseAuth.getInstance();
+            FirebaseUser currentUser = auth.getCurrentUser();
+
+            if (currentUser != null) {
+                String userId = currentUser.getUid();
+                String userName = currentUser.getDisplayName() != null ? currentUser.getDisplayName() : "Anonymous";
+
+                // Update the rating in Firestore
+                FirebaseFirestore db = FirebaseFirestore.getInstance();
+                db.collection("locations").document(placeId).get().addOnSuccessListener(documentSnapshot -> {
+                    if (documentSnapshot.exists()) {
+                        Double existingRating = documentSnapshot.getDouble("rating");
+                        Long ratingCount = documentSnapshot.getLong("ratingCount");
+
+                        if (existingRating != null && ratingCount != null) {
+                            // Calculate new average rating
+                            double totalRating = existingRating * ratingCount;
+                            long newRatingCount = ratingCount + 1;
+                            double newAverageRating = (totalRating + newRating) / newRatingCount;
+
+                            // Update Firestore with new average rating and increment rating count
+                            Map<String, Object> updateData = new HashMap<>();
+                            updateData.put("rating", newAverageRating);
+                            updateData.put("ratingCount", newRatingCount);
+                            updateData.put("lastUpdatedBy", userName);
+                            updateData.put("lastUpdatedById", userId);
+
+                            db.collection("locations").document(placeId)
+                                    .update(updateData)
+                                    .addOnSuccessListener(aVoid -> {
+                                        Toast.makeText(Map_Activity.this, "Rating updated!", Toast.LENGTH_SHORT).show();
+                                    })
+                                    .addOnFailureListener(e -> {
+                                        Log.e("RatingUpdate", "Error updating rating", e);
+                                        Toast.makeText(Map_Activity.this, "Failed to update rating", Toast.LENGTH_SHORT).show();
+                                    });
+                        } else {
+                            // If the document exists but doesn't have rating or ratingCount
+                            initializeRatingInFirestore(db, placeId, placeName, newRating, userName, userId);
+                        }
+                    } else {
+                        // First rating, so just set it directly
+                        initializeRatingInFirestore(db, placeId, placeName, newRating, userName, userId);
+                    }
+                }).addOnFailureListener(e -> {
+                    Log.e("RatingUpdate", "Error fetching existing rating", e);
+                    Toast.makeText(Map_Activity.this, "Failed to submit rating", Toast.LENGTH_SHORT).show();
+                });
+            } else {
+                Toast.makeText(Map_Activity.this, "You must be logged in to submit a rating.", Toast.LENGTH_SHORT).show();
             }
+
         });
+
+        builder.setNegativeButton("Cancel", (dialog, which) -> dialog.dismiss());
+
+        builder.show();
     }
 
+    private void initializeRatingInFirestore(FirebaseFirestore db, String placeId, String placeName, float newRating, String userName, String userId) {
+        // Initialize the document with the first rating
+        Map<String, Object> locationData = new HashMap<>();
+        locationData.put("name", placeName);
+        locationData.put("rating", (double) newRating);
+        locationData.put("ratingCount", 1);
+        locationData.put("lastUpdatedBy", userName);
+        locationData.put("lastUpdatedById", userId);
 
-
+        db.collection("locations").document(placeId)
+                .set(locationData)
+                .addOnSuccessListener(aVoid -> {
+                    Toast.makeText(Map_Activity.this, "Rating submitted!", Toast.LENGTH_SHORT).show();
+                })
+                .addOnFailureListener(e -> {
+                    Log.e("RatingUpdate", "Error creating document", e);
+                    Toast.makeText(Map_Activity.this, "Failed to submit rating", Toast.LENGTH_SHORT).show();
+                });
+    }
 
 }
