@@ -1,3 +1,12 @@
+<androidx.drawerlayout.widget.DrawerLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/drawer_layout"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".homescreen_activity">
+
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
@@ -60,64 +69,86 @@
         android:id="@+id/name"
         android:layout_width="242dp"
         android:layout_height="51dp"
+        android:layout_marginEnd="80dp"
+        android:layout_marginTop="10dp"
+
         android:background="@drawable/textbox"
         android:contentDescription="Name input field"
-        app:layout_constraintBottom_toBottomOf="@id/nameHeader"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.147"
-        app:layout_constraintStart_toEndOf="@id/nameHeader"
-        app:layout_constraintTop_toTopOf="@id/nameHeader"
-        app:layout_constraintVertical_bias="0.0" />
+        app:layout_constraintTop_toBottomOf="@+id/registerHeader" />
+
+    <TextView
+        android:id="@+id/nameHeader"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:fontFamily="@font/bungeespice"
+        android:text="Name"
+        android:textColor="#528f8f"
+        android:textSize="15sp"
+        android:layout_marginTop="20dp"
+        app:layout_constraintEnd_toStartOf="@+id/name"
+        app:layout_constraintTop_toBottomOf="@+id/registerHeader" />
 
     <EditText
         android:id="@+id/dob"
         android:layout_width="242dp"
         android:layout_height="51dp"
+        android:layout_marginEnd="80dp"
+        android:layout_marginTop="10dp"
         android:background="@drawable/textbox"
         android:contentDescription="Date of Birth input field"
-        app:layout_constraintBottom_toBottomOf="@id/dobHeader"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.147"
-        app:layout_constraintStart_toEndOf="@id/dobHeader"
-        app:layout_constraintTop_toTopOf="@id/dobHeader"
-        app:layout_constraintVertical_bias="0.23" />
+        app:layout_constraintTop_toBottomOf="@+id/name" />
 
     <EditText
         android:id="@+id/email"
-        android:layout_width="242dp"
-        android:layout_height="51dp"
+        android:layout_width="273dp"
+        android:layout_height="50dp"
+        android:layout_marginTop="10dp"
+        android:layout_marginEnd="50dp"
         android:background="@drawable/textbox"
         android:contentDescription="Email address input field"
-        app:layout_constraintBottom_toBottomOf="@+id/emailHeader"
-        app:layout_constraintStart_toStartOf="@+id/password"
-        app:layout_constraintTop_toTopOf="@+id/emailHeader"
-        app:layout_constraintVertical_bias="0.461" />
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/dob" />
+
+    <TextView
+        android:id="@+id/emailHeader"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="24dp"
+        android:layout_marginEnd="2dp"
+        android:fontFamily="@font/bungeespice"
+        android:text="Email"
+        android:textColor="#528f8f"
+        android:textSize="15sp"
+        app:layout_constraintEnd_toStartOf="@+id/email"
+        app:layout_constraintTop_toBottomOf="@+id/dobHeader" />
 
     <EditText
         android:id="@+id/username"
         android:layout_width="242dp"
         android:layout_height="51dp"
+        android:layout_marginEnd="80dp"
         android:background="@drawable/textbox"
+        android:layout_marginTop="10dp"
+
         android:contentDescription="Username input field"
-        app:layout_constraintBottom_toBottomOf="@+id/usernameHeader"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.531"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/usernameHeader"
-        app:layout_constraintVertical_bias="1.0" />
+        app:layout_constraintTop_toBottomOf="@+id/email" />
 
     <TextView
         android:id="@+id/usernameHeader"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="20dp"
-        android:layout_marginEnd="4dp"
+        android:layout_marginTop="24dp"
         android:fontFamily="@font/bungeespice"
         android:text="Username"
         android:textColor="#528f8f"
         android:textSize="15sp"
-        app:layout_constraintEnd_toEndOf="@+id/passwordHeader"
-        app:layout_constraintTop_toBottomOf="@id/emailHeader" />
+        app:layout_constraintEnd_toStartOf="@+id/username"
+        app:layout_constraintHorizontal_bias="1.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/emailHeader" />
 
     <TextView
         android:id="@+id/passwordHeader"
@@ -127,62 +158,36 @@
         android:text="PASSWORD"
         android:textColor="#528f8f"
         android:textSize="15sp"
-        app:layout_constraintBottom_toTopOf="@+id/registerButton"
+        android:layout_marginTop="22dp"
         app:layout_constraintEnd_toStartOf="@+id/password"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/email" />
+        app:layout_constraintTop_toBottomOf="@+id/usernameHeader" />
 
-
-    <TextView
-        android:id="@+id/emailHeader"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
-        android:fontFamily="@font/bungeespice"
-        android:text="Email"
-        android:textColor="#528f8f"
-        android:textSize="15sp"
-        app:layout_constraintEnd_toEndOf="@+id/usernameHeader"
-        app:layout_constraintTop_toBottomOf="@id/dobHeader" />
 
     <TextView
         android:id="@+id/dobHeader"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
         android:fontFamily="@font/bungeespice"
         android:text="DOB"
         android:textColor="#528f8f"
         android:textSize="15sp"
-        app:layout_constraintEnd_toEndOf="@+id/emailHeader"
-        app:layout_constraintTop_toBottomOf="@id/nameHeader" />
-
-    <TextView
-        android:id="@+id/nameHeader"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="32dp"
-        android:fontFamily="@font/bungeespice"
-        android:text="Name"
-        android:textColor="#528f8f"
-        android:textSize="15sp"
-        app:layout_constraintEnd_toEndOf="@+id/dobHeader"
-        app:layout_constraintTop_toBottomOf="@id/registerHeader" />
-
+        android:layout_marginTop="20dp"
+        app:layout_constraintEnd_toStartOf="@+id/dob"
+        app:layout_constraintTop_toBottomOf="@+id/nameHeader" />
 
     <EditText
         android:id="@+id/password"
         android:layout_width="242dp"
         android:layout_height="51dp"
+        android:layout_marginEnd="80dp"
         android:background="@drawable/textbox"
+        android:layout_marginTop="10dp"
+
         android:contentDescription="Enter your password"
         android:importantForAccessibility="yes"
         android:inputType="textPassword"
-        app:layout_constraintBottom_toBottomOf="@+id/passwordHeader"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="@+id/passwordHeader"
-        app:layout_constraintTop_toTopOf="@+id/passwordHeader"
-        app:layout_constraintVertical_bias="0.538" />
+        app:layout_constraintTop_toBottomOf="@+id/username" />
 
     <androidx.appcompat.widget.AppCompatButton
         android:id="@+id/registerButton"
@@ -237,4 +242,15 @@
         app:layout_constraintVertical_bias="0.0" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
+
+
+<com.google.android.material.navigation.NavigationView
+android:id="@+id/menu_navigation"
+android:layout_width="wrap_content"
+android:layout_height="match_parent"
+android:layout_gravity="end"
+app:menu="@menu/drawer_menu" />
+
+
+    </androidx.drawerlayout.widget.DrawerLayout>
 

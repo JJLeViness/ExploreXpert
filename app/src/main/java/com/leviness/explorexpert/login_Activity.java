@@ -85,11 +85,11 @@ public class login_Activity extends AppCompatActivity {
         }
 
        private void loginUser(){
-        String userInput = username.getText().toString();
+        String user = username.getText().toString();
         String pass = password.getText().toString();
 
         //Set error if either field is empty
-           if (userInput.isEmpty()) {
+           if (user.isEmpty()) {
                username.setError("Username is required!");
                username.requestFocus();
                return;
@@ -104,14 +104,13 @@ public class login_Activity extends AppCompatActivity {
            FirebaseFirestore db = FirebaseFirestore.getInstance();
 
            db.collection("users")
-                   .whereEqualTo("username", userInput)
+                   .whereEqualTo("username", user)
                    .get()
                    .addOnCompleteListener(task -> {
                        if (task.isSuccessful() && !task.getResult().isEmpty()) {
                            // Username found, get the associated email
                            String email = task.getResult().getDocuments().get(0).getString("email");
 
-                           // Now sign in with the retrieved email and provided password
                            mAuth.signInWithEmailAndPassword(email, pass).addOnCompleteListener(authTask -> {
                                if (authTask.isSuccessful()) {
                                    Toast.makeText(login_Activity.this, "Login successful", Toast.LENGTH_SHORT).show();

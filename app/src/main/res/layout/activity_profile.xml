@@ -32,8 +32,19 @@
                     android:orientation="horizontal"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent"></LinearLayout>
+                    app:layout_constraintTop_toTopOf="parent" >
+                </LinearLayout>
 
+                <ImageView
+                    android:id="@+id/bannerLogo"
+                    android:layout_width="250dp"
+                    android:layout_height="123dp"
+                    android:layout_marginStart="10dp"
+                    android:layout_marginTop="31.5dp"
+                    android:contentDescription="@string/logo_desc"
+                    android:src="@drawable/headerlogo"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
 
                 <ImageView
                     android:id="@+id/menuButton"
@@ -44,21 +55,9 @@
                     android:clickable="true"
                     android:contentDescription="@string/menu_button_desc"
                     android:focusable="true"
-                    android:src="@drawable/menuicon"
+                    android:src="@drawable/menubutton"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintTop_toTopOf="parent" />
-
-                <ImageView
-                    android:id="@+id/bannerLogo"
-                    android:layout_width="250dp"
-                    android:layout_height="123dp"
-                    android:layout_marginLeft="10dp"
-                    android:layout_marginTop="-70dp"
-                    android:contentDescription="@string/logo_desc"
-                    android:src="@drawable/headerlogo"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@id/banner"
-                    app:layout_constraintVertical_bias="0.2" />
 
                 <TextView
                     android:id="@+id/totalPointsLabel"
@@ -96,27 +95,37 @@
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent" />
 
+                <de.hdodenhof.circleimageview.CircleImageView
+                    android:id="@+id/profileImage"
+                    android:layout_width="100dp"
+                    android:layout_height="100dp"
+                    android:src="@drawable/profilepic"
+                    android:layout_marginEnd="20dp"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/banner" />
 
                 <TextView
                     android:id="@+id/username"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:gravity="center"
+                    android:background="@drawable/textbox"
                     android:text="Username"
                     android:textColor="@color/black"
+                    android:layout_marginEnd="13.5dp"
                     android:textSize="18sp"
                     app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/profileImage" />
+                    app:layout_constraintTop_toBottomOf="@+id/profileImage"/>
 
                 <Button
                     android:id="@+id/edit_button"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:background="?android:attr/selectableItemBackground"
                     android:gravity="center"
                     android:text="Edit"
+                    android:layout_marginEnd="25dp"
                     android:textSize="18sp"
                     android:textColor="@color/black"
+                    android:backgroundTint="@color/grey"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintTop_toBottomOf="@+id/username" />
 
@@ -246,14 +255,6 @@
                     android:textSize="18sp"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@id/pastHunt2" />
-
-                <de.hdodenhof.circleimageview.CircleImageView
-                    android:id="@+id/profileImage"
-                    android:layout_width="100dp"
-                    android:layout_height="100dp"
-                    android:src="@drawable/profilepic"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/banner" /> <!-- Use a placeholder image here -->
 
             </androidx.constraintlayout.widget.ConstraintLayout>
         </ScrollView>
