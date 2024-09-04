@@ -5,7 +5,10 @@ import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.net.Uri;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.util.Log;
@@ -14,6 +17,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
@@ -32,6 +36,17 @@ import com.google.android.material.navigation.NavigationView;
 import androidx.appcompat.app.ActionBarDrawerToggle;
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationServices;
+import com.google.firebase.FirebaseApp;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.QuerySnapshot;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
+
+import java.io.InputStream;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 
@@ -45,13 +60,30 @@ public class profile_Activity extends AppCompatActivity implements OnMapReadyCal
     private CustomMapView mapView;
     private FusedLocationProviderClient fusedLocationClient;
     private ActivityResultLauncher<Intent> pickImageLauncher;
-
+    private TextView tvUsername;
+    private Uri selectedImageUri;
     private DrawerLayout drawerLayout;
+    private String userId;
+    private ImageView profileImageView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_profile);
+
+        FirebaseApp.initializeApp(this);
+        FirebaseFirestore firestore = FirebaseFirestore.getInstance();
+        tvUsername = findViewById(R.id.username);
+        profileImageView = findViewById(R.id.profileImage);
+        profileImageView.setOnClickListener(v -> showEnlargedImage());
+        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+
+        if (user != null) {
+            String userId = user.getUid();
+            fetchUserProfile(userId);
+        } else {
+            Toast.makeText(profile_Activity.this, "User not logged in", Toast.LENGTH_SHORT).show();
+        }
 
         Button myPointsButton = findViewById(R.id.myPointsLabel);
         myPointsButton.setOnClickListener(v -> {
@@ -87,6 +119,8 @@ public class profile_Activity extends AppCompatActivity implements OnMapReadyCal
                 startActivity(new Intent(profile_Activity.this, scavenger_Hunt_Activity.class));
             } else if (id == R.id.nav_settings) {
                 startActivity(new Intent(profile_Activity.this, settings_Activity.class));
+            }else if (id == R.id.nav_login) {
+                startActivity(new Intent(profile_Activity.this, login_Activity.class));
             }
             drawerLayout.closeDrawer(GravityCompat.END);
             return true;
@@ -98,7 +132,7 @@ public class profile_Activity extends AppCompatActivity implements OnMapReadyCal
                     if (result.getResultCode() == Activity.RESULT_OK) {
                         Intent data = result.getData();
                         if (data != null) {
-                            Uri selectedImageUri = data.getData();
+                            selectedImageUri = data.getData();
                             ImageView profileImageView = findViewById(R.id.profileImage);
                             profileImageView.setImageURI(selectedImageUri);
                         }
@@ -112,6 +146,16 @@ public class profile_Activity extends AppCompatActivity implements OnMapReadyCal
         mapView.onCreate(savedInstanceState);
         mapView.getMapAsync(this);
 
+        firestore.collection("users").document("udf2uvZI8NSeDTKiofRWLOCYqZF3").get().addOnSuccessListener(documentSnapshot -> {
+            if (documentSnapshot.exists()) {
+                String profileImageUrl = documentSnapshot.getString("profileImageUrl");
+
+                if (profileImageUrl != null) {
+                    new DownloadImageTask(profileImageView).execute(profileImageUrl);
+                }
+            }
+        });
+
         Button editButton = findViewById(R.id.edit_button);
         editButton.setOnClickListener(v -> {
             AlertDialog.Builder builder = new AlertDialog.Builder(this);
@@ -119,7 +163,6 @@ public class profile_Activity extends AppCompatActivity implements OnMapReadyCal
             builder.setView(dialogView);
 
             EditText editUsername = dialogView.findViewById(R.id.edit_username);
-            EditText editEmail = dialogView.findViewById(R.id.edit_email); // Added editEmail
             Button changeProfilePic = dialogView.findViewById(R.id.change_profile_pic);
             Button saveChanges = dialogView.findViewById(R.id.save_changes);
 
@@ -132,22 +175,132 @@ public class profile_Activity extends AppCompatActivity implements OnMapReadyCal
 
             saveChanges.setOnClickListener(view -> {
                 String newUsername = editUsername.getText().toString().trim();
-                String newEmail = editEmail.getText().toString().trim();
 
-                if (!newUsername.isEmpty()) {
-                    TextView usernameTextView = findViewById(R.id.username);
-                    usernameTextView.setText(newUsername);
+                if (user != null) {
+                    String userId = user.getUid();
+                    FirebaseFirestore db = FirebaseFirestore.getInstance();
+                    DocumentReference userRef = db.collection("users").document(userId);
+
+                    if (!newUsername.isEmpty()) {
+                        // Check username availability before updating
+                        checkUsernameAvailability(newUsername, available -> {
+                            if (available) {
+                                tvUsername.setText(newUsername);
+                                userRef.update("username", newUsername)
+                                        .addOnSuccessListener(aVoid -> Toast.makeText(profile_Activity.this, "Username updated successfully", Toast.LENGTH_SHORT).show())
+                                        .addOnFailureListener(e -> Toast.makeText(profile_Activity.this, "Failed to update username", Toast.LENGTH_SHORT).show());
+                            } else {
+                                Toast.makeText(profile_Activity.this, "Username is already taken. Please choose another one.", Toast.LENGTH_SHORT).show();
+                            }
+                        });
+                    }
+
+                    // Check if a new profile image is selected
+                    if (selectedImageUri != null) {
+                        FirebaseStorage storage = FirebaseStorage.getInstance();
+                        StorageReference storageRef = storage.getReference();
+                        StorageReference profileImageRef = storageRef.child("profile_images/" + userId + ".jpg");
+
+                        profileImageRef.putFile(selectedImageUri)
+                                .addOnSuccessListener(taskSnapshot -> {
+                                    // Get the download URL
+                                    profileImageRef.getDownloadUrl().addOnSuccessListener(uri -> {
+                                        String imageUrl = uri.toString();
+                                        userRef.update("profileImageUrl", imageUrl)
+                                                .addOnSuccessListener(aVoid -> Toast.makeText(profile_Activity.this, "Profile updated successfully", Toast.LENGTH_SHORT).show())
+                                                .addOnFailureListener(e -> Toast.makeText(profile_Activity.this, "Failed to update profile image URL", Toast.LENGTH_SHORT).show());
+                                    });
+                                })
+                                .addOnFailureListener(e -> Toast.makeText(profile_Activity.this, "Failed to upload profile image", Toast.LENGTH_SHORT).show());
+                    }
+
+                    dialog.dismiss();
+                } else {
+                    Toast.makeText(profile_Activity.this, "User not logged in", Toast.LENGTH_SHORT).show();
                 }
-
-                if (!newEmail.isEmpty()) {
-                    TextView emailTextView = findViewById(R.id.email);
-                    emailTextView.setText(newEmail);
-                }
-
-                dialog.dismiss();
             });
 
             dialog.show();
+        });
+    }
+
+    private void showEnlargedImage() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        View dialogView = getLayoutInflater().inflate(R.layout.dialog_enlarged_image, null);
+        builder.setView(dialogView);
+
+        ImageView enlargedImageView = dialogView.findViewById(R.id.enlargedImageView);
+
+        // Set the image to the enlarged view
+        enlargedImageView.setImageDrawable(profileImageView.getDrawable());
+
+        AlertDialog dialog = builder.create();
+        dialog.show();
+    }
+
+    private void checkUsernameAvailability(String username, OnUsernameAvailabilityChecked callback) {
+        FirebaseFirestore db = FirebaseFirestore.getInstance();
+        db.collection("users")
+                .whereEqualTo("username", username)
+                .get()
+                .addOnCompleteListener(task -> {
+                    if (task.isSuccessful()) {
+                        QuerySnapshot querySnapshot = task.getResult();
+                        // If no documents are found or if the username belongs to the current user
+                        boolean available = (querySnapshot == null || querySnapshot.isEmpty());
+                        callback.onChecked(available);
+                    } else {
+                        Toast.makeText(profile_Activity.this, "Error checking username availability: " + task.getException().getMessage(), Toast.LENGTH_LONG).show();
+                    }
+                });
+    }
+
+    // Define an interface for the callback
+    interface OnUsernameAvailabilityChecked {
+        void onChecked(boolean isAvailable);
+    }
+
+    private class DownloadImageTask extends AsyncTask<String, Void, Bitmap> {
+        ImageView imageView;
+
+        public DownloadImageTask(ImageView imageView) {
+            this.imageView = imageView;
+        }
+
+        protected Bitmap doInBackground(String... urls) {
+            String url = urls[0];
+            Bitmap bmp = null;
+            try {
+                InputStream in = new java.net.URL(url).openStream();
+                bmp = BitmapFactory.decodeStream(in);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+            return bmp;
+        }
+
+        protected void onPostExecute(Bitmap result) {
+            imageView.setImageBitmap(result);
+        }
+    }
+
+    private void fetchUserProfile(String userId) {
+        FirebaseFirestore db = FirebaseFirestore.getInstance();
+
+        db.collection("users").document(userId).get().addOnCompleteListener(task -> {
+            if (task.isSuccessful()) {
+                DocumentSnapshot document = task.getResult();
+                if (document.exists()) {
+                    String username = document.getString("username");
+                    if (username != null) {
+                        tvUsername.setText(username);
+                    }
+                } else {
+                    Toast.makeText(profile_Activity.this, "User Document Doesn't Exist", Toast.LENGTH_SHORT).show();
+                }
+            } else {
+                Toast.makeText(profile_Activity.this, "Failed to Retrieve User Data", Toast.LENGTH_SHORT).show();
+            }
         });
     }
 
@@ -197,7 +350,6 @@ public class profile_Activity extends AppCompatActivity implements OnMapReadyCal
             Log.e(TAG, "Location permission not granted");
         }
     }
-
 
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {

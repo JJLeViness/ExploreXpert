@@ -20,13 +20,6 @@
             android:hint="Enter new username"
             android:maxLength="20" />
 
-        <EditText
-            android:id="@+id/edit_email"
-            android:layout_width="384dp"
-            android:layout_height="59dp"
-            android:hint="Enter new email"
-            android:layout_marginTop="16dp" />
-
         <Button
             android:id="@+id/change_profile_pic"
             android:layout_width="wrap_content"
