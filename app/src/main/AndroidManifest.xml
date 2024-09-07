@@ -13,6 +13,7 @@
         android:allowBackup="true"
         android:dataExtractionRules="@xml/data_extraction_rules"
         android:fullBackupContent="@xml/backup_rules"
+        android:enableOnBackInvokedCallback="true"
         android:icon="@mipmap/ic_app_icon"
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_app_icon_round"
@@ -46,7 +47,6 @@
             android:exported="false"
             android:theme="@style/Theme.ExploreXpert" />
 
-        <!-- Add the point_achievement_Activity entry -->
         <activity
             android:name=".point_achievement_Activity"
             android:exported="false" />
