@@ -82,6 +82,8 @@ public class Map_Activity extends AppCompatActivity implements OnMapReadyCallbac
     private String[] placeTypes = {"restaurant", "cafe", "store", "shopping_mall", "museum", "amusement_park", "movie_theater", "things_to_do","points_of_interest","local_landmark"};
 
     private Map<Marker, Bitmap> markerImages = new HashMap<>();
+    private Map<Marker, Float> markerRatings = new HashMap<>();
+
 
 
 
@@ -179,34 +181,14 @@ public class Map_Activity extends AppCompatActivity implements OnMapReadyCallbac
 
                 title.setText(marker.getTitle());
 
-                String placeId = marker.getSnippet();
+                // Use preloaded rating
+                if (markerRatings.containsKey(marker)) {
+                    placeRating.setRating(markerRatings.get(marker));
+                } else {
+                    placeRating.setRating(0f);
+                }
 
-                FirebaseFirestore db = FirebaseFirestore.getInstance();
-                db.collection("locations").document(placeId).get().addOnSuccessListener(documentSnapshot -> {
-                    if (documentSnapshot.exists()) {
-                        Double rating = documentSnapshot.getDouble("rating");
-                        if (rating != null) {
-                            placeRating.setRating(rating.floatValue());
-                        } else {
-                            placeRating.setRating(0);
-                        }
-                    } else {
-                        placeRating.setRating(0);
-                        Map<String, Object> locationData = new HashMap<>();
-                        locationData.put("name", marker.getTitle());
-                        locationData.put("rating", 0.0);
-
-                        db.collection("locations").document(placeId)
-                                .set(locationData)
-                                .addOnSuccessListener(aVoid -> Log.d("InfoWindow", "Document successfully created with default rating."))
-                                .addOnFailureListener(e -> Log.e("InfoWindow", "Error creating document", e));
-                    }
-                }).addOnFailureListener(e -> {
-                    placeRating.setRating(0);
-                    Log.e("InfoWindow", "Error fetching rating from Firestore: " + e.getMessage());
-                });
-
-                // Use the preloaded image if available
+                // Use preloaded image
                 if (markerImages.containsKey(marker)) {
                     placePhoto.setImageBitmap(markerImages.get(marker));
                 } else {
@@ -215,6 +197,7 @@ public class Map_Activity extends AppCompatActivity implements OnMapReadyCallbac
 
                 return infoWindowView;
             }
+
         });
 
         mMap.setOnInfoWindowClickListener(marker -> {
@@ -254,10 +237,13 @@ public class Map_Activity extends AppCompatActivity implements OnMapReadyCallbac
                     .addOnSuccessListener(this, location -> {
                         if (location != null) {
 
-                            LatLng currentLocation = new LatLng(location.getLatitude(), location.getLongitude());
+                            //LatLng currentLocation = new LatLng(location.getLatitude(), location.getLongitude());
+
+                            //For testing
+                            LatLng currentLocation = new LatLng(40.7870, -73.9754);
 
 
-                            mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(currentLocation, 15));
+                            mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(currentLocation, 20));
 
 
                             mMap.addMarker(new MarkerOptions().position(currentLocation).title("You are here"));
@@ -493,6 +479,32 @@ public class Map_Activity extends AppCompatActivity implements OnMapReadyCallbac
             }
         }).addOnFailureListener((exception) -> {
             Log.e("PreloadImage", "Failed to fetch place details for marker", exception);
+        });
+
+        // Preload rating
+        FirebaseFirestore db = FirebaseFirestore.getInstance();
+        db.collection("locations").document(placeId).get().addOnSuccessListener(documentSnapshot -> {
+            if (documentSnapshot.exists()) {
+                Double rating = documentSnapshot.getDouble("rating");
+                if (rating != null) {
+                    markerRatings.put(marker, rating.floatValue());
+                } else {
+                    markerRatings.put(marker, 0f);
+                }
+            } else {
+                markerRatings.put(marker, 0f);
+                Map<String, Object> locationData = new HashMap<>();
+                locationData.put("name", marker.getTitle());
+                locationData.put("rating", 0.0);
+
+                db.collection("locations").document(placeId)
+                        .set(locationData)
+                        .addOnSuccessListener(aVoid -> Log.d("PreloadRating", "Document successfully created with default rating."))
+                        .addOnFailureListener(e -> Log.e("PreloadRating", "Error creating document", e));
+            }
+        }).addOnFailureListener(e -> {
+            markerRatings.put(marker, 0f);
+            Log.e("PreloadRating", "Error fetching rating from Firestore: " + e.getMessage());
         });
     }
 
