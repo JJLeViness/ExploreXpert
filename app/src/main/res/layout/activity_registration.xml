@@ -7,9 +7,7 @@
     android:layout_height="match_parent"
     tools:context=".homescreen_activity">
 
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
+<androidx.constraintlayout.widget.ConstraintLayout
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:layout_editor_absoluteX="48dp"
@@ -67,11 +65,10 @@
 
     <EditText
         android:id="@+id/name"
-        android:layout_width="242dp"
+        android:layout_width="273dp"
         android:layout_height="51dp"
-        android:layout_marginEnd="80dp"
-        android:layout_marginTop="10dp"
-
+        android:layout_marginTop="4dp"
+        android:layout_marginEnd="48dp"
         android:background="@drawable/textbox"
         android:contentDescription="Name input field"
         app:layout_constraintEnd_toEndOf="parent"
@@ -81,20 +78,20 @@
         android:id="@+id/nameHeader"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:fontFamily="@font/bungeespice"
-        android:text="Name"
+        android:fontFamily="@font/bungeeregular"
         android:textColor="#528f8f"
+        android:text="Name"
         android:textSize="15sp"
-        android:layout_marginTop="20dp"
+        android:layout_marginTop="12dp"
         app:layout_constraintEnd_toStartOf="@+id/name"
         app:layout_constraintTop_toBottomOf="@+id/registerHeader" />
 
     <EditText
         android:id="@+id/dob"
-        android:layout_width="242dp"
+        android:layout_width="273dp"
         android:layout_height="51dp"
-        android:layout_marginEnd="80dp"
-        android:layout_marginTop="10dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="48dp"
         android:background="@drawable/textbox"
         android:contentDescription="Date of Birth input field"
         app:layout_constraintEnd_toEndOf="parent"
@@ -105,7 +102,7 @@
         android:layout_width="273dp"
         android:layout_height="50dp"
         android:layout_marginTop="10dp"
-        android:layout_marginEnd="50dp"
+        android:layout_marginEnd="48dp"
         android:background="@drawable/textbox"
         android:contentDescription="Email address input field"
         app:layout_constraintEnd_toEndOf="parent"
@@ -115,10 +112,10 @@
         android:id="@+id/emailHeader"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="24dp"
+        android:layout_marginTop="22dp"
         android:layout_marginEnd="2dp"
-        android:fontFamily="@font/bungeespice"
         android:text="Email"
+        android:fontFamily="@font/bungeeregular"
         android:textColor="#528f8f"
         android:textSize="15sp"
         app:layout_constraintEnd_toStartOf="@+id/email"
@@ -126,12 +123,11 @@
 
     <EditText
         android:id="@+id/username"
-        android:layout_width="242dp"
+        android:layout_width="273dp"
         android:layout_height="51dp"
-        android:layout_marginEnd="80dp"
+        android:layout_marginTop="16dp"
+        android:layout_marginEnd="48dp"
         android:background="@drawable/textbox"
-        android:layout_marginTop="10dp"
-
         android:contentDescription="Username input field"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/email" />
@@ -140,25 +136,23 @@
         android:id="@+id/usernameHeader"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="24dp"
-        android:fontFamily="@font/bungeespice"
+        android:layout_marginTop="26dp"
         android:text="Username"
+        android:fontFamily="@font/bungeeregular"
         android:textColor="#528f8f"
         android:textSize="15sp"
         app:layout_constraintEnd_toStartOf="@+id/username"
-        app:layout_constraintHorizontal_bias="1.0"
-        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/emailHeader" />
 
     <TextView
         android:id="@+id/passwordHeader"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:fontFamily="@font/bungeespice"
         android:text="PASSWORD"
+        android:fontFamily="@font/bungeeregular"
         android:textColor="#528f8f"
         android:textSize="15sp"
-        android:layout_marginTop="22dp"
+        android:layout_marginTop="34dp"
         app:layout_constraintEnd_toStartOf="@+id/password"
         app:layout_constraintTop_toBottomOf="@+id/usernameHeader" />
 
@@ -167,27 +161,34 @@
         android:id="@+id/dobHeader"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:fontFamily="@font/bungeespice"
         android:text="DOB"
+        android:fontFamily="@font/bungeeregular"
         android:textColor="#528f8f"
         android:textSize="15sp"
         android:layout_marginTop="20dp"
         app:layout_constraintEnd_toStartOf="@+id/dob"
         app:layout_constraintTop_toBottomOf="@+id/nameHeader" />
 
-    <EditText
-        android:id="@+id/password"
-        android:layout_width="242dp"
-        android:layout_height="51dp"
-        android:layout_marginEnd="80dp"
-        android:background="@drawable/textbox"
-        android:layout_marginTop="10dp"
-
-        android:contentDescription="Enter your password"
-        android:importantForAccessibility="yes"
-        android:inputType="textPassword"
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/passwordLayout"
+        android:layout_width="273dp"
+        android:layout_height="57dp"
+        android:layout_marginTop="12dp"
+        android:layout_marginEnd="48dp"
+        android:textColorHint="@color/black"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/username" />
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toEndOf="@+id/passwordHeader"
+        app:layout_constraintTop_toBottomOf="@+id/username"
+        app:passwordToggleEnabled="true">
+
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/password"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@drawable/textbox"
+            android:inputType="textPassword" />
+    </com.google.android.material.textfield.TextInputLayout>
 
     <androidx.appcompat.widget.AppCompatButton
         android:id="@+id/registerButton"
@@ -231,9 +232,9 @@
         android:layout_width="358dp"
         android:layout_height="46dp"
         android:contentDescription="Text indicating user wants to receive email updates"
-        android:fontFamily="@font/bungeespice"
         android:text="Yes, sign me up. I would like to receive email updates from ExploreXpert!"
-        android:textColor="#000000"
+        android:fontFamily="@font/bungeeregular"
+        android:textColor="#528f8f"
         android:textSize="14sp"
         app:layout_constraintBottom_toBottomOf="@+id/emailUpdatesRadioButton"
         app:layout_constraintEnd_toEndOf="parent"

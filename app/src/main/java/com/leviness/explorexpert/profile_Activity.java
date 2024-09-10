@@ -6,6 +6,7 @@ import android.app.AlertDialog;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.net.Uri;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.util.Log;
@@ -32,6 +33,15 @@ import com.google.android.material.navigation.NavigationView;
 import androidx.appcompat.app.ActionBarDrawerToggle;
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationServices;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
+import java.net.HttpURLConnection;
+import java.net.URL;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 
@@ -87,6 +97,8 @@ public class profile_Activity extends AppCompatActivity implements OnMapReadyCal
                 startActivity(new Intent(profile_Activity.this, scavenger_Hunt_Activity.class));
             } else if (id == R.id.nav_settings) {
                 startActivity(new Intent(profile_Activity.this, settings_Activity.class));
+            } else if (id == R.id.nav_login) {
+                startActivity(new Intent(profile_Activity.this, login_Activity.class));
             }
             drawerLayout.closeDrawer(GravityCompat.END);
             return true;
@@ -174,8 +186,88 @@ public class profile_Activity extends AppCompatActivity implements OnMapReadyCal
             ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, LOCATION_PERMISSION_REQUEST_CODE);
             return;
         }
-        centerOnMyLocation();
+
+        mMap.setMyLocationEnabled(true);
+
+        fusedLocationClient.getLastLocation()
+                .addOnSuccessListener(this, location -> {
+                    if (location != null) {
+                        LatLng myLocation = new LatLng(location.getLatitude(), location.getLongitude());
+                        mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(myLocation, 15));
+
+                        // Fetch and display nearby places
+                        fetchNearbyPlaces(myLocation);
+                    } else {
+                        Log.e(TAG, "Location is null");
+                    }
+                });
     }
+
+    private void fetchNearbyPlaces(LatLng location) {
+        // Define the type of places you want to show, e.g., restaurants, cafes, etc.
+        String placeType = "restaurant";  // Change as needed
+        String apiKey = getString(R.string.maps_api_key);
+
+        // Construct the API URL for nearby places
+        String url = "https://maps.googleapis.com/maps/api/place/nearbysearch/json?location="
+                + location.latitude + "," + location.longitude
+                + "&radius=1500&type=" + placeType
+                + "&key=" + apiKey;
+
+        // Execute the task to fetch and display places
+        new GetNearbyPlacesTask().execute(url);
+    }
+
+
+    private class GetNearbyPlacesTask extends AsyncTask<String, Void, String> {
+        @Override
+        protected String doInBackground(String... urls) {
+            try {
+                URL url = new URL(urls[0]);
+                HttpURLConnection urlConnection = (HttpURLConnection) url.openConnection();
+                urlConnection.setRequestMethod("GET");
+                urlConnection.connect();
+
+                BufferedReader reader = new BufferedReader(new InputStreamReader(urlConnection.getInputStream()));
+                StringBuilder stringBuilder = new StringBuilder();
+                String line;
+                while ((line = reader.readLine()) != null) {
+                    stringBuilder.append(line);
+                }
+                reader.close();
+                return stringBuilder.toString();
+            } catch (Exception e) {
+                Log.e("GetNearbyPlacesTask", "Error in getting nearby places", e);
+                return null;
+            }
+        }
+
+        @Override
+        protected void onPostExecute(String result) {
+            if (result != null) {
+                try {
+                    JSONObject jsonObject = new JSONObject(result);
+                    JSONArray results = jsonObject.getJSONArray("results");
+
+                    for (int i = 0; i < results.length(); i++) {
+                        JSONObject place = results.getJSONObject(i);
+                        String placeName = place.getString("name");
+                        JSONObject geometry = place.getJSONObject("geometry");
+                        JSONObject location = geometry.getJSONObject("location");
+
+                        LatLng latLng = new LatLng(location.getDouble("lat"), location.getDouble("lng"));
+
+                        // Add marker for each place
+                        mMap.addMarker(new MarkerOptions().position(latLng).title(placeName));
+                    }
+
+                } catch (JSONException e) {
+                    Log.e("GetNearbyPlacesTask", "Error parsing JSON", e);
+                }
+            }
+        }
+    }
+
 
     private void centerOnMyLocation() {
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED ||

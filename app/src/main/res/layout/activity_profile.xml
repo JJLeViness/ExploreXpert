@@ -66,8 +66,8 @@
                     android:layout_marginStart="16dp"
                     android:layout_marginTop="8dp"
                     android:fontFamily="@font/bungeeregular"
-                    android:text="TOTAL POINTS"
                     android:textColor="#528f8f"
+                    android:text="TOTAL POINTS"
                     android:textSize="18sp"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@id/totalPoints" />

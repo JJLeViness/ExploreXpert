@@ -316,10 +316,7 @@ public class Map_Activity extends AppCompatActivity implements OnMapReadyCallbac
                     startActivity(new Intent(Map_Activity.this, settings_Activity.class));
                 } else if (id == R.id.nav_login) {
                     startActivity(new Intent(Map_Activity.this, login_Activity.class));
-                } else if (id == R.id.nav_logout) {
-                    // Handle logout logic here
                 }
-
                 menuNavigation.closeDrawer(GravityCompat.END);
                 return true;
             }
