@@ -198,22 +198,10 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"></LinearLayout>
 
-    <RadioButton
-        android:id="@+id/emailUpdatesRadioButton"
-        android:layout_width="34dp"
-        android:layout_height="52dp"
-        android:layout_marginEnd="8dp"
-        android:contentDescription="Check this box to receive email updates"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toStartOf="@+id/emailUpdatesText"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/registerButton"
-        app:layout_constraintVertical_bias="0.196" />
-
     <TextView
         android:id="@+id/emailUpdatesText"
-        android:layout_width="358dp"
-        android:layout_height="46dp"
+        android:layout_width="253dp"
+        android:layout_height="47dp"
         android:contentDescription="Text indicating user wants to receive email updates"
         android:fontFamily="@font/bungeespice"
         android:text="Yes, sign me up. I would like to receive email updates from ExploreXpert!"
@@ -221,9 +209,21 @@
         android:textSize="14sp"
         app:layout_constraintBottom_toBottomOf="@+id/emailUpdatesRadioButton"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.089"
         app:layout_constraintStart_toEndOf="@+id/emailUpdatesRadioButton"
         app:layout_constraintTop_toTopOf="@+id/emailUpdatesRadioButton"
         app:layout_constraintVertical_bias="1.0" />
+
+    <RadioButton
+        android:id="@+id/emailUpdatesRadioButton"
+        android:layout_width="34dp"
+        android:layout_height="52dp"
+        android:layout_marginStart="68dp"
+        android:contentDescription="Check this box to receive email updates"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/registerButton"
+        app:layout_constraintVertical_bias="0.309" />
 
     <androidx.constraintlayout.widget.Guideline
         android:id="@+id/guideline"
