@@ -1,17 +1,10 @@
-<androidx.drawerlayout.widget.DrawerLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/drawer_layout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".homescreen_activity">
-
-<androidx.constraintlayout.widget.ConstraintLayout
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    tools:layout_editor_absoluteX="48dp"
-    tools:layout_editor_absoluteY="-30dp">
+    tools:layout_editor_absoluteX="24dp"
+    tools:layout_editor_absoluteY="0dp">
 
     <LinearLayout
         android:id="@+id/banner"
@@ -63,144 +56,134 @@
         app:layout_constraintTop_toBottomOf="@id/banner" />
 
 
-    <EditText
-        android:id="@+id/name"
-        android:layout_width="273dp"
-        android:layout_height="51dp"
-        android:layout_marginTop="4dp"
-        android:layout_marginEnd="48dp"
-        android:background="@drawable/textbox"
-        android:contentDescription="Name input field"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/registerHeader" />
-
     <TextView
-        android:id="@+id/nameHeader"
+        android:id="@+id/usernameHeader"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:fontFamily="@font/bungeeregular"
+        android:layout_marginTop="16dp"
+        android:layout_marginEnd="4dp"
+        android:fontFamily="@font/bungeespice"
+        android:text="Username"
         android:textColor="#528f8f"
-        android:text="Name"
         android:textSize="15sp"
-        android:layout_marginTop="12dp"
-        app:layout_constraintEnd_toStartOf="@+id/name"
-        app:layout_constraintTop_toBottomOf="@+id/registerHeader" />
-
-    <EditText
-        android:id="@+id/dob"
-        android:layout_width="273dp"
-        android:layout_height="51dp"
-        android:layout_marginTop="8dp"
-        android:layout_marginEnd="48dp"
-        android:background="@drawable/textbox"
-        android:contentDescription="Date of Birth input field"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/name" />
-
-    <EditText
-        android:id="@+id/email"
-        android:layout_width="273dp"
-        android:layout_height="50dp"
-        android:layout_marginTop="10dp"
-        android:layout_marginEnd="48dp"
-        android:background="@drawable/textbox"
-        android:contentDescription="Email address input field"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/dob" />
+        app:layout_constraintEnd_toStartOf="@+id/username"
+        app:layout_constraintTop_toBottomOf="@id/emailHeader" />
 
     <TextView
         android:id="@+id/emailHeader"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="22dp"
-        android:layout_marginEnd="2dp"
+        android:layout_marginTop="12dp"
+        android:layout_marginEnd="8dp"
+        android:fontFamily="@font/bungeespice"
         android:text="Email"
-        android:fontFamily="@font/bungeeregular"
         android:textColor="#528f8f"
         android:textSize="15sp"
         app:layout_constraintEnd_toStartOf="@+id/email"
-        app:layout_constraintTop_toBottomOf="@+id/dobHeader" />
-
-    <EditText
-        android:id="@+id/username"
-        android:layout_width="273dp"
-        android:layout_height="51dp"
-        android:layout_marginTop="16dp"
-        android:layout_marginEnd="48dp"
-        android:background="@drawable/textbox"
-        android:contentDescription="Username input field"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/email" />
-
-    <TextView
-        android:id="@+id/usernameHeader"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="26dp"
-        android:text="Username"
-        android:fontFamily="@font/bungeeregular"
-        android:textColor="#528f8f"
-        android:textSize="15sp"
-        app:layout_constraintEnd_toStartOf="@+id/username"
-        app:layout_constraintTop_toBottomOf="@+id/emailHeader" />
-
-    <TextView
-        android:id="@+id/passwordHeader"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="PASSWORD"
-        android:fontFamily="@font/bungeeregular"
-        android:textColor="#528f8f"
-        android:textSize="15sp"
-        android:layout_marginTop="34dp"
-        app:layout_constraintEnd_toStartOf="@+id/password"
-        app:layout_constraintTop_toBottomOf="@+id/usernameHeader" />
-
+        app:layout_constraintTop_toBottomOf="@id/dobHeader" />
 
     <TextView
         android:id="@+id/dobHeader"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginTop="12dp"
+        android:layout_marginEnd="8dp"
+        android:fontFamily="@font/bungeespice"
         android:text="DOB"
-        android:fontFamily="@font/bungeeregular"
         android:textColor="#528f8f"
         android:textSize="15sp"
-        android:layout_marginTop="20dp"
         app:layout_constraintEnd_toStartOf="@+id/dob"
-        app:layout_constraintTop_toBottomOf="@+id/nameHeader" />
+        app:layout_constraintTop_toBottomOf="@id/nameHeader" />
 
-    <com.google.android.material.textfield.TextInputLayout
-        android:id="@+id/passwordLayout"
-        android:layout_width="273dp"
-        android:layout_height="57dp"
-        android:layout_marginTop="12dp"
-        android:layout_marginEnd="48dp"
-        android:textColorHint="@color/black"
-        app:layout_constraintEnd_toEndOf="parent"
+    <TextView
+        android:id="@+id/nameHeader"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="8dp"
+        android:fontFamily="@font/bungeespice"
+        android:text="Name"
+        android:textColor="#528f8f"
+        android:textSize="15sp"
+        app:layout_constraintEnd_toStartOf="@+id/name"
+        tools:layout_editor_absoluteY="282dp" />
+
+    <EditText
+        android:id="@+id/password"
+        android:layout_width="242dp"
+        android:layout_height="51dp"
+        android:background="@drawable/textbox"
+        android:contentDescription="Enter your password"
+        android:importantForAccessibility="yes"
+        android:inputType="textPassword"
+        app:layout_constraintStart_toStartOf="@+id/username"
+        tools:layout_editor_absoluteY="497dp" />
+
+    <EditText
+        android:id="@+id/name"
+        android:layout_width="242dp"
+        android:layout_height="51dp"
+        android:layout_marginBottom="8dp"
+        android:background="@drawable/textbox"
+        android:contentDescription="Name input field"
+        app:layout_constraintBottom_toTopOf="@+id/dob"
+        tools:layout_editor_absoluteX="130dp" />
+
+    <EditText
+        android:id="@+id/dob"
+        android:layout_width="242dp"
+        android:layout_height="51dp"
+        android:layout_marginBottom="8dp"
+        android:background="@drawable/textbox"
+        android:contentDescription="Date of Birth input field"
+        app:layout_constraintBottom_toTopOf="@+id/email"
+        app:layout_constraintStart_toStartOf="@+id/name" />
+
+    <EditText
+        android:id="@+id/email"
+        android:layout_width="242dp"
+        android:layout_height="51dp"
+        android:layout_marginBottom="8dp"
+        android:background="@drawable/textbox"
+        android:contentDescription="Email address input field"
+        app:layout_constraintBottom_toTopOf="@+id/username"
+        app:layout_constraintStart_toStartOf="@+id/dob" />
+
+    <EditText
+        android:id="@+id/username"
+        android:layout_width="242dp"
+        android:layout_height="51dp"
+        android:layout_marginBottom="8dp"
+        android:background="@drawable/textbox"
+        android:contentDescription="Username input field"
+        app:layout_constraintBottom_toTopOf="@+id/password"
+        app:layout_constraintStart_toStartOf="@+id/email" />
+
+    <TextView
+        android:id="@+id/passwordHeader"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="36dp"
+        android:fontFamily="@font/bungeespice"
+        android:text="PASSWORD"
+        android:textColor="#528f8f"
+        android:textSize="15sp"
+        app:layout_constraintEnd_toStartOf="@+id/password"
         app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toEndOf="@+id/passwordHeader"
-        app:layout_constraintTop_toBottomOf="@+id/username"
-        app:passwordToggleEnabled="true">
-
-        <com.google.android.material.textfield.TextInputEditText
-            android:id="@+id/password"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:background="@drawable/textbox"
-            android:inputType="textPassword" />
-    </com.google.android.material.textfield.TextInputLayout>
+        app:layout_constraintStart_toStartOf="parent"
+        tools:layout_editor_absoluteY="497dp" />
 
     <androidx.appcompat.widget.AppCompatButton
         android:id="@+id/registerButton"
         android:layout_width="239dp"
         android:layout_height="52dp"
         android:layout_gravity="center"
-        android:layout_marginTop="608dp"
+        android:layout_marginTop="572dp"
         android:background="@drawable/rounded_button"
         android:padding="1dp"
         android:text="Register"
         android:textColor="#FFFFFF"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.517"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="@+id/banner" />
 
@@ -232,26 +215,29 @@
         android:layout_width="358dp"
         android:layout_height="46dp"
         android:contentDescription="Text indicating user wants to receive email updates"
+        android:fontFamily="@font/bungeespice"
         android:text="Yes, sign me up. I would like to receive email updates from ExploreXpert!"
-        android:fontFamily="@font/bungeeregular"
-        android:textColor="#528f8f"
+        android:textColor="#000000"
         android:textSize="14sp"
         app:layout_constraintBottom_toBottomOf="@+id/emailUpdatesRadioButton"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@+id/emailUpdatesRadioButton"
         app:layout_constraintTop_toTopOf="@+id/emailUpdatesRadioButton"
-        app:layout_constraintVertical_bias="0.0" />
+        app:layout_constraintVertical_bias="1.0" />
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/guideline"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintGuide_begin="20dp" />
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/guideline2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintGuide_begin="20dp" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
-
-
-<com.google.android.material.navigation.NavigationView
-android:id="@+id/menu_navigation"
-android:layout_width="wrap_content"
-android:layout_height="match_parent"
-android:layout_gravity="end"
-app:menu="@menu/drawer_menu" />
-
-
-    </androidx.drawerlayout.widget.DrawerLayout>
 

@@ -8,22 +8,25 @@
     tools:context=".homescreen_activity">
 
 <androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
     <!-- Banner -->
     <LinearLayout
         android:id="@+id/banner"
-        android:layout_width="514dp"
-        android:layout_height="101dp"
+        android:layout_width="496dp"
+        android:layout_height="82dp"
         android:background="#F25858"
         android:orientation="horizontal"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
-
     </LinearLayout>
 
+    <!-- Map Placeholder -->
     <ImageView
         android:id="@+id/map"
         android:layout_width="747dp"
@@ -112,31 +115,28 @@
         app:layout_constraintTop_toBottomOf="@id/navigateButton" />
 
     <ImageView
+        android:id="@+id/bannerLogo"
+        android:layout_width="127dp"
+        android:layout_height="114dp"
+        android:layout_gravity="center_vertical"
+        android:contentDescription="@string/logo_desc"
+        android:src="@drawable/logo"
+        app:layout_constraintBottom_toTopOf="@+id/fromLabel"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <ImageView
         android:id="@+id/menuButton"
-        android:layout_width="70dp"
-        android:layout_height="51dp"
-        android:layout_marginTop="25dp"
+        android:layout_width="63dp"
+        android:layout_height="55dp"
+        android:layout_marginTop="16dp"
         android:layout_marginEnd="16dp"
         android:clickable="true"
         android:contentDescription="@string/menu_button_desc"
         android:focusable="true"
-        android:src="@drawable/menuicon"
+        android:src="@drawable/menubutton"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
-
-    <ImageView
-        android:id="@+id/bannerLogo"
-        android:layout_width="250dp"
-        android:layout_height="123dp"
-        android:contentDescription="@string/logo_desc"
-        android:src="@drawable/headerlogo"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/banner"
-        app:layout_constraintVertical_bias="0.2"
-        android:layout_marginTop="-70dp"
-        android:layout_marginLeft="10dp"
-    />
-
 
 
 
