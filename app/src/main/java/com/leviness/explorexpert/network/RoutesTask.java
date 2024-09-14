@@ -37,14 +37,14 @@ public class RoutesTask extends AsyncTask<String, Void, String> {
     private String apiKey;
     private LatLng originLatLng;
     private LatLng destinationLatLng;
-    private Map_Activity.DirectionsAdapter adapter;
+    private DirectionsAdapter adapter;
     private String travelMode;
     private RecyclerView recyclerView;
     private List<LatLng> stepLatLngs;
 
     private List<String> directionsList = new ArrayList<>();
 
-    public RoutesTask(Context context, GoogleMap googleMap, Map_Activity.DirectionsAdapter adapter, String travelMode) {
+    public RoutesTask(Context context, GoogleMap googleMap, DirectionsAdapter adapter, String travelMode) {
         this.mMap = googleMap;
         this.apiKey = context.getString(R.string.maps_api_key); // Fetch API key from resources
         this.travelMode = travelMode;

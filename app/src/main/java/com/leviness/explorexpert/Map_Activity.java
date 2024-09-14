@@ -59,6 +59,7 @@ import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.leviness.explorexpert.network.RoutesTask;
+import com.leviness.explorexpert.network.DirectionsAdapter;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -84,13 +85,12 @@ public class Map_Activity extends AppCompatActivity implements OnMapReadyCallbac
     private NavigationView navigationView;
     private PlacesClient placesClient;
     private LatLng currentLocation;
-    private String[] placeTypes = {"restaurant", "cafe", "store", "shopping_mall", "museum", "amusement_park", "movie_theater", "things_to_do","points_of_interest","local_landmark"};
+    private String[] placeTypes = {"restaurant", "cafe", "store", "shopping_mall", "museum", "amusement_park", "movie_theater", "things_to_do", "points_of_interest", "local_landmark"};
     private List<String> directionsList = new ArrayList<>();
 
     private Map<Marker, Bitmap> markerImages = new HashMap<>();
     private Map<Marker, Float> markerRatings = new HashMap<>();
     private List<LatLng> stepLatLngs = new ArrayList<>();
-
 
 
 
@@ -110,7 +110,7 @@ public class Map_Activity extends AppCompatActivity implements OnMapReadyCallbac
         navigationView = findViewById(R.id.menu_navigation);
         RecyclerView directionsRecyclerView = findViewById(R.id.directionsRecyclerView);
         directionsRecyclerView.setLayoutManager(new LinearLayoutManager(this));
-        DirectionsAdapter adapter = new DirectionsAdapter(directionsList, directionsRecyclerView);
+        DirectionsAdapter adapter = new DirectionsAdapter(directionsList, stepLatLngs, directionsRecyclerView, mMap);
         directionsRecyclerView.setAdapter(adapter);
 
         filterSpinner = findViewById(R.id.filterSpinner);
@@ -228,8 +228,6 @@ public class Map_Activity extends AppCompatActivity implements OnMapReadyCallbac
         }
 
 
-
-
         mMap.setMyLocationEnabled(true);
 
         mMap.getUiSettings().setZoomControlsEnabled(true);
@@ -242,11 +240,11 @@ public class Map_Activity extends AppCompatActivity implements OnMapReadyCallbac
 
         RecyclerView directionsRecyclerView = findViewById(R.id.directionsRecyclerView);
         directionsRecyclerView.setLayoutManager(new LinearLayoutManager(this));
-        DirectionsAdapter adapter = new DirectionsAdapter(directionsList, directionsRecyclerView);
+        DirectionsAdapter adapter = new DirectionsAdapter(directionsList, stepLatLngs, directionsRecyclerView, mMap);
         directionsRecyclerView.setAdapter(adapter);
 
         if (fromLatLng != null && toLatLng != null) {
-            new RoutesTask(this, mMap,adapter, "walking").execute(fromLatLng, toLatLng);
+            new RoutesTask(this, mMap, adapter, "walking").execute(fromLatLng, toLatLng);
 
         } else {
             fusedLocationClient.getLastLocation()
@@ -263,7 +261,6 @@ public class Map_Activity extends AppCompatActivity implements OnMapReadyCallbac
 
 
                             mMap.addMarker(new MarkerOptions().position(currentLocation).title("You are here"));
-
 
 
                             this.currentLocation = currentLocation;
@@ -375,6 +372,7 @@ public class Map_Activity extends AppCompatActivity implements OnMapReadyCallbac
 
 
     }
+
     private void showRatingDialog(String placeId, String placeName) {
         // Create a new dialog to let the user input a new rating
         AlertDialog.Builder builder = new AlertDialog.Builder(Map_Activity.this);
@@ -523,64 +521,5 @@ public class Map_Activity extends AppCompatActivity implements OnMapReadyCallbac
     }
 
 
-    public class DirectionsAdapter extends RecyclerView.Adapter<DirectionsAdapter.DirectionsViewHolder> {
-
-        private List<String> directionsList;
-        private RecyclerView recyclerView;
-
-        public DirectionsAdapter(List<String> directionsList, RecyclerView recyclerView) {
-            this.directionsList = directionsList;
-            this.recyclerView = recyclerView;
-        }
-
-        public void updateDirections(List<String> newDirections, List<LatLng> newStepLatLngs) {
-            this.directionsList.clear();
-            this.directionsList.addAll(newDirections);
-            stepLatLngs.clear();
-            stepLatLngs.addAll(newStepLatLngs);
-            notifyDataSetChanged();
-
-            if (directionsList.isEmpty()) {
-                recyclerView.setVisibility(View.GONE);
-            } else {
-                recyclerView.setVisibility(View.VISIBLE);
-            }
-        }
-
-        @NonNull
-        @Override
-        public DirectionsViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-            View view = LayoutInflater.from(parent.getContext()).inflate(android.R.layout.simple_list_item_1, parent, false);
-            return new DirectionsViewHolder(view);
-        }
-
-        @Override
-        public void onBindViewHolder(@NonNull DirectionsViewHolder holder, int position) {
-            String stepText = "Step " + (position + 1) + ": " + directionsList.get(position);
-            holder.directionsTextView.setText(stepText);
-
-            // Click listener to focus map on the step's location
-            holder.itemView.setOnClickListener(v -> {
-                LatLng stepLocation = stepLatLngs.get(position);
-                if (mMap != null) {
-                    mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(stepLocation, 18));
-                }
-            });
-        }
-
-        @Override
-        public int getItemCount() {
-            return directionsList.size();
-        }
-
-        public class DirectionsViewHolder extends RecyclerView.ViewHolder {
-            TextView directionsTextView;
-
-            public DirectionsViewHolder(@NonNull View itemView) {
-                super(itemView);
-                directionsTextView = itemView.findViewById(android.R.id.text1);
-            }
-        }
-    }
 }
 
