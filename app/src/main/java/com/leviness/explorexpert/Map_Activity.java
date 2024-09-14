@@ -89,6 +89,7 @@ public class Map_Activity extends AppCompatActivity implements OnMapReadyCallbac
 
     private Map<Marker, Bitmap> markerImages = new HashMap<>();
     private Map<Marker, Float> markerRatings = new HashMap<>();
+    private List<LatLng> stepLatLngs = new ArrayList<>();
 
 
 
@@ -522,58 +523,64 @@ public class Map_Activity extends AppCompatActivity implements OnMapReadyCallbac
     }
 
 
-        public class DirectionsAdapter extends RecyclerView.Adapter<DirectionsAdapter.DirectionsViewHolder> {
+    public class DirectionsAdapter extends RecyclerView.Adapter<DirectionsAdapter.DirectionsViewHolder> {
 
-            private List<String> directionsList;
-            private RecyclerView recyclerView;
+        private List<String> directionsList;
+        private RecyclerView recyclerView;
 
-            public DirectionsAdapter(List<String> directionsList, RecyclerView recyclerView) {
-                this.directionsList = directionsList;
-                this.recyclerView = recyclerView;
+        public DirectionsAdapter(List<String> directionsList, RecyclerView recyclerView) {
+            this.directionsList = directionsList;
+            this.recyclerView = recyclerView;
+        }
 
-            }
+        public void updateDirections(List<String> newDirections, List<LatLng> newStepLatLngs) {
+            this.directionsList.clear();
+            this.directionsList.addAll(newDirections);
+            stepLatLngs.clear();
+            stepLatLngs.addAll(newStepLatLngs);
+            notifyDataSetChanged();
 
-            public void updateDirections(List<String> newDirections) {
-                this.directionsList.clear();
-                this.directionsList.addAll(newDirections);
-                notifyDataSetChanged();
-
-                if (directionsList.isEmpty()) {
-                    recyclerView.setVisibility(View.GONE);
-                } else {
-                    recyclerView.setVisibility(View.VISIBLE);
-                }
-            }
-
-            @NonNull
-            @Override
-            public DirectionsViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-                View view = LayoutInflater.from(parent.getContext()).inflate(android.R.layout.simple_list_item_2, parent, false);
-                return new DirectionsViewHolder(view);
-            }
-
-            @Override
-            public void onBindViewHolder(@NonNull DirectionsViewHolder holder, int position) {
-                String stepText = "Step " + (position + 1) + ": " + directionsList.get(position);
-                holder.directionsTextView.setText(stepText);
-            }
-
-            @Override
-            public int getItemCount() {
-                return directionsList.size();
-            }
-
-            public class DirectionsViewHolder extends RecyclerView.ViewHolder {
-                TextView directionsTextView;
-
-                public DirectionsViewHolder(@NonNull View itemView) {
-                    super(itemView);
-                    directionsTextView = itemView.findViewById(android.R.id.text1);
-                }
+            if (directionsList.isEmpty()) {
+                recyclerView.setVisibility(View.GONE);
+            } else {
+                recyclerView.setVisibility(View.VISIBLE);
             }
         }
 
+        @NonNull
+        @Override
+        public DirectionsViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+            View view = LayoutInflater.from(parent.getContext()).inflate(android.R.layout.simple_list_item_1, parent, false);
+            return new DirectionsViewHolder(view);
+        }
 
+        @Override
+        public void onBindViewHolder(@NonNull DirectionsViewHolder holder, int position) {
+            String stepText = "Step " + (position + 1) + ": " + directionsList.get(position);
+            holder.directionsTextView.setText(stepText);
+
+            // Click listener to focus map on the step's location
+            holder.itemView.setOnClickListener(v -> {
+                LatLng stepLocation = stepLatLngs.get(position);
+                if (mMap != null) {
+                    mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(stepLocation, 18));
+                }
+            });
+        }
+
+        @Override
+        public int getItemCount() {
+            return directionsList.size();
+        }
+
+        public class DirectionsViewHolder extends RecyclerView.ViewHolder {
+            TextView directionsTextView;
+
+            public DirectionsViewHolder(@NonNull View itemView) {
+                super(itemView);
+                directionsTextView = itemView.findViewById(android.R.id.text1);
+            }
+        }
     }
-
+}
 

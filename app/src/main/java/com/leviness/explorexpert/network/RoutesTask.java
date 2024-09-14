@@ -40,6 +40,7 @@ public class RoutesTask extends AsyncTask<String, Void, String> {
     private Map_Activity.DirectionsAdapter adapter;
     private String travelMode;
     private RecyclerView recyclerView;
+    private List<LatLng> stepLatLngs;
 
     private List<String> directionsList = new ArrayList<>();
 
@@ -49,6 +50,7 @@ public class RoutesTask extends AsyncTask<String, Void, String> {
         this.travelMode = travelMode;
         this.recyclerView = recyclerView;
         this.adapter = adapter;
+        this.stepLatLngs = stepLatLngs != null ? stepLatLngs : new ArrayList<>();
     }
 
     @Override
@@ -131,6 +133,7 @@ public class RoutesTask extends AsyncTask<String, Void, String> {
                                         startLocation.getDouble("lat"),
                                         startLocation.getDouble("lng")
                                 );
+
                                 String instruction = step.getString("html_instructions"); // Get instruction text
 
                                 String stepNumberText = "Step " + (i + 1);
@@ -141,8 +144,9 @@ public class RoutesTask extends AsyncTask<String, Void, String> {
                                 stepMarker.setTag("non-clickable");
 
                                 directionsList.add(htmlToString(instruction));
+                                stepLatLngs.add(stepLatLng);
 
-                                adapter.updateDirections(directionsList);
+                                adapter.updateDirections(directionsList,stepLatLngs);
 
 
                             }
