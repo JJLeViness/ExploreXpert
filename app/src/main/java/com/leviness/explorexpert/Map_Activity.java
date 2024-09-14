@@ -7,8 +7,10 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.Manifest;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ImageView;
@@ -29,6 +31,8 @@ import androidx.core.view.GravityCompat;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.android.gms.common.api.ApiException;
 import com.google.android.gms.location.LocationServices;
@@ -64,6 +68,7 @@ import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
@@ -80,6 +85,7 @@ public class Map_Activity extends AppCompatActivity implements OnMapReadyCallbac
     private PlacesClient placesClient;
     private LatLng currentLocation;
     private String[] placeTypes = {"restaurant", "cafe", "store", "shopping_mall", "museum", "amusement_park", "movie_theater", "things_to_do","points_of_interest","local_landmark"};
+    private List<String> directionsList = new ArrayList<>();
 
     private Map<Marker, Bitmap> markerImages = new HashMap<>();
     private Map<Marker, Float> markerRatings = new HashMap<>();
@@ -101,6 +107,10 @@ public class Map_Activity extends AppCompatActivity implements OnMapReadyCallbac
         menuButton = findViewById(R.id.map_menuButton);
         menuNavigation = findViewById(R.id.drawer_layout);
         navigationView = findViewById(R.id.menu_navigation);
+        RecyclerView directionsRecyclerView = findViewById(R.id.directionsRecyclerView);
+        directionsRecyclerView.setLayoutManager(new LinearLayoutManager(this));
+        DirectionsAdapter adapter = new DirectionsAdapter(directionsList, directionsRecyclerView);
+        directionsRecyclerView.setAdapter(adapter);
 
         filterSpinner = findViewById(R.id.filterSpinner);
 
@@ -229,8 +239,13 @@ public class Map_Activity extends AppCompatActivity implements OnMapReadyCallbac
         String fromLatLng = getIntent().getStringExtra("fromLatLng");
         String toLatLng = getIntent().getStringExtra("toLatLng");  //Retrieve to and from location from home screen, for testing purposes
 
+        RecyclerView directionsRecyclerView = findViewById(R.id.directionsRecyclerView);
+        directionsRecyclerView.setLayoutManager(new LinearLayoutManager(this));
+        DirectionsAdapter adapter = new DirectionsAdapter(directionsList, directionsRecyclerView);
+        directionsRecyclerView.setAdapter(adapter);
+
         if (fromLatLng != null && toLatLng != null) {
-            new RoutesTask(this, mMap).execute(fromLatLng, toLatLng);
+            new RoutesTask(this, mMap,adapter, "walking").execute(fromLatLng, toLatLng);
 
         } else {
             fusedLocationClient.getLastLocation()
@@ -503,6 +518,62 @@ public class Map_Activity extends AppCompatActivity implements OnMapReadyCallbac
             markerRatings.put(marker, 0f);
             Log.e("PreloadRating", "Error fetching rating from Firestore: " + e.getMessage());
         });
+
     }
 
-}
+
+        public class DirectionsAdapter extends RecyclerView.Adapter<DirectionsAdapter.DirectionsViewHolder> {
+
+            private List<String> directionsList;
+            private RecyclerView recyclerView;
+
+            public DirectionsAdapter(List<String> directionsList, RecyclerView recyclerView) {
+                this.directionsList = directionsList;
+                this.recyclerView = recyclerView;
+
+            }
+
+            public void updateDirections(List<String> newDirections) {
+                this.directionsList.clear();
+                this.directionsList.addAll(newDirections);
+                notifyDataSetChanged();
+
+                if (directionsList.isEmpty()) {
+                    recyclerView.setVisibility(View.GONE);
+                } else {
+                    recyclerView.setVisibility(View.VISIBLE);
+                }
+            }
+
+            @NonNull
+            @Override
+            public DirectionsViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+                View view = LayoutInflater.from(parent.getContext()).inflate(android.R.layout.simple_list_item_2, parent, false);
+                return new DirectionsViewHolder(view);
+            }
+
+            @Override
+            public void onBindViewHolder(@NonNull DirectionsViewHolder holder, int position) {
+                String stepText = "Step " + (position + 1) + ": " + directionsList.get(position);
+                holder.directionsTextView.setText(stepText);
+            }
+
+            @Override
+            public int getItemCount() {
+                return directionsList.size();
+            }
+
+            public class DirectionsViewHolder extends RecyclerView.ViewHolder {
+                TextView directionsTextView;
+
+                public DirectionsViewHolder(@NonNull View itemView) {
+                    super(itemView);
+                    directionsTextView = itemView.findViewById(android.R.id.text1);
+                }
+            }
+        }
+
+
+    }
+
+
