@@ -60,6 +60,7 @@ import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.leviness.explorexpert.network.RoutesTask;
 import com.leviness.explorexpert.network.DirectionsAdapter;
+import com.leviness.explorexpert.network.WikipediaAPI;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -69,6 +70,7 @@ import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -85,13 +87,13 @@ public class Map_Activity extends AppCompatActivity implements OnMapReadyCallbac
     private NavigationView navigationView;
     private PlacesClient placesClient;
     private LatLng currentLocation;
-    private String[] placeTypes = {"restaurant", "cafe", "store", "shopping_mall", "museum", "amusement_park", "movie_theater", "things_to_do", "points_of_interest", "local_landmark"};
+    private String[] placeTypes = {"RESTAURANT", "CAFE", "BAR", "STORE", "SHOPPING_MALL", "MUSEUM", "AMUSEMENT_PARK", "PARK", "MOVIE_THEATER", "THINGS_TO_DO", "HOTEL", "TOURIST_ATTRACTION", "POINT_OF_INTEREST", "LOCAL_LANDMARK", "HISTORIC_SITE"};
     private List<String> directionsList = new ArrayList<>();
 
     private Map<Marker, Bitmap> markerImages = new HashMap<>();
     private Map<Marker, Float> markerRatings = new HashMap<>();
+    private Map<Marker, String> markerFunFacts = new HashMap<>();
     private List<LatLng> stepLatLngs = new ArrayList<>();
-
 
 
     @Override
@@ -112,6 +114,7 @@ public class Map_Activity extends AppCompatActivity implements OnMapReadyCallbac
         directionsRecyclerView.setLayoutManager(new LinearLayoutManager(this));
         DirectionsAdapter adapter = new DirectionsAdapter(directionsList, stepLatLngs, directionsRecyclerView, mMap);
         directionsRecyclerView.setAdapter(adapter);
+
 
         filterSpinner = findViewById(R.id.filterSpinner);
 
@@ -149,6 +152,7 @@ public class Map_Activity extends AppCompatActivity implements OnMapReadyCallbac
         ArrayAdapter<String> adapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, placeTypes);
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         filterSpinner.setAdapter(adapter);
+        filterSpinner.setVisibility(View.VISIBLE);
         filterSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parentView, View selectedItemView, int position, long id) {
@@ -189,6 +193,7 @@ public class Map_Activity extends AppCompatActivity implements OnMapReadyCallbac
                 ImageView placePhoto = infoWindowView.findViewById(R.id.place_photo);
                 TextView title = infoWindowView.findViewById(R.id.title);
                 RatingBar placeRating = infoWindowView.findViewById(R.id.place_rating);
+                TextView funFactTextView = infoWindowView.findViewById(R.id.fun_fact);
 
                 title.setText(marker.getTitle());
 
@@ -204,6 +209,12 @@ public class Map_Activity extends AppCompatActivity implements OnMapReadyCallbac
                     placePhoto.setImageBitmap(markerImages.get(marker));
                 } else {
                     placePhoto.setImageResource(R.drawable.default_profile_image);
+                }
+
+                if (markerFunFacts.containsKey(marker)) {
+                    funFactTextView.setText(markerFunFacts.get(marker));
+                } else {
+                    funFactTextView.setText("Loading fun fact...");
                 }
 
                 return infoWindowView;
@@ -473,6 +484,7 @@ public class Map_Activity extends AppCompatActivity implements OnMapReadyCallbac
         placesClient.fetchPlace(request).addOnSuccessListener((response) -> {
             Place place = response.getPlace();
             List<PhotoMetadata> photoMetadataList = place.getPhotoMetadatas();
+            String placeName = place.getName();
             if (photoMetadataList != null && !photoMetadataList.isEmpty()) {
                 PhotoMetadata photoMetadata = photoMetadataList.get(0);
                 FetchPhotoRequest photoRequest = FetchPhotoRequest.builder(photoMetadata)
@@ -488,9 +500,13 @@ public class Map_Activity extends AppCompatActivity implements OnMapReadyCallbac
                     Log.e("PreloadImage", "Failed to fetch photo for marker", exception);
                 });
             }
+            if (placeName != null && !placeName.isEmpty()) {
+                fetchGeneralInfoForPlace(marker, placeName);
+            }
         }).addOnFailureListener((exception) -> {
             Log.e("PreloadImage", "Failed to fetch place details for marker", exception);
         });
+
 
         // Preload rating
         FirebaseFirestore db = FirebaseFirestore.getInstance();
@@ -520,6 +536,58 @@ public class Map_Activity extends AppCompatActivity implements OnMapReadyCallbac
 
     }
 
+    private void fetchGeneralInfoForPlace(Marker marker, String placeName) {
+        new AsyncTask<Void, Void, String>() {
+            @Override
+            protected String doInBackground(Void... voids) {
+                try {
+                    // Replace spaces with underscores and ensure the place name is URL-safe
+                    String encodedPlaceName = URLEncoder.encode(placeName.replace(" ", "_"), "UTF-8");
+                    String urlString = "https://en.wikipedia.org/api/rest_v1/page/summary/" + encodedPlaceName;
+                    URL url = new URL(urlString);
+                    HttpURLConnection urlConnection = (HttpURLConnection) url.openConnection();
+                    urlConnection.setRequestMethod("GET");
+                    urlConnection.connect();
 
+                    int responseCode = urlConnection.getResponseCode();
+                    if (responseCode == HttpURLConnection.HTTP_OK) {
+                        BufferedReader reader = new BufferedReader(new InputStreamReader(urlConnection.getInputStream()));
+                        StringBuilder responseBuilder = new StringBuilder();
+                        String line;
+
+                        while ((line = reader.readLine()) != null) {
+                            responseBuilder.append(line);
+                        }
+
+                        reader.close();
+
+                        // Parse the JSON response to extract the summary
+                        JSONObject jsonResponse = new JSONObject(responseBuilder.toString());
+                        return jsonResponse.optString("extract", "No general information available.");
+
+                    } else {
+                        Log.e("FetchGeneralInfo", "Failed to fetch general info: HTTP response code " + responseCode);
+                        return "No general information available.";
+                    }
+
+                } catch (Exception e) {
+                    Log.e("FetchGeneralInfo", "Error fetching general info", e);
+                    return "Error fetching information about the location.";
+                }
+            }
+
+            @Override
+            protected void onPostExecute(String generalInfo) {
+                if (generalInfo != null && !generalInfo.isEmpty()) {
+                    markerFunFacts.put(marker, generalInfo);
+                } else {
+                    markerFunFacts.put(marker, "No general information available.");
+                }
+
+
+            }
+        }.execute();
+
+    }
 }
 
