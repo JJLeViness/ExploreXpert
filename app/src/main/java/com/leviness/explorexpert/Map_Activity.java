@@ -55,6 +55,7 @@ import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.leviness.explorexpert.network.RoutesTask;
 import com.leviness.explorexpert.network.DirectionsAdapter;
+import com.leviness.explorexpert.network.KnowledgeGraphAPIClient;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -83,6 +84,9 @@ public class Map_Activity extends AppCompatActivity implements OnMapReadyCallbac
     private LatLng currentLocation;
     private String[] placeTypes = {"RESTAURANT", "CAFE", "BAR", "STORE", "SHOPPING_MALL", "MUSEUM", "AMUSEMENT_PARK", "PARK", "MOVIE_THEATER", "THINGS_TO_DO", "HOTEL", "TOURIST_ATTRACTION", "POINT_OF_INTEREST", "LOCAL_LANDMARK", "HISTORIC_SITE"};
     private List<String> directionsList = new ArrayList<>();
+    private KnowledgeGraphAPIClient knowledgeGraphAPIClient;
+
+
 
     private Map<Marker, Bitmap> markerImages = new HashMap<>();
     private Map<Marker, Float> markerRatings = new HashMap<>();
@@ -108,6 +112,8 @@ public class Map_Activity extends AppCompatActivity implements OnMapReadyCallbac
         directionsRecyclerView.setLayoutManager(new LinearLayoutManager(this));
         DirectionsAdapter adapter = new DirectionsAdapter(directionsList, stepLatLngs, directionsRecyclerView, mMap);
         directionsRecyclerView.setAdapter(adapter);
+        String apiKey = getString(R.string.maps_api_key);
+        knowledgeGraphAPIClient = new KnowledgeGraphAPIClient(apiKey);
 
 
         filterSpinner = findViewById(R.id.filterSpinner);
@@ -537,72 +543,25 @@ public class Map_Activity extends AppCompatActivity implements OnMapReadyCallbac
     }
 
     private void fetchGeneralInfoForPlace(Marker marker, String placeName) {
-        new AsyncTask<Void, Void, JSONObject>() {
+        knowledgeGraphAPIClient.fetchGeneralInfoForPlace(placeName, new KnowledgeGraphAPIClient.OnKnowledgeGraphResultListener() {
             @Override
-            protected JSONObject doInBackground(Void... voids) {
-                try {
-                    String encodedPlaceName = URLEncoder.encode(placeName, "UTF-8");
-                    String apiKey = getString(R.string.maps_api_key);
-                    String urlString = "https://kgsearch.googleapis.com/v1/entities:search" +
-                            "?query=" + encodedPlaceName +
-                            "&key=" + apiKey +
-                            "&limit=1&indent=true";
-
-                    URL url = new URL(urlString);
-                    HttpURLConnection urlConnection = (HttpURLConnection) url.openConnection();
-                    urlConnection.setRequestMethod("GET");
-                    urlConnection.connect();
-
-                    if (urlConnection.getResponseCode() == HttpURLConnection.HTTP_OK) {
-                        BufferedReader reader = new BufferedReader(new InputStreamReader(urlConnection.getInputStream()));
-                        StringBuilder responseBuilder = new StringBuilder();
-                        String line;
-                        while ((line = reader.readLine()) != null) {
-                            responseBuilder.append(line);
-                        }
-                        return new JSONObject(responseBuilder.toString());
-                    }
-                } catch (Exception e) {
-                    Log.e("KnowledgeGraphAPI", "Error fetching data: " + e.getMessage(), e);
-                }
-                return null;
+            public void onResult(String description) {
+                markerFunFacts.put(marker, description);
             }
 
             @Override
-            protected void onPostExecute(JSONObject entity) {
-                if (entity != null) {
-                    JSONArray itemList = entity.optJSONArray("itemListElement");
-                    if (itemList != null && itemList.length() > 0) {
-                        JSONObject result = itemList.optJSONObject(0).optJSONObject("result");
-                        if (result != null) {
-                            // Extracting the detailed description
-                            JSONObject detailedDescription = result.optJSONObject("detailedDescription");
-                            if (detailedDescription != null) {
-                                // Only fetch the articleBody part
-                                String articleBody = detailedDescription.optString("articleBody", "No description available.");
-                                markerFunFacts.put(marker, articleBody);
-                            } else {
-                                markerFunFacts.put(marker, "No description available.");
-                            }
-                        } else {
-                            markerFunFacts.put(marker, "No description available.");
-                        }
-                    } else {
-                        markerFunFacts.put(marker, "No general information available.");
-                    }
-                } else {
-                    markerFunFacts.put(marker, "Error fetching data.");
-                }
+            public void onError(String errorMessage) {
+                markerFunFacts.put(marker, "Error fetching data.");
+                Log.e("Map_Activity", errorMessage);
             }
-
-        }.execute();
+        });
     }
-
-
-
-
-
-
-
-
 }
+
+
+
+
+
+
+
+
