@@ -18,7 +18,6 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.model.PolylineOptions;
-import com.leviness.explorexpert.Map_Activity;
 import com.leviness.explorexpert.R;
 
 import org.json.JSONArray;

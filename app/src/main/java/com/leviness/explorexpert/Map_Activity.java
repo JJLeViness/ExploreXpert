@@ -7,10 +7,8 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.Manifest;
 import android.util.Log;
-import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ImageView;
@@ -34,7 +32,6 @@ import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.google.android.gms.common.api.ApiException;
 import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.location.FusedLocationProviderClient;
@@ -48,10 +45,8 @@ import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.libraries.places.api.Places;
 import com.google.android.libraries.places.api.model.PhotoMetadata;
 import com.google.android.libraries.places.api.model.Place;
-import com.google.android.libraries.places.api.model.PlaceLikelihood;
 import com.google.android.libraries.places.api.net.FetchPhotoRequest;
 import com.google.android.libraries.places.api.net.FetchPlaceRequest;
-import com.google.android.libraries.places.api.net.FindCurrentPlaceRequest;
 import com.google.android.libraries.places.api.net.PlacesClient;
 import com.google.android.material.navigation.NavigationView;
 import com.google.firebase.auth.FirebaseAuth;
@@ -60,7 +55,6 @@ import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.leviness.explorexpert.network.RoutesTask;
 import com.leviness.explorexpert.network.DirectionsAdapter;
-import com.leviness.explorexpert.network.WikipediaAPI;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -92,7 +86,7 @@ public class Map_Activity extends AppCompatActivity implements OnMapReadyCallbac
 
     private Map<Marker, Bitmap> markerImages = new HashMap<>();
     private Map<Marker, Float> markerRatings = new HashMap<>();
-    private Map<Marker, String> markerFunFacts = new HashMap<>();
+    private  Map<Marker, String> markerFunFacts = new HashMap<>();
     private List<LatLng> stepLatLngs = new ArrayList<>();
 
 
@@ -212,9 +206,11 @@ public class Map_Activity extends AppCompatActivity implements OnMapReadyCallbac
                 }
 
                 if (markerFunFacts.containsKey(marker)) {
+                    Log.d("InfoWindow", "Fun fact for marker " + marker.getTitle() + ": " + markerFunFacts.get(marker));
                     funFactTextView.setText(markerFunFacts.get(marker));
                 } else {
                     funFactTextView.setText("Loading fun fact...");
+
                 }
 
                 return infoWindowView;
@@ -373,6 +369,7 @@ public class Map_Activity extends AppCompatActivity implements OnMapReadyCallbac
                         Marker marker = mMap.addMarker(new MarkerOptions().position(latLng).title(placeName).snippet(placeId).icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_AZURE)));
 
                         preloadImageForMarker(marker, placeId);
+                        fetchGeneralInfoForPlace(marker, placeName);
                     }
 
                 } catch (JSONException e) {
@@ -483,8 +480,11 @@ public class Map_Activity extends AppCompatActivity implements OnMapReadyCallbac
 
         placesClient.fetchPlace(request).addOnSuccessListener((response) -> {
             Place place = response.getPlace();
-            List<PhotoMetadata> photoMetadataList = place.getPhotoMetadatas();
             String placeName = place.getName();
+
+            List<PhotoMetadata> photoMetadataList = place.getPhotoMetadatas();
+            Log.d("PreloadImage", "Photo Metadata List Size: " + photoMetadataList.size());
+
             if (photoMetadataList != null && !photoMetadataList.isEmpty()) {
                 PhotoMetadata photoMetadata = photoMetadataList.get(0);
                 FetchPhotoRequest photoRequest = FetchPhotoRequest.builder(photoMetadata)
@@ -496,13 +496,13 @@ public class Map_Activity extends AppCompatActivity implements OnMapReadyCallbac
                     Bitmap bitmap = fetchPhotoResponse.getBitmap();
                     markerImages.put(marker, bitmap);
                 }).addOnFailureListener((exception) -> {
-                    // Handle failure to fetch photo
                     Log.e("PreloadImage", "Failed to fetch photo for marker", exception);
                 });
+            } else {
+                Log.e("PreloadImage", "No photo metadata available for: " + placeName);
             }
-            if (placeName != null && !placeName.isEmpty()) {
-                fetchGeneralInfoForPlace(marker, placeName);
-            }
+
+
         }).addOnFailureListener((exception) -> {
             Log.e("PreloadImage", "Failed to fetch place details for marker", exception);
         });
@@ -537,19 +537,27 @@ public class Map_Activity extends AppCompatActivity implements OnMapReadyCallbac
     }
 
     private void fetchGeneralInfoForPlace(Marker marker, String placeName) {
-        new AsyncTask<Void, Void, String>() {
+        new AsyncTask<Void, Void, JSONObject>() {
             @Override
-            protected String doInBackground(Void... voids) {
+            protected JSONObject doInBackground(Void... voids) {
                 try {
-                    // Replace spaces with underscores and ensure the place name is URL-safe
-                    String encodedPlaceName = URLEncoder.encode(placeName.replace(" ", "_"), "UTF-8");
-                    String urlString = "https://en.wikipedia.org/api/rest_v1/page/summary/" + encodedPlaceName;
+                    String encodedPlaceName = URLEncoder.encode(placeName, "UTF-8");
+                    String apiKey = getString(R.string.maps_api_key);
+                    String urlString = "https://kgsearch.googleapis.com/v1/entities:search" +
+                            "?query=" + encodedPlaceName +
+                            "&key=" + apiKey +
+                            "&limit=1&indent=true";
+
+                    Log.d("KnowledgeGraphAPI", "Request URL: " + urlString);
+
                     URL url = new URL(urlString);
                     HttpURLConnection urlConnection = (HttpURLConnection) url.openConnection();
                     urlConnection.setRequestMethod("GET");
                     urlConnection.connect();
 
                     int responseCode = urlConnection.getResponseCode();
+                    Log.d("KnowledgeGraphAPI", "Response Code: " + responseCode);
+
                     if (responseCode == HttpURLConnection.HTTP_OK) {
                         BufferedReader reader = new BufferedReader(new InputStreamReader(urlConnection.getInputStream()));
                         StringBuilder responseBuilder = new StringBuilder();
@@ -560,34 +568,45 @@ public class Map_Activity extends AppCompatActivity implements OnMapReadyCallbac
                         }
 
                         reader.close();
+                        Log.d("KnowledgeGraphAPI", "Response: " + responseBuilder.toString());
 
-                        // Parse the JSON response to extract the summary
                         JSONObject jsonResponse = new JSONObject(responseBuilder.toString());
-                        return jsonResponse.optString("extract", "No general information available.");
+                        JSONArray itemList = jsonResponse.getJSONArray("itemListElement");
 
+                        if (itemList.length() > 0) {
+                            return itemList.getJSONObject(0).getJSONObject("result");
+                        } else {
+                            Log.e("KnowledgeGraphAPI", "No items found in the response.");
+                        }
                     } else {
-                        Log.e("FetchGeneralInfo", "Failed to fetch general info: HTTP response code " + responseCode);
-                        return "No general information available.";
+                        Log.e("KnowledgeGraphAPI", "Failed to fetch data: HTTP response code " + responseCode);
                     }
 
                 } catch (Exception e) {
-                    Log.e("FetchGeneralInfo", "Error fetching general info", e);
-                    return "Error fetching information about the location.";
+                    Log.e("KnowledgeGraphAPI", "Error fetching data: " + e.getMessage(), e);
                 }
+                return null;
             }
 
             @Override
-            protected void onPostExecute(String generalInfo) {
-                if (generalInfo != null && !generalInfo.isEmpty()) {
-                    markerFunFacts.put(marker, generalInfo);
+            protected void onPostExecute(JSONObject entity) {
+                if (entity != null) {
+                    String description = entity.optString("description", "No description available.");
+                    markerFunFacts.put(marker, description);
+                    // Store the description
+                    Log.d("KnowledgeGraphAPI", "General Info: " + description);
                 } else {
-                    markerFunFacts.put(marker, "No general information available.");
+                    markerFunFacts.put(marker, "No general information available."); // Handle null case
+                    Log.e("KnowledgeGraphAPI", "No entity found for place: " + marker.getTitle());
                 }
-
-
             }
         }.execute();
-
     }
-}
 
+
+
+
+
+
+
+}
