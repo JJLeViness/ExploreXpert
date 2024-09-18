@@ -548,40 +548,20 @@ public class Map_Activity extends AppCompatActivity implements OnMapReadyCallbac
                             "&key=" + apiKey +
                             "&limit=1&indent=true";
 
-                    Log.d("KnowledgeGraphAPI", "Request URL: " + urlString);
-
                     URL url = new URL(urlString);
                     HttpURLConnection urlConnection = (HttpURLConnection) url.openConnection();
                     urlConnection.setRequestMethod("GET");
                     urlConnection.connect();
 
-                    int responseCode = urlConnection.getResponseCode();
-                    Log.d("KnowledgeGraphAPI", "Response Code: " + responseCode);
-
-                    if (responseCode == HttpURLConnection.HTTP_OK) {
+                    if (urlConnection.getResponseCode() == HttpURLConnection.HTTP_OK) {
                         BufferedReader reader = new BufferedReader(new InputStreamReader(urlConnection.getInputStream()));
                         StringBuilder responseBuilder = new StringBuilder();
                         String line;
-
                         while ((line = reader.readLine()) != null) {
                             responseBuilder.append(line);
                         }
-
-                        reader.close();
-                        Log.d("KnowledgeGraphAPI", "Response: " + responseBuilder.toString());
-
-                        JSONObject jsonResponse = new JSONObject(responseBuilder.toString());
-                        JSONArray itemList = jsonResponse.getJSONArray("itemListElement");
-
-                        if (itemList.length() > 0) {
-                            return itemList.getJSONObject(0).getJSONObject("result");
-                        } else {
-                            Log.e("KnowledgeGraphAPI", "No items found in the response.");
-                        }
-                    } else {
-                        Log.e("KnowledgeGraphAPI", "Failed to fetch data: HTTP response code " + responseCode);
+                        return new JSONObject(responseBuilder.toString());
                     }
-
                 } catch (Exception e) {
                     Log.e("KnowledgeGraphAPI", "Error fetching data: " + e.getMessage(), e);
                 }
@@ -591,17 +571,33 @@ public class Map_Activity extends AppCompatActivity implements OnMapReadyCallbac
             @Override
             protected void onPostExecute(JSONObject entity) {
                 if (entity != null) {
-                    String description = entity.optString("description", "No description available.");
-                    markerFunFacts.put(marker, description);
-                    // Store the description
-                    Log.d("KnowledgeGraphAPI", "General Info: " + description);
+                    JSONArray itemList = entity.optJSONArray("itemListElement");
+                    if (itemList != null && itemList.length() > 0) {
+                        JSONObject result = itemList.optJSONObject(0).optJSONObject("result");
+                        if (result != null) {
+                            // Extracting the detailed description
+                            JSONObject detailedDescription = result.optJSONObject("detailedDescription");
+                            if (detailedDescription != null) {
+                                // Only fetch the articleBody part
+                                String articleBody = detailedDescription.optString("articleBody", "No description available.");
+                                markerFunFacts.put(marker, articleBody);
+                            } else {
+                                markerFunFacts.put(marker, "No description available.");
+                            }
+                        } else {
+                            markerFunFacts.put(marker, "No description available.");
+                        }
+                    } else {
+                        markerFunFacts.put(marker, "No general information available.");
+                    }
                 } else {
-                    markerFunFacts.put(marker, "No general information available."); // Handle null case
-                    Log.e("KnowledgeGraphAPI", "No entity found for place: " + marker.getTitle());
+                    markerFunFacts.put(marker, "Error fetching data.");
                 }
             }
+
         }.execute();
     }
+
 
 
 
