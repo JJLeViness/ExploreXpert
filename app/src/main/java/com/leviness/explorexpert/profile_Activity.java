@@ -31,8 +31,17 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.material.navigation.NavigationView;
 import androidx.appcompat.app.ActionBarDrawerToggle;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationServices;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.firestore.DocumentChange;
+import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.FirebaseFirestore;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -42,6 +51,8 @@ import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.util.HashMap;
+import java.util.Map;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 
@@ -55,20 +66,99 @@ public class profile_Activity extends AppCompatActivity implements OnMapReadyCal
     private CustomMapView mapView;
     private FusedLocationProviderClient fusedLocationClient;
     private ActivityResultLauncher<Intent> pickImageLauncher;
-
     private DrawerLayout drawerLayout;
+    private FirebaseFirestore db;
+    private FirebaseUser user;
+    private String userId;
+    private TextView pointsTextView;
+    private TextView totalPointsTextView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_profile);
 
+//        RecyclerView reviewsRecyclerView = findViewById(R.id.reviewsRecyclerView);
+//        ReviewAdapter reviewsAdapter = new ReviewAdapter();
+//        reviewsRecyclerView.setAdapter(reviewsAdapter);
+//        reviewsRecyclerView.setLayoutManager(new LinearLayoutManager(this));
+
+        totalPointsTextView = findViewById(R.id.totalPoints);
+
+        fusedLocationClient = LocationServices.getFusedLocationProviderClient(this);
+
+        mapView = findViewById(R.id.map);  // Replace 'customMapView' with the correct ID from your XML
+
+        // Ensure the map is properly set up
+        if (mapView != null) {
+            mapView.onCreate(savedInstanceState);
+            mapView.getMapAsync(this); // Assuming you are implementing OnMapReadyCallback
+        }
+
+        pointsTextView = findViewById(R.id.totalPoints);
+
+        // Initialize Firebase components
+        db = FirebaseFirestore.getInstance();
+        user = FirebaseAuth.getInstance().getCurrentUser();
+        if (user != null) {
+            userId = user.getUid();
+
+            // Retrieve or initialize points when screen opens
+            db.collection("users").document(userId).get().addOnSuccessListener(documentSnapshot -> {
+                if (documentSnapshot.exists()) {
+                    if (!documentSnapshot.contains("points")) {
+                        // Initialize points if not present
+                        Map<String, Object> userPoints = new HashMap<>();
+                        userPoints.put("points", 0);  // Start with 0 points if it doesn't exist
+                        db.collection("users").document(userId).update(userPoints)
+                                .addOnSuccessListener(aVoid -> pointsTextView.setText("0"))
+                                .addOnFailureListener(e -> Log.e("PointsInit", "Error initializing points", e));
+                    } else {
+                        long currentPoints = documentSnapshot.getLong("points");
+                        pointsTextView.setText(String.valueOf(currentPoints));
+                    }
+                }
+            }).addOnFailureListener(e -> Log.e("PointsFetch", "Error fetching user points", e));
+        }
+
+        // Other UI and map setup code
+        setupUI();
+        setupDrawer();
+        setupPickImageLauncher();
+        fetchUserPoints();
+    }
+
+    private void fetchUserPoints() {
+        // Ensure you have the correct user ID
+        DocumentReference userDocRef = db.collection("users").document(userId);
+
+        userDocRef.get().addOnCompleteListener(task -> {
+            if (task.isSuccessful()) {
+                DocumentSnapshot document = task.getResult();
+                if (document.exists()) {
+                    long userPoints = document.getLong("points");  // Ensure 'points' exists in your Firestore
+                    totalPointsTextView.setText(String.valueOf(userPoints));
+                } else {
+                    Log.d("Profile", "No such document");
+                }
+            } else {
+                Log.d("Profile", "get failed with ", task.getException());
+            }
+        });
+    }
+
+    private void setupUI() {
         Button myPointsButton = findViewById(R.id.myPointsLabel);
         myPointsButton.setOnClickListener(v -> {
             Intent intent = new Intent(profile_Activity.this, point_achievement_Activity.class);
             startActivity(intent);
         });
 
+        Button editButton = findViewById(R.id.edit_button);
+        editButton.setOnClickListener(v -> showEditProfileDialog());
+    }
+
+    private void setupDrawer() {
         drawerLayout = findViewById(R.id.drawer_layout);
         NavigationView navigationView = findViewById(R.id.menu_navigation);
         ImageView menuButton = findViewById(R.id.menuButton);
@@ -103,7 +193,9 @@ public class profile_Activity extends AppCompatActivity implements OnMapReadyCal
             drawerLayout.closeDrawer(GravityCompat.END);
             return true;
         });
+    }
 
+    private void setupPickImageLauncher() {
         pickImageLauncher = registerForActivityResult(
                 new ActivityResultContracts.StartActivityForResult(),
                 result -> {
@@ -117,49 +209,72 @@ public class profile_Activity extends AppCompatActivity implements OnMapReadyCal
                     }
                 }
         );
+    }
 
-        fusedLocationClient = LocationServices.getFusedLocationProviderClient(this);
+    private void showEditProfileDialog() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        View dialogView = getLayoutInflater().inflate(R.layout.dialog_edit_profile, null);
+        builder.setView(dialogView);
 
-        mapView = findViewById(R.id.map);
-        mapView.onCreate(savedInstanceState);
-        mapView.getMapAsync(this);
+        EditText editUsername = dialogView.findViewById(R.id.edit_username);
+        EditText editEmail = dialogView.findViewById(R.id.edit_email);
+        Button changeProfilePic = dialogView.findViewById(R.id.change_profile_pic);
+        Button saveChanges = dialogView.findViewById(R.id.save_changes);
 
-        Button editButton = findViewById(R.id.edit_button);
-        editButton.setOnClickListener(v -> {
-            AlertDialog.Builder builder = new AlertDialog.Builder(this);
-            View dialogView = getLayoutInflater().inflate(R.layout.dialog_edit_profile, null);
-            builder.setView(dialogView);
+        AlertDialog dialog = builder.create();
 
-            EditText editUsername = dialogView.findViewById(R.id.edit_username);
-            EditText editEmail = dialogView.findViewById(R.id.edit_email); // Added editEmail
-            Button changeProfilePic = dialogView.findViewById(R.id.change_profile_pic);
-            Button saveChanges = dialogView.findViewById(R.id.save_changes);
+        changeProfilePic.setOnClickListener(view -> {
+            Intent intent = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+            pickImageLauncher.launch(intent);
+        });
 
-            AlertDialog dialog = builder.create();
+        saveChanges.setOnClickListener(view -> {
+            String newUsername = editUsername.getText().toString().trim();
+            String newEmail = editEmail.getText().toString().trim();
 
-            changeProfilePic.setOnClickListener(view -> {
-                Intent intent = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
-                pickImageLauncher.launch(intent);
-            });
+            if (!newUsername.isEmpty()) {
+                TextView usernameTextView = findViewById(R.id.username);
+                usernameTextView.setText(newUsername);
+            }
 
-            saveChanges.setOnClickListener(view -> {
-                String newUsername = editUsername.getText().toString().trim();
-                String newEmail = editEmail.getText().toString().trim();
+            if (!newEmail.isEmpty()) {
+                TextView emailTextView = findViewById(R.id.email);
+                emailTextView.setText(newEmail);
+            }
 
-                if (!newUsername.isEmpty()) {
-                    TextView usernameTextView = findViewById(R.id.username);
-                    usernameTextView.setText(newUsername);
+            dialog.dismiss();
+        });
+
+        dialog.show();
+    }
+
+    public void updateUserPoints(String userId) {
+        FirebaseFirestore db = FirebaseFirestore.getInstance();
+        DocumentReference userRef = db.collection("users").document(userId);
+
+        // Fetch the current points and add 100
+        userRef.get().addOnSuccessListener(documentSnapshot -> {
+            if (documentSnapshot.exists()) {
+                Long currentPoints = documentSnapshot.getLong("points");
+                if (currentPoints == null) {
+                    currentPoints = 0L; // Initialize to 0 if null
                 }
+                long newPoints = currentPoints + 100; // Add 100 points
 
-                if (!newEmail.isEmpty()) {
-                    TextView emailTextView = findViewById(R.id.email);
-                    emailTextView.setText(newEmail);
-                }
-
-                dialog.dismiss();
-            });
-
-            dialog.show();
+                // Update Firestore with the new points
+                userRef.update("points", newPoints)
+                        .addOnSuccessListener(aVoid -> {
+                            Log.d("PointsUpdate", "Points successfully updated!");
+                            // Update the points TextView in the UI
+                            TextView pointsTextView = findViewById(R.id.totalPoints);
+                            pointsTextView.setText(String.valueOf(newPoints));
+                        })
+                        .addOnFailureListener(e -> {
+                            Log.e("PointsUpdate", "Error updating points", e);
+                        });
+            }
+        }).addOnFailureListener(e -> {
+            Log.e("PointsFetch", "Error fetching user data", e);
         });
     }
 
@@ -180,6 +295,7 @@ public class profile_Activity extends AppCompatActivity implements OnMapReadyCal
     public void onMapReady(@NonNull GoogleMap googleMap) {
         mMap = googleMap;
 
+        // Check if location permissions are granted
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED &&
                 ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
 
@@ -189,18 +305,25 @@ public class profile_Activity extends AppCompatActivity implements OnMapReadyCal
 
         mMap.setMyLocationEnabled(true);
 
-        fusedLocationClient.getLastLocation()
-                .addOnSuccessListener(this, location -> {
-                    if (location != null) {
-                        LatLng myLocation = new LatLng(location.getLatitude(), location.getLongitude());
-                        mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(myLocation, 15));
+        // Ensure fusedLocationClient is initialized before using it
+        if (fusedLocationClient != null) {
+            // Get the last known location
+            fusedLocationClient.getLastLocation()
+                    .addOnSuccessListener(this, location -> {
+                        if (location != null) {
+                            // Move camera to user's current location
+                            LatLng myLocation = new LatLng(location.getLatitude(), location.getLongitude());
+                            mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(myLocation, 15));
 
-                        // Fetch and display nearby places
-                        fetchNearbyPlaces(myLocation);
-                    } else {
-                        Log.e(TAG, "Location is null");
-                    }
-                });
+                            // Fetch and display nearby places
+                            fetchNearbyPlaces(myLocation);
+                        } else {
+                            Log.e(TAG, "Location is null");
+                        }
+                    });
+        } else {
+            Log.e("MapReady", "FusedLocationProviderClient is null");
+        }
     }
 
     private void fetchNearbyPlaces(LatLng location) {
@@ -217,7 +340,6 @@ public class profile_Activity extends AppCompatActivity implements OnMapReadyCal
         // Execute the task to fetch and display places
         new GetNearbyPlacesTask().execute(url);
     }
-
 
     private class GetNearbyPlacesTask extends AsyncTask<String, Void, String> {
         @Override
@@ -268,7 +390,6 @@ public class profile_Activity extends AppCompatActivity implements OnMapReadyCal
         }
     }
 
-
     private void centerOnMyLocation() {
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED ||
                 ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
@@ -289,7 +410,6 @@ public class profile_Activity extends AppCompatActivity implements OnMapReadyCal
             Log.e(TAG, "Location permission not granted");
         }
     }
-
 
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {

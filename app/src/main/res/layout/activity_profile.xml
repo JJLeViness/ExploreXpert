@@ -36,22 +36,11 @@
                 </LinearLayout>
 
                 <ImageView
-                    android:id="@+id/bannerLogo"
-                    android:layout_width="250dp"
-                    android:layout_height="123dp"
-                    android:layout_marginStart="10dp"
-                    android:layout_marginTop="31.5dp"
-                    android:contentDescription="@string/logo_desc"
-                    android:src="@drawable/headerlogo"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent" />
-
-                <ImageView
                     android:id="@+id/menuButton"
-                    android:layout_width="70dp"
-                    android:layout_height="51dp"
-                    android:layout_marginTop="25dp"
-                    android:layout_marginEnd="16dp"
+                    android:layout_width="55dp"
+                    android:layout_height="40dp"
+                    android:layout_marginTop="30dp"
+                    android:layout_marginEnd="30dp"
                     android:clickable="true"
                     android:contentDescription="@string/menu_button_desc"
                     android:focusable="true"
@@ -61,23 +50,33 @@
 
                 <TextView
                     android:id="@+id/totalPointsLabel"
-                    android:layout_width="121dp"
-                    android:layout_height="58dp"
-                    android:layout_marginStart="16dp"
-                    android:layout_marginTop="8dp"
+                    android:layout_width="119dp"
+                    android:layout_height="56dp"
+                    android:layout_marginStart="40dp"
                     android:fontFamily="@font/bungeeregular"
-                    android:textColor="#528f8f"
                     android:text="TOTAL POINTS"
+                    android:textColor="#528f8f"
                     android:textSize="18sp"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@id/totalPoints" />
 
+                <ImageView
+                    android:id="@+id/bannerLogo"
+                    android:layout_width="250dp"
+                    android:layout_height="123dp"
+                    android:layout_marginStart="32dp"
+                    android:layout_marginTop="31.5dp"
+                    android:contentDescription="@string/logo_desc"
+                    android:src="@drawable/headerlogo"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+
                 <TextView
                     android:id="@+id/totalPoints"
-                    android:layout_width="70dp"
-                    android:layout_height="70dp"
-                    android:layout_marginStart="16dp"
-                    android:layout_marginTop="24dp"
+                    android:layout_width="130dp"
+                    android:layout_height="65dp"
+                    android:layout_marginStart="40dp"
+                    android:layout_marginTop="44dp"
                     android:fontFamily="@font/bungeeregular"
                     android:text="50"
                     android:textColor="#528f8f"
@@ -85,22 +84,13 @@
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@id/banner" />
 
-                <View
-                    android:layout_width="159dp"
-                    android:layout_height="13dp"
-                    android:layout_marginTop="192dp"
-                    android:background="#ffea77"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintHorizontal_bias="0.045"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent" />
-
                 <de.hdodenhof.circleimageview.CircleImageView
                     android:id="@+id/profileImage"
-                    android:layout_width="100dp"
-                    android:layout_height="100dp"
+                    android:layout_width="80dp"
+                    android:layout_height="80dp"
+                    android:layout_marginTop="69dp"
+                    android:layout_marginEnd="28dp"
                     android:src="@drawable/profilepic"
-                    android:layout_marginEnd="20dp"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintTop_toBottomOf="@+id/banner" />
 
@@ -108,31 +98,31 @@
                     android:id="@+id/username"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:layout_marginTop="15dp"
                     android:background="@drawable/textbox"
                     android:text="Username"
                     android:textColor="@color/black"
-                    android:layout_marginEnd="13.5dp"
-                    android:textSize="18sp"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/profileImage"/>
+                    android:textSize="14sp"
+                    app:layout_constraintEnd_toStartOf="@+id/profileImage"
+                    app:layout_constraintTop_toBottomOf="@+id/bannerLogo" />
 
                 <Button
                     android:id="@+id/edit_button"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:backgroundTint="@color/grey"
                     android:gravity="center"
                     android:text="Edit"
-                    android:layout_marginEnd="25dp"
-                    android:textSize="18sp"
                     android:textColor="@color/black"
-                    android:backgroundTint="@color/grey"
-                    app:layout_constraintEnd_toEndOf="parent"
+                    android:textSize="14sp"
+                    app:layout_constraintEnd_toStartOf="@+id/profileImage"
                     app:layout_constraintTop_toBottomOf="@+id/username" />
 
                 <TextView
                     android:id="@+id/currentLocationLabel"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:layout_marginStart="32dp"
                     android:layout_marginTop="16dp"
                     android:fontFamily="@font/bungeeregular"
                     android:text="Current Location"
@@ -143,7 +133,7 @@
 
                 <com.leviness.explorexpert.CustomMapView
                     android:id="@+id/map"
-                    android:layout_width="match_parent"
+                    android:layout_width="350dp"
                     android:layout_height="200dp"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
@@ -151,14 +141,15 @@
 
                 <Button
                     android:id="@+id/myPointsLabel"
-                    android:layout_width="289dp"
-                    android:layout_height="97dp"
-                    android:layout_marginTop="16dp"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="4dp"
                     android:background="?android:attr/selectableItemBackground"
-                    android:fontFamily="@font/bungeeshade"
-                    android:text="My Points and achievement"
+                    android:fontFamily="@font/merriweatherregular"
+                    android:text="My Points and Achievement"
                     android:textColor="@color/black"
-                    android:textSize="24sp"
+                    android:textSize="28dp"
+                    app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@id/map" />
 
@@ -166,10 +157,11 @@
                     android:id="@+id/myScavengerHuntsLabel"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginBottom="8dp"
-                    android:fontFamily="@font/bungeeshade"
+                    android:fontFamily="@font/merriweatherregular"
                     android:text="My Scavenger Hunts"
+                    android:textColor="@color/black"
                     android:textSize="24sp"
+                    app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@id/myPointsLabel" />
 
@@ -177,11 +169,11 @@
                     android:id="@+id/exampleHunt1"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginBottom="4dp"
                     android:fontFamily="@font/bungeeregular"
                     android:text="Example Hunt 1"
                     android:textColor="#528f8f"
                     android:textSize="18sp"
+                    app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@id/myScavengerHuntsLabel" />
 
@@ -189,11 +181,11 @@
                     android:id="@+id/exampleHunt2"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginBottom="4dp"
                     android:fontFamily="@font/bungeeregular"
                     android:text="Example Hunt 2"
                     android:textColor="#528f8f"
                     android:textSize="18sp"
+                    app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@id/exampleHunt1" />
 
@@ -201,11 +193,11 @@
                     android:id="@+id/exampleHunt3"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginBottom="16dp"
                     android:fontFamily="@font/bungeeregular"
                     android:text="Example Hunt 3"
                     android:textColor="#528f8f"
                     android:textSize="18sp"
+                    app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@id/exampleHunt2" />
 
@@ -213,10 +205,11 @@
                     android:id="@+id/pastScavengerHuntsLabel"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginBottom="8dp"
-                    android:fontFamily="@font/bungeeshade"
+                    android:fontFamily="@font/merriweatherregular"
                     android:text="Past Scavenger Hunts"
+                    android:textColor="@color/black"
                     android:textSize="24sp"
+                    app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@id/exampleHunt3" />
 
@@ -224,11 +217,11 @@
                     android:id="@+id/pastHunt1"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginBottom="4dp"
                     android:fontFamily="@font/bungeeregular"
                     android:text="Example Hunt 1"
                     android:textColor="#528f8f"
                     android:textSize="18sp"
+                    app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@id/pastScavengerHuntsLabel" />
 
@@ -236,11 +229,11 @@
                     android:id="@+id/pastHunt2"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginBottom="4dp"
                     android:fontFamily="@font/bungeeregular"
                     android:text="Example Hunt 2"
                     android:textColor="#528f8f"
                     android:textSize="18sp"
+                    app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@id/pastHunt1" />
 
@@ -248,13 +241,33 @@
                     android:id="@+id/pastHunt3"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginBottom="16dp"
                     android:fontFamily="@font/bungeeregular"
                     android:text="Example Hunt 3"
                     android:textColor="#528f8f"
                     android:textSize="18sp"
+                    app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@id/pastHunt2" />
+
+                <TextView
+                    android:id="@+id/textView"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Reviews"
+                    android:textSize="24sp"
+                    android:fontFamily="@font/merriweatherregular"
+                    android:textColor="@color/black"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/pastHunt3" />
+
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/reviewsRecyclerView"
+                    android:layout_width="76dp"
+                    android:layout_height="339dp"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/textView" />
 
             </androidx.constraintlayout.widget.ConstraintLayout>
         </ScrollView>

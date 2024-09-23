@@ -404,6 +404,10 @@ public class Map_Activity extends AppCompatActivity implements OnMapReadyCallbac
                             Toast.makeText(Map_Activity.this, "Rating submitted!", Toast.LENGTH_SHORT).show();
                             // After adding the new rating, update the average rating
                             updateAverageRating(db, placeId);
+
+                            // Now update the user's points after rating submission
+                            profile_Activity profileActivity = new profile_Activity();
+                            profileActivity.updateUserPoints(userId);  // Call the updateUserPoints method here
                         })
                         .addOnFailureListener(e -> {
                             Log.e("RatingUpdate", "Error submitting rating", e);
