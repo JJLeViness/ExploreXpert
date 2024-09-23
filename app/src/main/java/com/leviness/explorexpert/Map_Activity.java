@@ -29,8 +29,9 @@ import androidx.core.view.GravityCompat;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
-import com.google.android.gms.common.api.ApiException;
 import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.location.FusedLocationProviderClient;
@@ -44,10 +45,8 @@ import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.libraries.places.api.Places;
 import com.google.android.libraries.places.api.model.PhotoMetadata;
 import com.google.android.libraries.places.api.model.Place;
-import com.google.android.libraries.places.api.model.PlaceLikelihood;
 import com.google.android.libraries.places.api.net.FetchPhotoRequest;
 import com.google.android.libraries.places.api.net.FetchPlaceRequest;
-import com.google.android.libraries.places.api.net.FindCurrentPlaceRequest;
 import com.google.android.libraries.places.api.net.PlacesClient;
 import com.google.android.material.navigation.NavigationView;
 import com.google.firebase.auth.FirebaseAuth;
@@ -55,6 +54,8 @@ import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.leviness.explorexpert.network.RoutesTask;
+import com.leviness.explorexpert.network.DirectionsAdapter;
+import com.leviness.explorexpert.network.KnowledgeGraphAPIClient;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -64,6 +65,8 @@ import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.net.URLEncoder;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
@@ -79,12 +82,16 @@ public class Map_Activity extends AppCompatActivity implements OnMapReadyCallbac
     private NavigationView navigationView;
     private PlacesClient placesClient;
     private LatLng currentLocation;
-    private String[] placeTypes = {"restaurant", "cafe", "store", "shopping_mall", "museum", "amusement_park", "movie_theater", "things_to_do","points_of_interest","local_landmark"};
+    private String[] placeTypes = {"RESTAURANT", "CAFE", "BAR", "STORE", "SHOPPING_MALL", "MUSEUM", "AMUSEMENT_PARK", "PARK", "MOVIE_THEATER", "THINGS_TO_DO", "HOTEL", "TOURIST_ATTRACTION", "POINT_OF_INTEREST", "LOCAL_LANDMARK", "HISTORIC_SITE"};
+    private List<String> directionsList = new ArrayList<>();
+    private KnowledgeGraphAPIClient knowledgeGraphAPIClient;
+
+
 
     private Map<Marker, Bitmap> markerImages = new HashMap<>();
     private Map<Marker, Float> markerRatings = new HashMap<>();
-
-
+    private  Map<Marker, String> markerFunFacts = new HashMap<>();
+    private List<LatLng> stepLatLngs = new ArrayList<>();
 
 
     @Override
@@ -101,6 +108,13 @@ public class Map_Activity extends AppCompatActivity implements OnMapReadyCallbac
         menuButton = findViewById(R.id.map_menuButton);
         menuNavigation = findViewById(R.id.drawer_layout);
         navigationView = findViewById(R.id.menu_navigation);
+        RecyclerView directionsRecyclerView = findViewById(R.id.directionsRecyclerView);
+        directionsRecyclerView.setLayoutManager(new LinearLayoutManager(this));
+        DirectionsAdapter adapter = new DirectionsAdapter(directionsList, stepLatLngs, directionsRecyclerView, mMap);
+        directionsRecyclerView.setAdapter(adapter);
+        String apiKey = getString(R.string.maps_api_key);
+        knowledgeGraphAPIClient = new KnowledgeGraphAPIClient(apiKey);
+
 
         filterSpinner = findViewById(R.id.filterSpinner);
 
@@ -138,6 +152,7 @@ public class Map_Activity extends AppCompatActivity implements OnMapReadyCallbac
         ArrayAdapter<String> adapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, placeTypes);
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         filterSpinner.setAdapter(adapter);
+        filterSpinner.setVisibility(View.VISIBLE);
         filterSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parentView, View selectedItemView, int position, long id) {
@@ -178,6 +193,7 @@ public class Map_Activity extends AppCompatActivity implements OnMapReadyCallbac
                 ImageView placePhoto = infoWindowView.findViewById(R.id.place_photo);
                 TextView title = infoWindowView.findViewById(R.id.title);
                 RatingBar placeRating = infoWindowView.findViewById(R.id.place_rating);
+                TextView funFactTextView = infoWindowView.findViewById(R.id.fun_fact);
 
                 title.setText(marker.getTitle());
 
@@ -193,6 +209,14 @@ public class Map_Activity extends AppCompatActivity implements OnMapReadyCallbac
                     placePhoto.setImageBitmap(markerImages.get(marker));
                 } else {
                     placePhoto.setImageResource(R.drawable.default_profile_image);
+                }
+
+                if (markerFunFacts.containsKey(marker)) {
+                    Log.d("InfoWindow", "Fun fact for marker " + marker.getTitle() + ": " + markerFunFacts.get(marker));
+                    funFactTextView.setText(markerFunFacts.get(marker));
+                } else {
+                    funFactTextView.setText("Loading fun fact...");
+
                 }
 
                 return infoWindowView;
@@ -217,8 +241,6 @@ public class Map_Activity extends AppCompatActivity implements OnMapReadyCallbac
         }
 
 
-
-
         mMap.setMyLocationEnabled(true);
 
         mMap.getUiSettings().setZoomControlsEnabled(true);
@@ -229,8 +251,13 @@ public class Map_Activity extends AppCompatActivity implements OnMapReadyCallbac
         String fromLatLng = getIntent().getStringExtra("fromLatLng");
         String toLatLng = getIntent().getStringExtra("toLatLng");  //Retrieve to and from location from home screen, for testing purposes
 
+        RecyclerView directionsRecyclerView = findViewById(R.id.directionsRecyclerView);
+        directionsRecyclerView.setLayoutManager(new LinearLayoutManager(this));
+        DirectionsAdapter adapter = new DirectionsAdapter(directionsList, stepLatLngs, directionsRecyclerView, mMap);
+        directionsRecyclerView.setAdapter(adapter);
+
         if (fromLatLng != null && toLatLng != null) {
-            new RoutesTask(this, mMap).execute(fromLatLng, toLatLng);
+            new RoutesTask(this, mMap, adapter, "walking").execute(fromLatLng, toLatLng);
 
         } else {
             fusedLocationClient.getLastLocation()
@@ -247,7 +274,6 @@ public class Map_Activity extends AppCompatActivity implements OnMapReadyCallbac
 
 
                             mMap.addMarker(new MarkerOptions().position(currentLocation).title("You are here"));
-
 
 
                             this.currentLocation = currentLocation;
@@ -349,6 +375,7 @@ public class Map_Activity extends AppCompatActivity implements OnMapReadyCallbac
                         Marker marker = mMap.addMarker(new MarkerOptions().position(latLng).title(placeName).snippet(placeId).icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_AZURE)));
 
                         preloadImageForMarker(marker, placeId);
+                        fetchGeneralInfoForPlace(marker, placeName);
                     }
 
                 } catch (JSONException e) {
@@ -359,6 +386,7 @@ public class Map_Activity extends AppCompatActivity implements OnMapReadyCallbac
 
 
     }
+
     private void showRatingDialog(String placeId, String placeName) {
         // Create a new dialog to let the user input a new rating
         AlertDialog.Builder builder = new AlertDialog.Builder(Map_Activity.this);
@@ -462,7 +490,11 @@ public class Map_Activity extends AppCompatActivity implements OnMapReadyCallbac
 
         placesClient.fetchPlace(request).addOnSuccessListener((response) -> {
             Place place = response.getPlace();
+            String placeName = place.getName();
+
             List<PhotoMetadata> photoMetadataList = place.getPhotoMetadatas();
+            Log.d("PreloadImage", "Photo Metadata List Size: " + photoMetadataList.size());
+
             if (photoMetadataList != null && !photoMetadataList.isEmpty()) {
                 PhotoMetadata photoMetadata = photoMetadataList.get(0);
                 FetchPhotoRequest photoRequest = FetchPhotoRequest.builder(photoMetadata)
@@ -474,13 +506,17 @@ public class Map_Activity extends AppCompatActivity implements OnMapReadyCallbac
                     Bitmap bitmap = fetchPhotoResponse.getBitmap();
                     markerImages.put(marker, bitmap);
                 }).addOnFailureListener((exception) -> {
-                    // Handle failure to fetch photo
                     Log.e("PreloadImage", "Failed to fetch photo for marker", exception);
                 });
+            } else {
+                Log.e("PreloadImage", "No photo metadata available for: " + placeName);
             }
+
+
         }).addOnFailureListener((exception) -> {
             Log.e("PreloadImage", "Failed to fetch place details for marker", exception);
         });
+
 
         // Preload rating
         FirebaseFirestore db = FirebaseFirestore.getInstance();
@@ -507,6 +543,29 @@ public class Map_Activity extends AppCompatActivity implements OnMapReadyCallbac
             markerRatings.put(marker, 0f);
             Log.e("PreloadRating", "Error fetching rating from Firestore: " + e.getMessage());
         });
+
     }
 
+    private void fetchGeneralInfoForPlace(Marker marker, String placeName) {
+        knowledgeGraphAPIClient.fetchGeneralInfoForPlace(placeName, new KnowledgeGraphAPIClient.OnKnowledgeGraphResultListener() {
+            @Override
+            public void onResult(String description) {
+                markerFunFacts.put(marker, description);
+            }
+
+            @Override
+            public void onError(String errorMessage) {
+                markerFunFacts.put(marker, "Error fetching data.");
+                Log.e("Map_Activity", errorMessage);
+            }
+        });
+    }
 }
+
+
+
+
+
+
+
+

@@ -34,6 +34,16 @@
         android:numStars="5"
         android:stepSize="0.5"
         android:isIndicator="true"/>
+
+    <TextView
+        android:id="@+id/fun_fact"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:textColor="@android:color/black"
+        android:text="Fun fact will appear here" />
+
 </LinearLayout>
+
 
 

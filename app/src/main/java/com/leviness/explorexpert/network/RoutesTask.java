@@ -1,13 +1,21 @@
 package com.leviness.explorexpert.network;
 
 import android.content.Context;
+import android.graphics.Bitmap;
+import android.graphics.Canvas;
 import android.graphics.Color;
+import android.graphics.Paint;
 import android.os.AsyncTask;
 import android.util.Log;
 
+import androidx.recyclerview.widget.RecyclerView;
+
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
+import com.google.android.gms.maps.model.BitmapDescriptor;
+import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.model.PolylineOptions;
 import com.leviness.explorexpert.R;
@@ -28,17 +36,27 @@ public class RoutesTask extends AsyncTask<String, Void, String> {
     private String apiKey;
     private LatLng originLatLng;
     private LatLng destinationLatLng;
+    private DirectionsAdapter adapter;
+    private String travelMode;
+    private RecyclerView recyclerView;
+    private List<LatLng> stepLatLngs;
 
-    public RoutesTask(Context context, GoogleMap googleMap) {
+    private List<String> directionsList = new ArrayList<>();
+
+    public RoutesTask(Context context, GoogleMap googleMap, DirectionsAdapter adapter, String travelMode) {
         this.mMap = googleMap;
         this.apiKey = context.getString(R.string.maps_api_key); // Fetch API key from resources
+        this.travelMode = travelMode;
+        this.recyclerView = recyclerView;
+        this.adapter = adapter;
+        this.stepLatLngs = stepLatLngs != null ? stepLatLngs : new ArrayList<>();
     }
 
     @Override
     protected String doInBackground(String... params) {
         String origin = params[0]; // Starting point
         String destination = params[1]; // Ending point
-        String mode = "driving"; // Mode of travel
+        String mode = travelMode; // Mode of travel
 
         originLatLng = parseLatLng(origin); // Parse the origin string into a LatLng object
         destinationLatLng = parseLatLng(destination); // Parse the destination string into a LatLng object
@@ -95,7 +113,7 @@ public class RoutesTask extends AsyncTask<String, Void, String> {
                                 .width(20)
                                 .color(Color.BLUE));
 
-                        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(originLatLng, 15)); //snap camera to origin.
+                        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(originLatLng, 20)); //snap camera to origin.
 
                         // Add a marker at the origin
                         mMap.addMarker(new MarkerOptions().position(originLatLng).title("Start"));
@@ -114,9 +132,22 @@ public class RoutesTask extends AsyncTask<String, Void, String> {
                                         startLocation.getDouble("lat"),
                                         startLocation.getDouble("lng")
                                 );
+
                                 String instruction = step.getString("html_instructions"); // Get instruction text
 
-                                mMap.addMarker(new MarkerOptions().position(stepLatLng).title(htmlToString(instruction)));// Add a marker for each step TESTING PURPOSES
+                                String stepNumberText = "Step " + (i + 1);
+                                Marker stepMarker= mMap.addMarker(new MarkerOptions()
+                                        .position(stepLatLng)
+                                        .icon(createTextIcon(stepNumberText))
+                                        .anchor(0.5f, 0.5f));
+                                stepMarker.setTag("non-clickable");
+
+                                directionsList.add(htmlToString(instruction));
+                                stepLatLngs.add(stepLatLng);
+
+                                adapter.updateDirections(directionsList,stepLatLngs);
+
+
                             }
                         }
                     }
@@ -170,5 +201,26 @@ public class RoutesTask extends AsyncTask<String, Void, String> {
 
     private String htmlToString(String html) {
         return android.text.Html.fromHtml(html).toString();
+    }
+
+    private BitmapDescriptor createTextIcon(String text) {
+
+        int iconSize = 400; //
+        int textSize = 60;
+
+        Paint paint = new Paint();
+        paint.setColor(Color.RED);
+        paint.setTextSize(textSize);
+        paint.setAntiAlias(true);
+        paint.setFakeBoldText(true);
+
+        Bitmap bitmap = Bitmap.createBitmap(iconSize, iconSize, Bitmap.Config.ARGB_8888);
+        Canvas canvas = new Canvas(bitmap);
+
+        int xPos = canvas.getWidth() / 2;
+        int yPos = (int) ((canvas.getHeight() / 2) - ((paint.descent() + paint.ascent()) / 2));
+        canvas.drawText(text, xPos, yPos, paint);
+
+        return BitmapDescriptorFactory.fromBitmap(bitmap);
     }
 }
