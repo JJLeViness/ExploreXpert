@@ -223,11 +223,29 @@ public class Map_Activity extends AppCompatActivity implements OnMapReadyCallbac
             }
 
         });
+        mMap.setOnMarkerClickListener(marker -> {
+            // If the marker is tagged as 'non-clickable', prevent its default behavior
+            if ("non-clickable".equals(marker.getTag())) {
+                return true;
+            }
+
+            // Allow clicking on other markers
+            marker.showInfoWindow(); // Show the InfoWindow for clickable markers
+            return true;
+        });
+
 
         mMap.setOnInfoWindowClickListener(marker -> {
 
-            String placeId = marker.getSnippet();
-            showRatingDialog(placeId, marker.getTitle());
+            if ("non-clickable".equals(marker.getTag())) {
+                return;
+            }
+
+
+                String placeId = marker.getSnippet();
+                showRatingDialog(placeId, marker.getTitle());
+
+
 
         });
 
@@ -273,7 +291,12 @@ public class Map_Activity extends AppCompatActivity implements OnMapReadyCallbac
                             mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(currentLocation, 20));
 
 
-                            mMap.addMarker(new MarkerOptions().position(currentLocation).title("You are here"));
+                            Marker marker = mMap.addMarker(new MarkerOptions()
+                                    .position(currentLocation)
+                                    .title("You are here"));
+                            if (marker != null) {
+                                marker.setTag("non-clickable");
+                            }
 
 
                             this.currentLocation = currentLocation;
