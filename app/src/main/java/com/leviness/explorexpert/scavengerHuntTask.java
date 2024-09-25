@@ -1,6 +1,6 @@
 package com.leviness.explorexpert;
 
-import com.google.type.LatLng;
+import com.google.android.gms.maps.model.LatLng;
 
 public class scavengerHuntTask {
 private String placeName;
