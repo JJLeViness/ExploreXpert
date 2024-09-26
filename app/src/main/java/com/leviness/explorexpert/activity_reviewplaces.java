@@ -1,4 +1,4 @@
 package com.leviness.explorexpert;
 
-public class selecthunt_activity {
+public class activity_reviewplaces {
 }

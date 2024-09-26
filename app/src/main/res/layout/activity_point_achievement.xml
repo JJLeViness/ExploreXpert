@@ -11,39 +11,43 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
+        <!-- Banner -->
         <LinearLayout
             android:id="@+id/banner"
             android:layout_width="514dp"
-            android:layout_height="101dp"
+            android:layout_height="75dp"
             android:background="#F25858"
             android:orientation="horizontal"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+            app:layout_constraintTop_toTopOf="parent">
+        </LinearLayout>
 
-        <ImageView
-            android:id="@+id/bannerLogo"
-            android:layout_width="250dp"
-            android:layout_height="123dp"
-            android:layout_marginStart="10dp"
-            android:layout_marginTop="31.5dp"
-            android:contentDescription="@string/logo_desc"
-            android:src="@drawable/headerlogo"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
 
         <ImageView
             android:id="@+id/menuButton"
-            android:layout_width="70dp"
+            android:layout_width="50dp"
             android:layout_height="51dp"
-            android:layout_marginTop="25dp"
-            android:layout_marginEnd="16dp"
+            android:layout_marginTop="15dp"
+            android:layout_marginEnd="18dp"
             android:clickable="true"
             android:contentDescription="@string/menu_button_desc"
             android:focusable="true"
             android:src="@drawable/menuicon"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
+
+        <ImageView
+            android:id="@+id/bannerLogo"
+            android:layout_width="300dp"
+            android:layout_height="133dp"
+            android:layout_marginLeft="20dp"
+            android:layout_marginTop="-80dp"
+            android:contentDescription="@string/logo_desc"
+            android:src="@drawable/logoupdated"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/banner"
+            app:layout_constraintVertical_bias="0.2" />
 
         <TextView
             android:id="@+id/my_achievements_label"
@@ -62,7 +66,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="12dp"
-            android:layout_marginTop="188dp"
+            android:layout_marginTop="204dp"
             android:fontFamily="@font/bungeeshade"
             android:text="MY POINTS"
             android:textSize="24sp"
@@ -99,8 +103,8 @@
             android:layout_width="121dp"
             android:layout_height="58dp"
             android:layout_gravity="center"
-            android:layout_marginStart="16dp"
-            android:layout_marginBottom="24dp"
+            android:layout_marginStart="12dp"
+            android:layout_marginBottom="8dp"
             android:fontFamily="@font/bungeeregular"
             android:text="TOTAL POINTS"
             android:textColor="#528f8f"

@@ -24,23 +24,25 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content">
 
+                <!-- Banner -->
                 <LinearLayout
                     android:id="@+id/banner"
                     android:layout_width="514dp"
-                    android:layout_height="101dp"
+                    android:layout_height="75dp"
                     android:background="#F25858"
                     android:orientation="horizontal"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent"></LinearLayout>
+                    app:layout_constraintTop_toTopOf="parent">
+                </LinearLayout>
 
 
                 <ImageView
                     android:id="@+id/menuButton"
-                    android:layout_width="70dp"
+                    android:layout_width="50dp"
                     android:layout_height="51dp"
-                    android:layout_marginTop="25dp"
-                    android:layout_marginEnd="16dp"
+                    android:layout_marginTop="15dp"
+                    android:layout_marginEnd="18dp"
                     android:clickable="true"
                     android:contentDescription="@string/menu_button_desc"
                     android:focusable="true"
@@ -50,12 +52,12 @@
 
                 <ImageView
                     android:id="@+id/bannerLogo"
-                    android:layout_width="250dp"
-                    android:layout_height="123dp"
-                    android:layout_marginLeft="10dp"
-                    android:layout_marginTop="-70dp"
+                    android:layout_width="300dp"
+                    android:layout_height="133dp"
+                    android:layout_marginLeft="20dp"
+                    android:layout_marginTop="-80dp"
                     android:contentDescription="@string/logo_desc"
-                    android:src="@drawable/headerlogo"
+                    android:src="@drawable/logoupdated"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@id/banner"
                     app:layout_constraintVertical_bias="0.2" />
@@ -65,7 +67,7 @@
                     android:layout_width="121dp"
                     android:layout_height="58dp"
                     android:layout_marginStart="16dp"
-                    android:layout_marginTop="8dp"
+                    android:layout_marginTop="20dp"
                     android:fontFamily="@font/bungeeregular"
                     android:text="TOTAL POINTS"
                     android:textColor="#528f8f"
@@ -78,7 +80,7 @@
                     android:layout_width="70dp"
                     android:layout_height="70dp"
                     android:layout_marginStart="16dp"
-                    android:layout_marginTop="24dp"
+                    android:layout_marginTop="44dp"
                     android:fontFamily="@font/bungeeregular"
                     android:text="50"
                     android:textColor="#528f8f"
@@ -124,7 +126,8 @@
                     android:id="@+id/currentLocationLabel"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="16dp"
+                    android:layout_marginStart="20dp"
+                    android:layout_marginTop="32dp"
                     android:fontFamily="@font/bungeeregular"
                     android:text="Current Location"
                     android:textColor="#528f8f"
