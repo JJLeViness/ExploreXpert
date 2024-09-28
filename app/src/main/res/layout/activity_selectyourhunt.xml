@@ -1,0 +1,174 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <!-- Banner -->
+        <LinearLayout
+            android:id="@+id/banner"
+            android:layout_width="514dp"
+            android:layout_height="101dp"
+            android:background="#F25858"
+            android:orientation="horizontal"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <!-- Menu Button -->
+        <ImageView
+            android:id="@+id/menuButton"
+            android:layout_width="70dp"
+            android:layout_height="51dp"
+            android:layout_marginTop="25dp"
+            android:layout_marginEnd="16dp"
+            android:clickable="true"
+            android:contentDescription="@string/menu_button_desc"
+            android:focusable="true"
+            android:src="@drawable/menuicon"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <!-- Logo -->
+        <ImageView
+            android:id="@+id/bannerLogo"
+            android:layout_width="250dp"
+            android:layout_height="123dp"
+            android:layout_marginLeft="10dp"
+            android:layout_marginTop="-70dp"
+            android:contentDescription="@string/logo_desc"
+            android:src="@drawable/headerlogo"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/banner"
+            app:layout_constraintVertical_bias="0.2" />
+
+
+        <TextView
+            android:id="@+id/forgotPasswordHeader"
+            android:layout_width="373dp"
+            android:layout_height="168dp"
+            android:layout_marginTop="20dp"
+            android:fontFamily="@font/bungeeshade"
+            android:text="SELECT YOUR HUNT"
+            android:textAlignment="center"
+            android:textColor="#000000"
+            android:textSize="50sp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/banner" />
+
+        <GridLayout
+            android:id="@+id/linksGrid"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:columnCount="2"
+            android:rowCount="10"
+            android:orientation="horizontal"
+            android:layout_gravity="center"
+            app:layout_constraintTop_toBottomOf="@id/forgotPasswordHeader"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            android:gravity="center">
+
+            <!-- Example links -->
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Example hunt"
+                android:layout_marginTop="20dp"
+                android:textColor="#528F8F"
+                android:textSize="16sp"
+                android:fontFamily="@font/bungeeshade"
+                android:padding="8dp" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Example hunt"
+                android:layout_marginTop="20dp"
+                android:textColor="#528F8F"
+                android:textSize="16sp"
+                android:fontFamily="@font/bungeeshade"
+                android:padding="8dp" />
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Example hunt"
+                android:textColor="#528F8F"
+                android:textSize="16sp"
+                android:fontFamily="@font/bungeeshade"
+                android:padding="8dp" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Example hunt"
+                android:textColor="#528F8F"
+                android:textSize="16sp"
+                android:fontFamily="@font/bungeeshade"
+                android:padding="8dp" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Example hunt"
+                android:textColor="#528F8F"
+                android:textSize="16sp"
+                android:fontFamily="@font/bungeeshade"
+                android:padding="8dp" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Example hunt"
+                android:textColor="#528F8F"
+                android:textSize="16sp"
+                android:fontFamily="@font/bungeeshade"
+                android:padding="8dp" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Example hunt"
+                android:textColor="#528F8F"
+                android:textSize="16sp"
+                android:fontFamily="@font/bungeeshade"
+                android:padding="8dp" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Example hunt"
+                android:textColor="#528F8F"
+                android:textSize="16sp"
+                android:fontFamily="@font/bungeeshade"
+                android:padding="8dp" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Example hunt"
+                android:textColor="#528F8F"
+                android:textSize="16sp"
+                android:fontFamily="@font/bungeeshade"
+                android:padding="8dp" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Example hunt"
+                android:textColor="#528F8F"
+                android:textSize="16sp"
+                android:fontFamily="@font/bungeeshade"
+                android:padding="8dp" />
+
+        </GridLayout>
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+</androidx.constraintlayout.widget.ConstraintLayout>
