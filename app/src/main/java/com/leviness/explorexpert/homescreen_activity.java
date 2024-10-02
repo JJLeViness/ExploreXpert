@@ -117,7 +117,7 @@ public class homescreen_activity extends AppCompatActivity {
                 } else if (id == R.id.nav_profile) {
                     startActivity(new Intent(homescreen_activity.this, profile_Activity.class));
                 } else if (id == R.id.nav_scavenger_hunt) {
-                    startActivity(new Intent(homescreen_activity.this, scavenger_Hunt_Activity.class));
+                    startActivity(new Intent(homescreen_activity.this, selectyourhunt_activity.class));
                 } else if (id == R.id.nav_settings) {
                     startActivity(new Intent(homescreen_activity.this, settings_Activity.class));
                     } else if (id == R.id.nav_login) {

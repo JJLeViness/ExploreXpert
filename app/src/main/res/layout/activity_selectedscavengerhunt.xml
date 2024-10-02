@@ -139,7 +139,7 @@
                         tools:layout_editor_absoluteY="288dp" />
 
                     <TextView
-                        android:id="@+id/exampleHunt1"
+                        android:id="@+id/huntDescription"
                         android:layout_width="336dp"
                         android:layout_height="149dp"
                         android:layout_marginStart="48dp"
@@ -151,7 +151,7 @@
                         tools:layout_editor_absoluteY="354dp" />
 
                     <TextView
-                        android:id="@+id/exampleHunt3"
+                        android:id="@+id/locationInfo"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginStart="32dp"
@@ -163,7 +163,7 @@
                         tools:layout_editor_absoluteY="641dp" />
 
                     <TextView
-                        android:id="@+id/exampleHunt2"
+                        android:id="@+id/tasksLabel"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginStart="32dp"
@@ -175,7 +175,7 @@
                         tools:layout_editor_absoluteY="549dp" />
 
                     <TextView
-                        android:id="@+id/exampleHunt3"
+                        android:id="@+id/checkpointslabel"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginStart="32dp"
@@ -187,7 +187,7 @@
                         tools:layout_editor_absoluteY="595dp" />
 
                     <TextView
-                        android:id="@+id/exampleHunt1"
+                        android:id="@+id/pointsAndAchievmentsLabel"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginStart="32dp"

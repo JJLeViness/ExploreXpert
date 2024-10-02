@@ -10,7 +10,8 @@ buildscript {
         mavenCentral()
     }
     dependencies {
-        classpath(libs.gradle)
+        classpath(libs.gradle.v811)
+
         classpath(libs.google.services)
     }
 }

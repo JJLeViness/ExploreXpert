@@ -53,6 +53,8 @@
 
         <activity android:name=".registration_Activity" />
         <activity android:name=".forgotpassword_activity" />
+        <activity android:name=".selectyourhunt_activity"/>
+        <activity android:name=".selectedscavengerhunt_activity"/>
 
 
         <meta-data
