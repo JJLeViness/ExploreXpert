@@ -1,0 +1,213 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <androidx.drawerlayout.widget.DrawerLayout
+        android:id="@+id/drawer_layout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        tools:context=".profile_Activity">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <ScrollView
+                android:id="@+id/scrollView"
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent">
+
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+
+                    <LinearLayout
+                        android:id="@+id/banner"
+                        android:layout_width="514dp"
+                        android:layout_height="101dp"
+                        android:background="#F25858"
+                        android:orientation="horizontal"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent"></LinearLayout>
+
+
+                    <ImageView
+                        android:id="@+id/menuButton"
+                        android:layout_width="70dp"
+                        android:layout_height="51dp"
+                        android:layout_marginTop="25dp"
+                        android:layout_marginEnd="16dp"
+                        android:clickable="true"
+                        android:contentDescription="@string/menu_button_desc"
+                        android:focusable="true"
+                        android:src="@drawable/menuicon"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintTop_toTopOf="parent" />
+
+                    <ImageView
+                        android:id="@+id/bannerLogo"
+                        android:layout_width="250dp"
+                        android:layout_height="123dp"
+                        android:layout_marginLeft="10dp"
+                        android:layout_marginTop="-70dp"
+                        android:contentDescription="@string/logo_desc"
+                        android:src="@drawable/headerlogo"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toBottomOf="@id/banner"
+                        app:layout_constraintVertical_bias="0.2" />
+
+
+                    <TextView
+                        android:id="@+id/totalPointsLabel"
+                        android:layout_width="185dp"
+                        android:layout_height="36dp"
+                        android:layout_marginStart="48dp"
+                        android:layout_marginTop="8dp"
+                        android:fontFamily="@font/bungeeregular"
+                        android:text="TOTAL POINTS"
+                        android:textColor="#528f8f"
+                        android:textSize="18sp"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toBottomOf="@id/totalPoints" />
+
+                    <TextView
+                        android:id="@+id/totalPoints"
+                        android:layout_width="70dp"
+                        android:layout_height="70dp"
+                        android:layout_marginStart="48dp"
+                        android:layout_marginTop="56dp"
+                        android:fontFamily="@font/bungeeregular"
+                        android:text="50"
+                        android:textColor="#528f8f"
+                        android:textSize="36sp"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toBottomOf="@id/banner" />
+
+                    <TextView
+                        android:id="@+id/username"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="4dp"
+                        android:layout_marginEnd="56dp"
+                        android:gravity="center"
+                        android:text="Username"
+                        android:textColor="@color/black"
+                        android:textSize="18sp"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintTop_toBottomOf="@+id/profileImage" />
+
+                    <Button
+                        android:id="@+id/edit_button"
+                        android:layout_width="91dp"
+                        android:layout_height="51dp"
+                        android:background="?android:attr/selectableItemBackground"
+                        android:gravity="center"
+                        android:text="Edit"
+                        android:textColor="@color/black"
+                        android:textSize="15sp"
+                        tools:layout_editor_absoluteX="268dp"
+                        tools:layout_editor_absoluteY="264dp" />
+
+                    <Button
+                        android:id="@+id/myPointsLabel"
+                        android:layout_width="289dp"
+                        android:layout_height="90dp"
+                        android:background="?android:attr/selectableItemBackground"
+                        android:fontFamily="@font/bungeeshade"
+                        android:text="example hunt"
+                        android:textColor="@color/black"
+                        android:textSize="24sp"
+                        tools:layout_editor_absoluteX="-2dp"
+                        tools:layout_editor_absoluteY="288dp" />
+
+                    <TextView
+                        android:id="@+id/exampleHunt1"
+                        android:layout_width="336dp"
+                        android:layout_height="149dp"
+                        android:layout_marginStart="48dp"
+
+                        android:text="Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. "
+                        android:textColor="#528f8f"
+                        android:textSize="18sp"
+                        app:layout_constraintStart_toStartOf="parent"
+                        tools:layout_editor_absoluteY="354dp" />
+
+                    <TextView
+                        android:id="@+id/exampleHunt3"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="32dp"
+                        android:fontFamily="@font/bungeeregular"
+                        android:text="CLICK HERE FOR location INFO"
+                        android:textColor="#528f8f"
+                        android:textSize="18sp"
+                        app:layout_constraintStart_toStartOf="parent"
+                        tools:layout_editor_absoluteY="641dp" />
+
+                    <TextView
+                        android:id="@+id/exampleHunt2"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="32dp"
+                        android:fontFamily="@font/bungeeregular"
+                        android:text="TASKS"
+                        android:textColor="#528f8f"
+                        android:textSize="18sp"
+                        app:layout_constraintStart_toStartOf="parent"
+                        tools:layout_editor_absoluteY="549dp" />
+
+                    <TextView
+                        android:id="@+id/exampleHunt3"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="32dp"
+                        android:fontFamily="@font/bungeeregular"
+                        android:text="CHECKPOINTS"
+                        android:textColor="#528f8f"
+                        android:textSize="18sp"
+                        app:layout_constraintStart_toStartOf="parent"
+                        tools:layout_editor_absoluteY="595dp" />
+
+                    <TextView
+                        android:id="@+id/exampleHunt1"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="32dp"
+                        android:fontFamily="@font/bungeeregular"
+                        android:text="My points and achievements"
+                        android:textColor="#528f8f"
+                        android:textSize="18sp"
+                        app:layout_constraintStart_toStartOf="parent"
+                        tools:layout_editor_absoluteY="503dp" />
+
+                    <de.hdodenhof.circleimageview.CircleImageView
+                        android:id="@+id/profileImage"
+                        android:layout_width="100dp"
+                        android:layout_height="100dp"
+                        android:layout_marginEnd="48dp"
+                        android:src="@drawable/profilepic"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintTop_toBottomOf="@+id/banner"
+                        android:layout_marginTop="48dp" /> <!-- Use a placeholder image here -->
+
+                </androidx.constraintlayout.widget.ConstraintLayout>
+            </ScrollView>
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+        <com.google.android.material.navigation.NavigationView
+            android:id="@+id/menu_navigation"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_gravity="end"
+            app:menu="@menu/drawer_menu" />
+
+    </androidx.drawerlayout.widget.DrawerLayout>
+</androidx.constraintlayout.widget.ConstraintLayout>

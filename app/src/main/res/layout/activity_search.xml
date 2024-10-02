@@ -1,0 +1,136 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        tools:layout_editor_absoluteX="201dp"
+        tools:layout_editor_absoluteY="191dp">
+
+        <!-- Banner -->
+        <LinearLayout
+            android:id="@+id/banner"
+            android:layout_width="514dp"
+            android:layout_height="101dp"
+            android:background="#F25858"
+            android:orientation="horizontal"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <!-- Menu Button -->
+        <ImageView
+            android:id="@+id/menuButton"
+            android:layout_width="70dp"
+            android:layout_height="51dp"
+            android:layout_marginTop="25dp"
+            android:layout_marginEnd="16dp"
+            android:clickable="true"
+            android:contentDescription="@string/menu_button_desc"
+            android:focusable="true"
+            android:src="@drawable/menuicon"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <!-- Logo -->
+        <ImageView
+            android:id="@+id/bannerLogo"
+            android:layout_width="250dp"
+            android:layout_height="123dp"
+            android:layout_marginLeft="10dp"
+            android:layout_marginTop="-70dp"
+            android:contentDescription="@string/logo_desc"
+            android:src="@drawable/headerlogo"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/banner"
+            app:layout_constraintVertical_bias="0.2" />
+
+
+        <androidx.appcompat.widget.SearchView
+            android:id="@+id/searchView"
+            android:layout_width="376dp"
+            android:layout_height="52dp"
+            android:layout_marginTop="28dp"
+            android:background="@drawable/textbox"
+            android:iconifiedByDefault="false"
+            android:queryHint="Search here..."
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.485"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/bannerLogo" />
+
+        <TextView
+            android:layout_width="368dp"
+            android:layout_height="77dp"
+            android:padding="8dp"
+            android:text="Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat."
+            android:textSize="12sp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.372"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="@+id/banner"
+            app:layout_constraintVertical_bias="0.558" />
+
+        <TextView
+            android:id="@+id/place"
+            android:layout_width="216dp"
+            android:layout_height="50dp"
+            android:layout_marginTop="48dp"
+            android:fontFamily="@font/bungeeshade"
+            android:padding="8dp"
+            android:text="EXAMPLE PLACE"
+            android:textSize="18sp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.087"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/searchView" />
+
+        <TextView
+            android:id="@+id/description"
+            android:layout_width="204dp"
+            android:layout_height="38dp"
+            android:layout_marginTop="88dp"
+            android:fontFamily="@font/bungeespice"
+            android:padding="8dp"
+            android:text="EXAMPLE DESCRIPTION"
+            android:textColor="#528F8F"
+            android:textSize="10sp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.077"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/searchView" />
+
+        <TextView
+            android:id="@+id/showing"
+            android:layout_width="204dp"
+            android:layout_height="38dp"
+            android:layout_marginTop="4dp"
+            android:padding="8dp"
+            android:text="Showing 1 - 1"
+            android:textColor="#B1ADAD"
+            android:textSize="10sp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.14"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/searchView" />
+
+        <ImageView
+            android:id="@+id/exampleHuntImage"
+            android:layout_width="98dp"
+            android:layout_height="80dp"
+            android:contentDescription="Image next to Example Hunt"
+            android:src="@drawable/profilepic"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.744"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_bias="0.437" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</androidx.constraintlayout.widget.ConstraintLayout>
