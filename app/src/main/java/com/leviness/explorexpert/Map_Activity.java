@@ -11,6 +11,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RatingBar;
@@ -90,7 +91,7 @@ public class Map_Activity extends AppCompatActivity implements OnMapReadyCallbac
 
     private Map<Marker, Bitmap> markerImages = new HashMap<>();
     private Map<Marker, Float> markerRatings = new HashMap<>();
-    private  Map<Marker, String> markerFunFacts = new HashMap<>();
+    private Map<Marker, String> markerFunFacts = new HashMap<>();
     private List<LatLng> stepLatLngs = new ArrayList<>();
 
 
@@ -411,10 +412,11 @@ public class Map_Activity extends AppCompatActivity implements OnMapReadyCallbac
     }
 
     private void showRatingDialog(String placeId, String placeName) {
-        // Create a new dialog to let the user input a new rating
+        // Create a new dialog to let the user input a new rating and text review
         AlertDialog.Builder builder = new AlertDialog.Builder(Map_Activity.this);
         builder.setTitle("Rate " + placeName);
 
+        // RatingBar for rating input
         final RatingBar ratingBar = new RatingBar(Map_Activity.this);
         LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(
                 LinearLayout.LayoutParams.WRAP_CONTENT,
@@ -424,14 +426,25 @@ public class Map_Activity extends AppCompatActivity implements OnMapReadyCallbac
         ratingBar.setNumStars(5);
         ratingBar.setStepSize(0.5f);
 
+        // EditText for text review input
+        final EditText reviewEditText = new EditText(Map_Activity.this);
+        reviewEditText.setHint("Write your review here...");
+        LinearLayout.LayoutParams reviewLayoutParams = new LinearLayout.LayoutParams(
+                LinearLayout.LayoutParams.MATCH_PARENT,
+                LinearLayout.LayoutParams.WRAP_CONTENT
+        );
+        reviewEditText.setLayoutParams(reviewLayoutParams);
+
         LinearLayout layout = new LinearLayout(Map_Activity.this);
         layout.setOrientation(LinearLayout.VERTICAL);
         layout.addView(ratingBar);
+        layout.addView(reviewEditText);
 
         builder.setView(layout);
 
         builder.setPositiveButton("Submit", (dialog, which) -> {
             float newRating = ratingBar.getRating();
+            String reviewText = reviewEditText.getText().toString().trim(); // Get the text review
 
             // Get the currently logged-in user
             FirebaseAuth auth = FirebaseAuth.getInstance();
@@ -441,18 +454,19 @@ public class Map_Activity extends AppCompatActivity implements OnMapReadyCallbac
                 String userId = currentUser.getUid();
                 String userName = currentUser.getDisplayName() != null ? currentUser.getDisplayName() : "Anonymous";
 
-                // Update the rating in Firestore
+                // Update the rating and review in Firestore
                 FirebaseFirestore db = FirebaseFirestore.getInstance();
                 Map<String, Object> ratingData = new HashMap<>();
                 ratingData.put("rating", newRating);
                 ratingData.put("userId", userId);
                 ratingData.put("userName", userName);
+                ratingData.put("reviewText", reviewText);
                 ratingData.put("timestamp", System.currentTimeMillis());
 
                 db.collection("locations").document(placeId).collection("ratings")
                         .add(ratingData)
                         .addOnSuccessListener(documentReference -> {
-                            Toast.makeText(Map_Activity.this, "Rating submitted!", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(Map_Activity.this, "Rating and review submitted!", Toast.LENGTH_SHORT).show();
                             // After adding the new rating, update the average rating
                             updateAverageRating(db, placeId);
 
@@ -461,8 +475,8 @@ public class Map_Activity extends AppCompatActivity implements OnMapReadyCallbac
                             profileActivity.updateUserPoints(userId);  // Call the updateUserPoints method here
                         })
                         .addOnFailureListener(e -> {
-                            Log.e("RatingUpdate", "Error submitting rating", e);
-                            Toast.makeText(Map_Activity.this, "Failed to submit rating", Toast.LENGTH_SHORT).show();
+                            Log.e("RatingUpdate", "Error submitting review", e);
+                            Toast.makeText(Map_Activity.this, "Failed to submit review", Toast.LENGTH_SHORT).show();
                         });
 
             } else {

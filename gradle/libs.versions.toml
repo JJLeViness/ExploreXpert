@@ -21,6 +21,7 @@ firebaseFirestore = "25.1.0"
 places = "4.0.0"
 playServicesLocation = "21.3.0"
 playServicesMaps = "19.0.0"
+firebaseStorage = "21.0.0"
 
 [libraries]
 circleimageview = { module = "de.hdodenhof:circleimageview", version.ref = "circleimageview" }
@@ -43,6 +44,7 @@ firebase-firestore = { group = "com.google.firebase", name = "firebase-firestore
 places = { module = "com.google.android.libraries.places:places", version.ref = "places" }
 play-services-location = { module = "com.google.android.gms:play-services-location", version.ref = "playServicesLocation" }
 play-services-maps = { module = "com.google.android.gms:play-services-maps", version.ref = "playServicesMaps" }
+firebase-storage = { group = "com.google.firebase", name = "firebase-storage", version.ref = "firebaseStorage" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }
