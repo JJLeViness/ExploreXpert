@@ -6,12 +6,14 @@
     android:id="@+id/drawer_layout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".Map_Activity">
+    tools:context=".navigator">
 
+    <!-- Main content -->
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/main"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
+
 
         <LinearLayout
             android:id="@+id/map_banner"
@@ -25,24 +27,11 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent">
 
-            <!-- Spinner for filtering map markers -->
-            <Spinner
-                android:id="@+id/filterSpinner"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="16dp"
-                android:layout_marginEnd="16dp"
-                android:padding="8dp"
-                android:visibility="gone"
-                android:background="@android:drawable/btn_dropdown"
-                android:prompt="@string/filter_prompt"
-                android:spinnerMode="dropdown"
-                android:dropDownVerticalOffset="40dp" />
-
         </LinearLayout>
 
+        <!-- Menu button for navigation drawer -->
         <ImageView
-            android:id="@+id/map_menuButton"
+            android:id="@+id/navigator_menuButton"
             android:layout_width="63dp"
             android:layout_height="55dp"
             android:layout_marginTop="16dp"
@@ -54,20 +43,36 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
+        <!-- Directions RecyclerView for step-by-step instructions (initially hidden) -->
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/directionsRecyclerView"
+            android:layout_width="0dp"
+            android:layout_height="150dp"
+            android:orientation="vertical"
+            android:padding="8dp"
+            android:scrollbars="vertical"
+            android:background="@color/dark_teal"
+            android:visibility="gone"
+            app:layout_constraintTop_toBottomOf="@id/map_banner"
+            app:layout_constraintBottom_toTopOf="@id/mapFragment"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constrainedHeight="true" />
 
-
+        <!-- Map fragment to display the map -->
         <fragment
             android:id="@+id/mapFragment"
             android:name="com.google.android.gms.maps.SupportMapFragment"
             android:layout_width="0dp"
             android:layout_height="0dp"
-            app:layout_constraintTop_toBottomOf="@id/map_banner"
+            app:layout_constraintTop_toBottomOf="@id/directionsRecyclerView"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
+    <!-- Navigation drawer -->
     <com.google.android.material.navigation.NavigationView
         android:id="@+id/menu_navigation"
         android:layout_width="wrap_content"

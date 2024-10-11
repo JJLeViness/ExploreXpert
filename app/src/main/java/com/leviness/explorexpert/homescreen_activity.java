@@ -99,7 +99,7 @@ public class homescreen_activity extends AppCompatActivity {
 
         navigateButton.setOnClickListener(v -> {  //Currently moves the user  to map Activity with entered info from to and from text
             //For testing purposes of places and routes API. Function will change later.
-            Intent intent = new Intent(homescreen_activity.this, Map_Activity.class);
+            Intent intent = new Intent(homescreen_activity.this, navigator.class);
             intent.putExtra("fromLatLng", fromLatLng);
             intent.putExtra("toLatLng", toLatLng);
             startActivity(intent);

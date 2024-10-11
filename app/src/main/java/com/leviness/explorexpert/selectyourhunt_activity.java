@@ -1,12 +1,11 @@
 package com.leviness.explorexpert;
 
-import android.graphics.Color;
+import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
 import android.widget.GridLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -31,7 +30,7 @@ public class selectyourhunt_activity extends AppCompatActivity {
     private List<scavengerHunt> scavengerHuntList = new ArrayList<>();
     private KnowledgeGraphAPIClient knowledgeGraphAPIClient;
     private PlacesClient placesClient;
-    private LatLng manhattanLocation = new LatLng(40.7831, -73.9712); // Manhattan
+    private LatLng manhattanLocation = new LatLng(40.7831, -73.9712); // TESTING
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -39,6 +38,7 @@ public class selectyourhunt_activity extends AppCompatActivity {
         setContentView(R.layout.activity_selectyourhunt);
 
         GridLayout linksGrid = findViewById(R.id.linksGrid);
+
 
         // Initialize the Google Places API
         String apiKey = getString(R.string.maps_api_key);
@@ -53,6 +53,9 @@ public class selectyourhunt_activity extends AppCompatActivity {
     }
 
     private void populateScavengerHunts(GridLayout linksGrid) {
+
+
+
         // Creating and adding scavenger hunts
         createScavengerHunt("Manhattan Landmarks Hunt", "tourist_attraction|museum|landmark", "Discover famous landmarks in Manhattan.", linksGrid);
         createScavengerHunt("Art Installations Hunt", "art_gallery", "Explore stunning art installations across Manhattan.", linksGrid);
@@ -142,6 +145,8 @@ public class selectyourhunt_activity extends AppCompatActivity {
             } else {
                 Log.e("NearbyPlacesTask", "No result from Nearby Search");
             }
+
+
         }
 
         // Update GridLayout with just the scavenger hunt names
@@ -160,6 +165,14 @@ public class selectyourhunt_activity extends AppCompatActivity {
 
                     // Update the text of the TextView with the hunt name
                     textView.setText(hunt.getName());
+
+                    textView.setOnClickListener(v -> {
+                        Intent intent = new Intent(selectyourhunt_activity.this, selectedscavengerhunt_activity.class);
+                        intent.putExtra("huntName", hunt.getName());
+                        intent.putExtra("huntDescription", hunt.getDescription());
+                        intent.putExtra("hunt", hunt);
+                        startActivity(intent);
+                    });
                 }
             }
         }

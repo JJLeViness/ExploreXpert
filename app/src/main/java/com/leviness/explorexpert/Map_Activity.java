@@ -30,8 +30,6 @@ import androidx.core.view.GravityCompat;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.maps.CameraUpdateFactory;
@@ -54,8 +52,6 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
-import com.leviness.explorexpert.network.RoutesTask;
-import com.leviness.explorexpert.network.DirectionsAdapter;
 import com.leviness.explorexpert.network.KnowledgeGraphAPIClient;
 
 import org.json.JSONArray;
@@ -66,8 +62,6 @@ import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
-import java.net.URLEncoder;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
@@ -84,7 +78,6 @@ public class Map_Activity extends AppCompatActivity implements OnMapReadyCallbac
     private PlacesClient placesClient;
     private LatLng currentLocation;
     private String[] placeTypes = {"RESTAURANT", "CAFE", "BAR", "STORE", "SHOPPING_MALL", "MUSEUM", "AMUSEMENT_PARK", "PARK", "MOVIE_THEATER", "THINGS_TO_DO", "HOTEL", "TOURIST_ATTRACTION", "POINT_OF_INTEREST", "LOCAL_LANDMARK", "HISTORIC_SITE"};
-    private List<String> directionsList = new ArrayList<>();
     private KnowledgeGraphAPIClient knowledgeGraphAPIClient;
 
 
@@ -92,7 +85,7 @@ public class Map_Activity extends AppCompatActivity implements OnMapReadyCallbac
     private Map<Marker, Bitmap> markerImages = new HashMap<>();
     private Map<Marker, Float> markerRatings = new HashMap<>();
     private Map<Marker, String> markerFunFacts = new HashMap<>();
-    private List<LatLng> stepLatLngs = new ArrayList<>();
+
 
 
     @Override
@@ -109,10 +102,6 @@ public class Map_Activity extends AppCompatActivity implements OnMapReadyCallbac
         menuButton = findViewById(R.id.map_menuButton);
         menuNavigation = findViewById(R.id.drawer_layout);
         navigationView = findViewById(R.id.menu_navigation);
-        RecyclerView directionsRecyclerView = findViewById(R.id.directionsRecyclerView);
-        directionsRecyclerView.setLayoutManager(new LinearLayoutManager(this));
-        DirectionsAdapter adapter = new DirectionsAdapter(directionsList, stepLatLngs, directionsRecyclerView, mMap);
-        directionsRecyclerView.setAdapter(adapter);
         String apiKey = getString(R.string.maps_api_key);
         knowledgeGraphAPIClient = new KnowledgeGraphAPIClient(apiKey);
 
@@ -146,6 +135,8 @@ public class Map_Activity extends AppCompatActivity implements OnMapReadyCallbac
             mapFragment.getMapAsync(this);
         }
         fusedLocationClient = LocationServices.getFusedLocationProviderClient(this);
+
+
 
     }
 
@@ -267,18 +258,7 @@ public class Map_Activity extends AppCompatActivity implements OnMapReadyCallbac
         mMap.getUiSettings().setScrollGesturesEnabled(true); // Ensures that the user can scroll/pan the map
         mMap.getUiSettings().setZoomGesturesEnabled(true);   // Allows zooming
 
-        String fromLatLng = getIntent().getStringExtra("fromLatLng");
-        String toLatLng = getIntent().getStringExtra("toLatLng");  //Retrieve to and from location from home screen, for testing purposes
 
-        RecyclerView directionsRecyclerView = findViewById(R.id.directionsRecyclerView);
-        directionsRecyclerView.setLayoutManager(new LinearLayoutManager(this));
-        DirectionsAdapter adapter = new DirectionsAdapter(directionsList, stepLatLngs, directionsRecyclerView, mMap);
-        directionsRecyclerView.setAdapter(adapter);
-
-        if (fromLatLng != null && toLatLng != null) {
-            new RoutesTask(this, mMap, adapter, "walking").execute(fromLatLng, toLatLng);
-
-        } else {
             fusedLocationClient.getLastLocation()
                     .addOnSuccessListener(this, location -> {
                         if (location != null) {
@@ -309,7 +289,7 @@ public class Map_Activity extends AppCompatActivity implements OnMapReadyCallbac
                         }
 
                     });
-        }
+
 
 //Menu Drawer logic
         navigationView.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
@@ -596,6 +576,8 @@ public class Map_Activity extends AppCompatActivity implements OnMapReadyCallbac
                 Log.e("Map_Activity", errorMessage);
             }
         });
+
+
     }
 }
 
