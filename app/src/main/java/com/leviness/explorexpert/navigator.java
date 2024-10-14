@@ -6,7 +6,9 @@ import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
@@ -53,6 +55,9 @@ public class navigator extends AppCompatActivity implements OnMapReadyCallback {
 
     private String fromLatLng;
     private String toLatLng;
+    private int currentTaskIndex = 0;
+    private TextView destinationNameTextView;
+    private Button nextTaskButton;
 
 
 
@@ -81,6 +86,8 @@ public class navigator extends AppCompatActivity implements OnMapReadyCallback {
         menuButton = findViewById(R.id.navigator_menuButton);
         menuNavigation = findViewById(R.id.drawer_layout);
         navigationView = findViewById(R.id.menu_navigation);
+        destinationNameTextView = findViewById(R.id.destination_name);
+        nextTaskButton = findViewById(R.id.next_task_button);
 
 
         // Fetch scavenger hunt from intent
@@ -92,7 +99,8 @@ public class navigator extends AppCompatActivity implements OnMapReadyCallback {
          if (hunt != null) {
             isScavengerHuntActive = true;
             Toast.makeText(this, "Starting scavenger hunt: " + hunt.getName(), Toast.LENGTH_SHORT).show();
-        }
+             nextTaskButton.setVisibility(View.VISIBLE);
+         }
 
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.mapFragment);
         if (mapFragment != null) {
@@ -139,6 +147,7 @@ public class navigator extends AppCompatActivity implements OnMapReadyCallback {
             }
         });
 
+        nextTaskButton.setOnClickListener(v -> moveToNextTask());
 
     }
 
@@ -168,7 +177,7 @@ public class navigator extends AppCompatActivity implements OnMapReadyCallback {
         if (fromLatLng != null && toLatLng != null) {
             // Use the locations from the home screen for navigation
             LatLng fromLatLngParsed = parseLatLng(fromLatLng);
-            LatLng toLatLngParsed = parseLatLng(toLatLng);
+
 
             // Move the camera to the "from" location
             if (mMap != null) {
@@ -180,19 +189,64 @@ public class navigator extends AppCompatActivity implements OnMapReadyCallback {
 
         }
         else if (isScavengerHuntActive && hunt != null && !hunt.getTasks().isEmpty()) {
-            // Use the first and second tasks for navigation
-            scavengerHuntTask firstTask = hunt.getTasks().get(0);
-            LatLng firstTaskLocation = firstTask.getLocation();
-            scavengerHuntTask secondTask = hunt.getTasks().get(1);
+            // Fetch current location
+            fusedLocationClient.getLastLocation().addOnSuccessListener(location -> {
+                if (location != null) {
+                    //uncomment current location for non emulator use
+                    //LatLng currentLocation = new LatLng(location.getLatitude(), location.getLongitude());
+                    LatLng nycLocation = new LatLng(40.7870, -73.9754);
+                    scavengerHuntTask firstTask = hunt.getTasks().get(0);
 
-            mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(firstTaskLocation, 15));
 
-            // Get locations as strings (lat, long) for RoutesTask
-            String firstPlace = formatLatLng(firstTask.getLocation());
-            String secondPlace = formatLatLng(secondTask.getLocation());
+                    // Move camera to starting location, change to current location for non emulator use.
+                    mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(nycLocation, 15));
 
-            // Start RoutesTask to navigate between first and second places
-            new RoutesTask(this, mMap, directionsAdapter, "walking").execute(firstPlace, secondPlace);
+                    destinationNameTextView.setText("Destination: " + firstTask.getPlaceName());
+
+
+                    // Start RoutesTask to navigate between current location and first task, CHANGE TO CURRENT LOCATION FOR NON EMULATOR USE
+                    navigateToTask(nycLocation, hunt.getTasks().get(currentTaskIndex).getLocation());
+                } else {
+                    Toast.makeText(navigator.this, "Unable to fetch current location.", Toast.LENGTH_SHORT).show();
+                }
+            });
+        }
+    }
+
+    private void moveToNextTask() {
+        if (isScavengerHuntActive && hunt != null && currentTaskIndex < hunt.getTasks().size() - 1) {
+            currentTaskIndex++;
+            scavengerHuntTask nextTask = hunt.getTasks().get(currentTaskIndex);
+            LatLng previousTaskLocation = hunt.getTasks().get(currentTaskIndex - 1).getLocation();
+
+            // Navigate from the previous task to the next task
+            navigateToTask(previousTaskLocation, nextTask.getLocation());
+
+            // Update the destination name and UI
+            destinationNameTextView.setText("Destination: " + nextTask.getPlaceName());
+        } else {
+            // All tasks completed, update UI accordingly
+            Toast.makeText(this, "All tasks completed!", Toast.LENGTH_SHORT).show();
+
+            // Hide the "Next Task" button
+            nextTaskButton.setVisibility(View.GONE);
+
+            // Update the destination name to show "Scavenger Hunt Complete"
+            destinationNameTextView.setText("Scavenger Hunt Complete!");
+            scavengerHuntTask finalTask = hunt.getTasks().get(currentTaskIndex); // Get the final task
+            LatLng finalTaskLocation = finalTask.getLocation(); // Get the final task location
+            mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(finalTaskLocation, 15));
+        }
+    }
+
+    private void navigateToTask(LatLng from, LatLng to) {
+        if (mMap != null) {
+            mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(from, 15));
+
+            // Start RoutesTask to navigate between two tasks
+            String fromLocation = formatLatLng(from);
+            String toLocation = formatLatLng(to);
+            new RoutesTask(this, mMap, directionsAdapter, "walking").execute(fromLocation, toLocation);
         }
     }
 
