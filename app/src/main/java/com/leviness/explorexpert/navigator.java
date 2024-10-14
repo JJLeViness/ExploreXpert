@@ -3,7 +3,9 @@ package com.leviness.explorexpert;
 import android.Manifest;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.location.Location;
 import android.os.Bundle;
+import android.os.Looper;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
@@ -25,6 +27,9 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.android.gms.location.FusedLocationProviderClient;
+import com.google.android.gms.location.LocationCallback;
+import com.google.android.gms.location.LocationRequest;
+import com.google.android.gms.location.LocationResult;
 import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
@@ -58,6 +63,11 @@ public class navigator extends AppCompatActivity implements OnMapReadyCallback {
     private int currentTaskIndex = 0;
     private TextView destinationNameTextView;
     private Button nextTaskButton;
+
+    private Location currentLocation; // User's current location
+    private boolean isTaskCompleted = false; // To avoid multiple triggers for the same task
+
+    private static final float PROXIMITY_THRESHOLD = 10f;
 
 
 
@@ -147,7 +157,9 @@ public class navigator extends AppCompatActivity implements OnMapReadyCallback {
             }
         });
 
-        nextTaskButton.setOnClickListener(v -> moveToNextTask());
+        nextTaskButton.setOnClickListener(v -> moveToNextTask());  //for emulator testing
+        //uncomment for non emulator testing
+        //startLocationUpdates();
 
     }
 
@@ -212,6 +224,55 @@ public class navigator extends AppCompatActivity implements OnMapReadyCallback {
             });
         }
     }
+
+    private void startLocationUpdates() {
+        // Check for location permissions
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED
+                && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, 1);
+            return;
+        }
+
+        // Create a LocationRequest
+        LocationRequest locationRequest = LocationRequest.create();
+        locationRequest.setInterval(10000);
+        locationRequest.setFastestInterval(5000);
+        locationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
+
+        // Create a LocationCallback
+        LocationCallback locationCallback = new LocationCallback() {
+            @Override
+            public void onLocationResult(LocationResult locationResult) {
+                if (locationResult == null) {
+                    return;
+                }
+                // Get the most recent location
+                Location currentLocation = locationResult.getLastLocation();
+
+                // If scavenger hunt is active, check if the user has reached the destination
+                if (isScavengerHuntActive && !isTaskCompleted && currentTaskIndex < hunt.getTasks().size()) {
+                    LatLng taskLocation = hunt.getTasks().get(currentTaskIndex).getLocation();
+                    Location taskLoc = new Location("");
+                    taskLoc.setLatitude(taskLocation.latitude);
+                    taskLoc.setLongitude(taskLocation.longitude);
+
+                    // Check if user is within the proximity threshold of the destination
+                    float distanceToDestination = currentLocation.distanceTo(taskLoc);
+                    if (distanceToDestination < PROXIMITY_THRESHOLD) {
+                        isTaskCompleted = true;
+                        Toast.makeText(navigator.this, "You have reached the destination!", Toast.LENGTH_SHORT).show();
+
+                        // Move to the next task or finish the hunt
+                        moveToNextTask();
+                    }
+                }
+            }
+        };
+
+        // Request location updates
+        fusedLocationClient.requestLocationUpdates(locationRequest, locationCallback, Looper.getMainLooper());
+    }
+
 
     private void moveToNextTask() {
         if (isScavengerHuntActive && hunt != null && currentTaskIndex < hunt.getTasks().size() - 1) {
