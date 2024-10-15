@@ -140,6 +140,8 @@ public class Map_Activity extends AppCompatActivity implements OnMapReadyCallbac
 
     }
 
+
+
     private void setupFilterSpinner() {
         ArrayAdapter<String> adapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, placeTypes);
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
@@ -290,6 +292,20 @@ public class Map_Activity extends AppCompatActivity implements OnMapReadyCallbac
 
                     });
 
+        // Enable the My Location layer if permission is granted
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
+            mMap.setMyLocationEnabled(true);
+        }
+
+        // Set a listener for marker click.
+        mMap.setOnMarkerClickListener(marker -> {
+            // Handle the marker click event here
+            Map_Activity.this.onMarkerClick(marker);  // Call your custom onMarkerClick method
+
+            // Return false to indicate that we have not consumed the event
+            // and that we wish for the default behavior to occur (camera move, etc.).
+            return false;
+        });
 
 //Menu Drawer logic
         navigationView.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
@@ -304,7 +320,7 @@ public class Map_Activity extends AppCompatActivity implements OnMapReadyCallbac
                 } else if (id == R.id.nav_profile) {
                     startActivity(new Intent(Map_Activity.this, profile_Activity.class));
                 } else if (id == R.id.nav_scavenger_hunt) {
-                    startActivity(new Intent(Map_Activity.this, scavenger_Hunt_Activity.class));
+                    startActivity(new Intent(Map_Activity.this, selectyourhunt_activity.class));
                 } else if (id == R.id.nav_settings) {
                     startActivity(new Intent(Map_Activity.this, settings_Activity.class));
                 } else if (id == R.id.nav_login) {
@@ -316,6 +332,17 @@ public class Map_Activity extends AppCompatActivity implements OnMapReadyCallbac
         });
 
 
+    }
+
+    public void onMarkerClick(Marker marker) {
+        // Perform your actions when a marker is clicked
+        Log.d("MarkerClick", "Marker clicked: " + marker.getTitle());
+
+        // Example: Show a dialog, fetch details about the place, etc.
+        String placeId = (String) marker.getTag(); // Assuming the placeId is set as the marker tag
+        if (placeId != null) {
+            showRatingDialog(placeId, marker.getTitle());  // Example of showing a rating dialog
+        }
     }
 
     private void markNearbyPOIs(LatLng location, String placeType) {

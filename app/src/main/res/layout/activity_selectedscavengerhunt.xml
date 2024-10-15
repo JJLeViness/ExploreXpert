@@ -115,19 +115,6 @@
                         app:layout_constraintTop_toBottomOf="@+id/profileImage" />
 
                     <Button
-                        android:id="@+id/edit_button"
-                        android:layout_width="91dp"
-                        android:layout_height="51dp"
-                        android:layout_marginTop="4dp"
-                        android:background="?android:attr/selectableItemBackground"
-                        android:gravity="center"
-                        android:text="Edit"
-                        android:textColor="@color/black"
-                        android:textSize="15sp"
-                        app:layout_constraintStart_toEndOf="@+id/myPointsLabel"
-                        app:layout_constraintTop_toBottomOf="@+id/username" />
-
-                    <Button
                         android:id="@+id/myPointsLabel"
                         android:layout_width="289dp"
                         android:layout_height="90dp"

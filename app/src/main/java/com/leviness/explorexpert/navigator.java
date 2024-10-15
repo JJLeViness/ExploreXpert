@@ -128,7 +128,7 @@ public class navigator extends AppCompatActivity implements OnMapReadyCallback {
                 } else if (id == R.id.nav_profile) {
                     startActivity(new Intent(navigator.this, profile_Activity.class));
                 } else if (id == R.id.nav_scavenger_hunt) {
-                    startActivity(new Intent(navigator.this, scavenger_Hunt_Activity.class));
+                    startActivity(new Intent(navigator.this, selectyourhunt_activity.class));
                 } else if (id == R.id.nav_settings) {
                     startActivity(new Intent(navigator.this, settings_Activity.class));
                 } else if (id == R.id.nav_login) {
