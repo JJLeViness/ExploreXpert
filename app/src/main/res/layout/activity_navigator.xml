@@ -29,6 +29,20 @@
 
         </LinearLayout>
 
+        <TextView
+            android:id="@+id/destination_name"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:background="#FF4F4F"
+            android:gravity="center"
+            android:padding="8dp"
+            android:text="Destination: Loading..."
+            android:textColor="@android:color/white"
+            android:textSize="18sp"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toStartOf="@id/navigator_menuButton" />
+
         <!-- Menu button for navigation drawer -->
         <ImageView
             android:id="@+id/navigator_menuButton"
@@ -69,6 +83,17 @@
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent" />
+
+        <Button
+            android:id="@+id/next_task_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Next Task"
+            android:visibility="gone"
+            app:layout_constraintTop_toBottomOf="@id/directionsRecyclerView"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintBottom_toTopOf="@id/mapFragment" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
