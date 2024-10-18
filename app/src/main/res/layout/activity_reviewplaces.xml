@@ -11,6 +11,7 @@
         tools:layout_editor_absoluteX="81dp"
         tools:layout_editor_absoluteY="-16dp">
 
+
         <!-- Banner -->
         <LinearLayout
             android:id="@+id/banner"
@@ -20,7 +21,8 @@
             android:orientation="horizontal"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"></LinearLayout>
+            app:layout_constraintTop_toTopOf="parent">
+        </LinearLayout>
 
 
         <ImageView

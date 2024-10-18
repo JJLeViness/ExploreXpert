@@ -8,17 +8,15 @@
     tools:context=".homescreen_activity">
 
 <androidx.constraintlayout.widget.ConstraintLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
+
 
     <!-- Banner -->
     <LinearLayout
         android:id="@+id/banner"
-        android:layout_width="496dp"
-        android:layout_height="82dp"
+        android:layout_width="514dp"
+        android:layout_height="75dp"
         android:background="#F25858"
         android:orientation="horizontal"
         app:layout_constraintEnd_toEndOf="parent"
@@ -26,7 +24,37 @@
         app:layout_constraintTop_toTopOf="parent">
     </LinearLayout>
 
+
+    <ImageView
+        android:id="@+id/menuButton"
+        android:layout_width="50dp"
+        android:layout_height="51dp"
+        android:layout_marginTop="15dp"
+        android:layout_marginEnd="18dp"
+        android:clickable="true"
+        android:contentDescription="@string/menu_button_desc"
+        android:focusable="true"
+        android:src="@drawable/menuicon"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <ImageView
+        android:id="@+id/bannerLogo"
+        android:layout_width="300dp"
+        android:layout_height="133dp"
+        android:layout_marginLeft="20dp"
+        android:layout_marginTop="-80dp"
+        android:contentDescription="@string/logo_desc"
+        android:src="@drawable/logoupdated"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/banner"
+        app:layout_constraintVertical_bias="0.2" />
+
+
     <!-- Map Placeholder -->
+
+    <!-- Search Labels and Boxes -->
+
     <ImageView
         android:id="@+id/map"
         android:layout_width="747dp"
@@ -35,70 +63,71 @@
         android:src="@drawable/map"
         app:layout_constraintBottom_toTopOf="@id/newsFeed"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.498"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/toSearch"
-        app:layout_constraintVertical_bias="0.153" />
+        app:layout_constraintVertical_bias="0.1" />
 
-    <!-- Search Labels and Boxes -->
     <TextView
         android:id="@+id/fromLabel"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="76dp"
+        android:layout_marginStart="4dp"
+        android:layout_marginTop="48dp"
         android:text="From"
         app:layout_constraintStart_toStartOf="@+id/toLabel"
         app:layout_constraintTop_toBottomOf="@id/banner" />
-
-    <EditText
-        android:id="@+id/toSearch"
-        android:layout_width="366dp"
-        android:layout_height="65dp"
-        android:layout_marginTop="20dp"
-        android:background="@drawable/textbox"
-        android:hint="Enter To Location"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.029"
-        app:layout_constraintStart_toStartOf="@+id/fromSearch"
-        app:layout_constraintTop_toBottomOf="@id/fromSearch" />
 
     <TextView
         android:id="@+id/toLabel"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="24dp"
+        android:layout_marginStart="16dp"
         android:layout_marginTop="4dp"
         android:text="To"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/fromSearch" />
 
     <EditText
-        android:id="@+id/fromSearch"
-        android:layout_width="369dp"
-        android:layout_height="60dp"
+        android:id="@+id/toSearch"
+        android:layout_width="366dp"
+        android:layout_height="65dp"
+        android:layout_marginTop="24dp"
         android:background="@drawable/textbox"
-        android:hint="Enter From Location"
+        android:hint="Enter To Location"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.181"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/fromLabel" />
+        app:layout_constraintHorizontal_bias="0.05"
+        app:layout_constraintStart_toStartOf="@+id/fromSearch"
+        app:layout_constraintTop_toBottomOf="@id/fromSearch" />
 
-
-    <!-- Button for Navigation -->
     <androidx.appcompat.widget.AppCompatButton
         android:id="@+id/navigateButton"
         android:layout_width="239dp"
         android:layout_height="52dp"
         android:layout_gravity="center"
-        android:layout_marginTop="16dp"
+        android:layout_marginTop="8dp"
         android:background="@drawable/rounded_button"
         android:padding="1dp"
         android:text="To the Destination"
         android:textColor="#FFFFFF"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintHorizontal_bias="0.005"
         app:layout_constraintStart_toStartOf="@+id/toSearch"
         app:layout_constraintTop_toBottomOf="@id/map" />
+
+    <EditText
+        android:id="@+id/fromSearch"
+        android:layout_width="369dp"
+        android:layout_height="60dp"
+        android:layout_marginTop="8dp"
+        android:background="@drawable/textbox"
+        android:hint="Enter From Location"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.119"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/fromLabel" />
+
+
+    <!-- Button for Navigation -->
 
     <!-- News Feed -->
     <ImageView
@@ -114,29 +143,6 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/navigateButton" />
 
-    <ImageView
-        android:id="@+id/bannerLogo"
-        android:layout_width="127dp"
-        android:layout_height="114dp"
-        android:layout_gravity="center_vertical"
-        android:contentDescription="@string/logo_desc"
-        android:src="@drawable/logo"
-        app:layout_constraintBottom_toTopOf="@+id/fromLabel"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-
-    <ImageView
-        android:id="@+id/menuButton"
-        android:layout_width="63dp"
-        android:layout_height="55dp"
-        android:layout_marginTop="16dp"
-        android:layout_marginEnd="16dp"
-        android:clickable="true"
-        android:contentDescription="@string/menu_button_desc"
-        android:focusable="true"
-        android:src="@drawable/menubutton"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
 
 
 
