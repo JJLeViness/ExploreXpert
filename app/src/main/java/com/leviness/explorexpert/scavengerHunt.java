@@ -1,11 +1,13 @@
 package com.leviness.explorexpert;
 
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
+import java.util.ArrayList;
 import java.util.List;
-import com.leviness.explorexpert.scavengerHuntTask;
 
-
-public class scavengerHunt {
+public class scavengerHunt implements Parcelable {
     private String name;
     private List<scavengerHuntTask> tasks;
     private String description;
@@ -42,13 +44,34 @@ public class scavengerHunt {
         this.description = description;
     }
 
-    // Method to add a task to the scavenger hunt
-    public void addTask(scavengerHuntTask task) {
-        this.tasks.add(task);
+    // Parcelable implementation
+    protected scavengerHunt(Parcel in) {
+        name = in.readString();
+        description = in.readString();
+        tasks = in.createTypedArrayList(scavengerHuntTask.CREATOR);
     }
 
-    // Method to remove a task from the scavenger hunt
-    public void removeTask(scavengerHuntTask task) {
-        this.tasks.remove(task);
+    public static final Creator<scavengerHunt> CREATOR = new Creator<scavengerHunt>() {
+        @Override
+        public scavengerHunt createFromParcel(Parcel in) {
+            return new scavengerHunt(in);
+        }
+
+        @Override
+        public scavengerHunt[] newArray(int size) {
+            return new scavengerHunt[size];
+        }
+    };
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel parcel, int flags) {
+        parcel.writeString(name);
+        parcel.writeString(description);
+        parcel.writeTypedList(tasks);
     }
 }

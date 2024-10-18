@@ -1,9 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools">
 
     <uses-feature
         android:name="android.hardware.camera"
         android:required="false" />
+
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
@@ -12,27 +14,28 @@
     <application
         android:allowBackup="true"
         android:dataExtractionRules="@xml/data_extraction_rules"
-        android:fullBackupContent="@xml/backup_rules"
         android:enableOnBackInvokedCallback="true"
+        android:fullBackupContent="@xml/backup_rules"
         android:icon="@mipmap/ic_app_icon"
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_app_icon_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.ExploreXpert"
         tools:targetApi="31">
-
-        <activity android:name=".homescreen_activity"/>
-
+        <activity
+            android:name=".navigator"
+            android:exported="false" />
+        <activity android:name=".homescreen_activity" />
         <activity
             android:name=".splashscreen_activity"
             android:exported="true"
             android:theme="@style/Theme.ExploreXpert">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
+
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-
         <activity
             android:name=".profile_Activity"
             android:exported="false" />
@@ -46,20 +49,17 @@
             android:name=".scavenger_Hunt_Activity"
             android:exported="false"
             android:theme="@style/Theme.ExploreXpert" />
-
         <activity
             android:name=".point_achievement_Activity"
             android:exported="false" />
-
         <activity android:name=".registration_Activity" />
         <activity android:name=".forgotpassword_activity" />
-        <activity android:name=".selectyourhunt_activity"/>
-        <activity android:name=".selectedscavengerhunt_activity"/>
-
+        <activity android:name=".selectyourhunt_activity" />
+        <activity android:name=".selectedscavengerhunt_activity" />
 
         <meta-data
             android:name="com.google.android.geo.API_KEY"
-            android:value="@string/maps_api_key"/>
+            android:value="@string/maps_api_key" />
         <meta-data
             android:name="com.google.android.gms.version"
             android:value="@integer/google_play_services_version" />
@@ -72,4 +72,5 @@
             android:exported="true"
             android:theme="@style/Theme.ExploreXpert" />
     </application>
+
 </manifest>

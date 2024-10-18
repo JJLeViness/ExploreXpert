@@ -44,17 +44,4 @@
         android:textColor="@android:color/black"
         android:text="Fun fact will appear here" />
 
-    <EditText
-        android:id="@+id/review_text"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="10dp"
-        android:gravity="top"
-        android:hint="Write your review here..."
-        android:inputType="textMultiLine"
-        android:maxLines="5"
-        android:minLines="3"
-        android:textColor="@android:color/black"
-        android:textColorHint="@android:color/darker_gray" />
-
 </LinearLayout>

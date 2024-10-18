@@ -42,6 +42,10 @@ public class DirectionsAdapter extends RecyclerView.Adapter<DirectionsAdapter.Di
         }
     }
 
+    public void setMap(GoogleMap googleMap) {
+        this.mMap = googleMap;
+    }
+
     @NonNull
     @Override
     public DirectionsViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {

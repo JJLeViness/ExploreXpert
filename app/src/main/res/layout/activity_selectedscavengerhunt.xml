@@ -117,18 +117,6 @@
                         app:layout_constraintTop_toBottomOf="@+id/profileImage" />
 
                     <Button
-                        android:id="@+id/edit_button"
-                        android:layout_width="91dp"
-                        android:layout_height="51dp"
-                        android:background="?android:attr/selectableItemBackground"
-                        android:gravity="center"
-                        android:text="Edit"
-                        android:textColor="@color/black"
-                        android:textSize="15sp"
-                        tools:layout_editor_absoluteX="268dp"
-                        tools:layout_editor_absoluteY="264dp" />
-
-                    <Button
                         android:id="@+id/myPointsLabel"
                         android:layout_width="289dp"
                         android:layout_height="90dp"
@@ -137,8 +125,8 @@
                         android:text="example hunt"
                         android:textColor="@color/black"
                         android:textSize="24sp"
-                        tools:layout_editor_absoluteX="-2dp"
-                        tools:layout_editor_absoluteY="288dp" />
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toBottomOf="@+id/totalPointsLabel" />
 
                     <TextView
                         android:id="@+id/huntDescription"
@@ -146,11 +134,13 @@
                         android:layout_height="149dp"
                         android:layout_marginStart="48dp"
 
+                        android:layout_marginTop="1dp"
                         android:text="Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. "
                         android:textColor="#528f8f"
                         android:textSize="18sp"
+                        app:layout_constraintBottom_toTopOf="@+id/pointsAndAchievmentsLabel"
                         app:layout_constraintStart_toStartOf="parent"
-                        tools:layout_editor_absoluteY="354dp" />
+                        app:layout_constraintTop_toBottomOf="@+id/myPointsLabel" />
 
                     <TextView
                         android:id="@+id/locationInfo"
@@ -161,8 +151,9 @@
                         android:text="CLICK HERE FOR location INFO"
                         android:textColor="#528f8f"
                         android:textSize="18sp"
+                        app:layout_constraintBottom_toBottomOf="parent"
                         app:layout_constraintStart_toStartOf="parent"
-                        tools:layout_editor_absoluteY="641dp" />
+                        app:layout_constraintTop_toBottomOf="@+id/checkpointslabel" />
 
                     <TextView
                         android:id="@+id/tasksLabel"
@@ -173,20 +164,21 @@
                         android:text="TASKS"
                         android:textColor="#528f8f"
                         android:textSize="18sp"
-                        app:layout_constraintStart_toStartOf="parent"
-                        tools:layout_editor_absoluteY="549dp" />
+                        app:layout_constraintBottom_toTopOf="@+id/checkpointslabel"
+                        app:layout_constraintStart_toStartOf="parent" />
 
                     <TextView
                         android:id="@+id/checkpointslabel"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_marginStart="32dp"
+                        android:layout_marginStart="108dp"
+                        android:layout_marginTop="47dp"
                         android:fontFamily="@font/bungeeregular"
                         android:text="CHECKPOINTS"
                         android:textColor="#528f8f"
                         android:textSize="18sp"
                         app:layout_constraintStart_toStartOf="parent"
-                        tools:layout_editor_absoluteY="595dp" />
+                        app:layout_constraintTop_toBottomOf="@+id/pointsAndAchievmentsLabel" />
 
                     <TextView
                         android:id="@+id/pointsAndAchievmentsLabel"
@@ -197,8 +189,8 @@
                         android:text="My points and achievements"
                         android:textColor="#528f8f"
                         android:textSize="18sp"
-                        app:layout_constraintStart_toStartOf="parent"
-                        tools:layout_editor_absoluteY="503dp" />
+                        app:layout_constraintBottom_toTopOf="@+id/tasksLabel"
+                        app:layout_constraintStart_toStartOf="parent" />
 
                     <de.hdodenhof.circleimageview.CircleImageView
                         android:id="@+id/profileImage"

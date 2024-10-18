@@ -245,70 +245,50 @@ public class profile_Activity extends AppCompatActivity implements OnMapReadyCal
             String userId = user.getUid();
             Log.d("ProfileActivity", "Fetching reviews for user ID: " + userId);
 
-            db.collection("locations")
+            db.collectionGroup("ratings")
+                    .whereEqualTo("userId", userId)
                     .get()
-                    .addOnSuccessListener(locationsSnapshot -> {
+                    .addOnSuccessListener(ratingsSnapshot -> {
                         List<Review> reviews = new ArrayList<>();
-                        Log.d("ProfileActivity", "Total locations fetched: " + locationsSnapshot.size());
+                        Log.d("ProfileActivity", "Total user reviews fetched: " + ratingsSnapshot.size());
 
-                        // Initialize a counter to track completed location fetches
-                        final int[] locationsProcessed = {0};
-                        int totalLocations = locationsSnapshot.size();
+                        if (!ratingsSnapshot.isEmpty()) {
+                            for (DocumentSnapshot ratingDoc : ratingsSnapshot.getDocuments()) {
+                                Double userRating = ratingDoc.getDouble("rating");
+                                String reviewText = ratingDoc.getString("reviewText");
 
-                        // Iterate over each location
-                        for (DocumentSnapshot locationDoc : locationsSnapshot.getDocuments()) {
-                            String locationId = locationDoc.getId();
+                                // Fetch the parent location document (2 levels up)
+                                DocumentReference locationRef = ratingDoc.getReference().getParent().getParent();
+                                if (locationRef != null) {
+                                    locationRef.get().addOnSuccessListener(locationSnapshot -> {
+                                        if (locationSnapshot.exists()) {
+                                            String locationName = locationSnapshot.getString("name");
 
-                            db.collection("locations")
-                                    .document(locationId)
-                                    .collection("ratings")
-                                    .whereEqualTo("userId", userId)
-                                    .get()
-                                    .addOnSuccessListener(ratingsSnapshot -> {
-                                        Log.d("ProfileActivity", "Checking ratings for location ID: " + locationId);
-                                        if (!ratingsSnapshot.isEmpty()) {
-                                            for (DocumentSnapshot ratingDoc : ratingsSnapshot.getDocuments()) {
-                                                Double userRating = ratingDoc.getDouble("rating");
-                                                String reviewText = ratingDoc.getString("reviewText");  // Fetch the review text
-                                                String locationName = locationDoc.getString("name");
-
-                                                // Add the review to the list
-                                                if (locationName != null && userRating != null) {
-                                                    // Ensure the review text is handled
-                                                    reviews.add(new Review(locationName, userRating, reviewText != null ? reviewText : "No review provided"));
-                                                    Log.d("ProfileActivity", "Added review for: " + locationName + " with rating: " + userRating + " and review text: " + reviewText);
-                                                } else {
-                                                    Log.d("ProfileActivity", "Missing data for location: " + locationId);
-                                                }
-                                            }
-                                        }
-
-                                        // Increment the counter when a location's ratings are processed
-                                        locationsProcessed[0]++;
-
-                                        // Only update the adapter once all locations are processed
-                                        if (locationsProcessed[0] == totalLocations) {
-                                            if (reviews.isEmpty()) {
-                                                Log.d("ProfileActivity", "No valid reviews found for the user.");
+                                            if (locationName != null && userRating != null) {
+                                                reviews.add(new Review(locationName, userRating, reviewText != null ? reviewText : "No review provided"));
+                                                Log.d("ProfileActivity", "Added review for: " + locationName + " with rating: " + userRating + " and review text: " + reviewText);
                                             } else {
-                                                reviewsAdapter.addReviews(reviews);  // Update adapter after all reviews are collected
-                                                Log.d("ProfileActivity", "Reviews added to the adapter.");
+                                                Log.d("ProfileActivity", "Missing data for review: " + ratingDoc.getId());
                                             }
+
+                                            // Update the adapter with collected reviews
+                                            if (!reviews.isEmpty()) {
+                                                reviewsAdapter.addReviews(reviews);
+                                                Log.d("ProfileActivity", "Reviews added to the adapter.");
+                                            } else {
+                                                Log.d("ProfileActivity", "No valid reviews found for the user.");
+                                            }
+                                        } else {
+                                            Log.d("ProfileActivity", "Location document does not exist.");
                                         }
-                                    })
-                                    .addOnFailureListener(e -> {
-                                        Log.e("ProfileActivity", "Error fetching ratings for location ID: " + locationId, e);
-                                        // Increment the counter even in case of failure to avoid a hang
-                                        locationsProcessed[0]++;
-                                        if (locationsProcessed[0] == totalLocations) {
-                                            reviewsAdapter.addReviews(reviews);
-                                        }
-                                    });
+                                    }).addOnFailureListener(e -> Log.e("ProfileActivity", "Error fetching location document", e));
+                                }
+                            }
+                        } else {
+                            Log.d("ProfileActivity", "No reviews found for this user.");
                         }
                     })
-                    .addOnFailureListener(e -> {
-                        Log.e("ProfileActivity", "Error fetching locations", e);
-                    });
+                    .addOnFailureListener(e -> Log.e("ProfileActivity", "Error fetching user reviews", e));
         } else {
             Log.d("ProfileActivity", "User is not authenticated.");
         }

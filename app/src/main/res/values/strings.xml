@@ -10,8 +10,8 @@
     <string name="map_desc">Map Placeholder</string>
     <string name="newsfeed_desc">News Feed Placeholder</string>
     <string name="menu_button_desc">Menu Button</string>
-        <string name="navigation_drawer_open">Open navigation drawer</string>
-        <string name="navigation_drawer_close">Close navigation drawer</string>
+    <string name="navigation_drawer_open">Open navigation drawer</string>
+    <string name="navigation_drawer_close">Close navigation drawer</string>
     <string name="filter_prompt">Select a filter</string>
 
     <string name="profile_picture_desc"> Profile Picture</string>
@@ -54,4 +54,5 @@
         vestibulum. Fusce dictum libero quis erat maximus, vitae volutpat diam dignissim.
     </string>
     <string name="place_photo" />
+    <string name="title_activity_navigation">navigation</string>
 </resources>
