@@ -1,6 +1,7 @@
 package com.leviness.explorexpert;
 
 import android.content.Intent;
+import android.content.pm.ActivityInfo;
 import android.os.Bundle;
 import android.util.Log;
 import android.widget.ImageView;
@@ -29,6 +30,8 @@ public class point_achievement_Activity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_point_achievement);
+
+        this.setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
 
         // Initialize FirebaseAuth
         auth = FirebaseAuth.getInstance();

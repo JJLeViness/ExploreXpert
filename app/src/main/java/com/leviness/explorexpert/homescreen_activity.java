@@ -1,6 +1,7 @@
 package com.leviness.explorexpert;
 
 import android.content.Intent;
+import android.content.pm.ActivityInfo;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.MenuItem;
@@ -55,6 +56,8 @@ public class homescreen_activity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_homescreen);
+
+        this.setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
 
         if (!Places.isInitialized()) {
             Places.initialize(getApplicationContext(), getString(R.string.maps_api_key));

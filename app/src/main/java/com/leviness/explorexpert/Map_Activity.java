@@ -1,6 +1,7 @@
 package com.leviness.explorexpert;
 
 import android.content.Intent;
+import android.content.pm.ActivityInfo;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.os.AsyncTask;
@@ -98,6 +99,8 @@ public class Map_Activity extends AppCompatActivity implements OnMapReadyCallbac
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
             return insets;
         });
+
+        this.setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
 
         menuButton = findViewById(R.id.map_menuButton);
         menuNavigation = findViewById(R.id.drawer_layout);

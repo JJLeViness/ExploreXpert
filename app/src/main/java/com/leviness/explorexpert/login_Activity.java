@@ -1,6 +1,7 @@
 package com.leviness.explorexpert;
 
 import android.content.Intent;
+import android.content.pm.ActivityInfo;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.MenuItem;
@@ -45,6 +46,8 @@ public class login_Activity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         EdgeToEdge.enable(this);
         setContentView(R.layout.activity_login);
+
+        this.setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
 
         // Initialize Firebase Auth
         mAuth = FirebaseAuth.getInstance();
