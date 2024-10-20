@@ -77,7 +77,18 @@ public class Map_Activity extends AppCompatActivity implements OnMapReadyCallbac
     private NavigationView navigationView;
     private PlacesClient placesClient;
     private LatLng currentLocation;
-    private String[] placeTypes = {"RESTAURANT", "CAFE", "BAR", "STORE", "SHOPPING_MALL", "MUSEUM", "AMUSEMENT_PARK", "PARK", "MOVIE_THEATER", "THINGS_TO_DO", "HOTEL", "TOURIST_ATTRACTION", "POINT_OF_INTEREST", "LOCAL_LANDMARK", "HISTORIC_SITE"};
+    //lowercase for filerting and uppercase for display
+    private String[] placeTypes = {
+            "restaurant", "cafe", "bar", "store", "shopping_mall", "museum",
+            "amusement_park", "park", "movie_theater", "things_to_do", "hotel",
+            "tourist_attraction", "point_of_interest", "local_landmark", "historic_site"
+    };
+
+    private String[] displayPlaceTypes = {
+            "Restaurant", "Cafe", "Bar", "Store", "Shopping Mall", "Museum",
+            "Amusement Park", "Park", "Movie Theater", "Things to Do", "Hotel",
+            "Tourist Attraction", "Point of Interest", "Local Landmark", "Historic Site"
+    };
     private KnowledgeGraphAPIClient knowledgeGraphAPIClient;
 
 
@@ -143,7 +154,7 @@ public class Map_Activity extends AppCompatActivity implements OnMapReadyCallbac
 
 
     private void setupFilterSpinner() {
-        ArrayAdapter<String> adapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, placeTypes);
+        ArrayAdapter<String> adapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, displayPlaceTypes);
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         filterSpinner.setAdapter(adapter);
         filterSpinner.setVisibility(View.VISIBLE);
@@ -407,6 +418,7 @@ public class Map_Activity extends AppCompatActivity implements OnMapReadyCallbac
 
                         LatLng latLng = new LatLng(location.getDouble("lat"), location.getDouble("lng"));
 
+
                         // Add marker for each place
                         Marker marker = mMap.addMarker(new MarkerOptions().position(latLng).title(placeName).snippet(placeId).icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_AZURE)));
 
@@ -542,9 +554,10 @@ public class Map_Activity extends AppCompatActivity implements OnMapReadyCallbac
             String placeName = place.getName();
 
             List<PhotoMetadata> photoMetadataList = place.getPhotoMetadatas();
-            Log.d("PreloadImage", "Photo Metadata List Size: " + photoMetadataList.size());
+
 
             if (photoMetadataList != null && !photoMetadataList.isEmpty()) {
+                Log.d("PreloadImage", "Photo Metadata List Size: " + photoMetadataList.size());
                 PhotoMetadata photoMetadata = photoMetadataList.get(0);
                 FetchPhotoRequest photoRequest = FetchPhotoRequest.builder(photoMetadata)
                         .setMaxWidth(500)
