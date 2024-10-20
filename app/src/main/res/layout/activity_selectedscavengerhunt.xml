@@ -157,14 +157,28 @@
                         android:id="@+id/checkpointslabel"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_marginStart="108dp"
-                        android:layout_marginTop="47dp"
+                        android:layout_marginStart="32dp"
                         android:fontFamily="@font/bungeeregular"
                         android:text="CHECKPOINTS"
                         android:textColor="#528f8f"
                         android:textSize="18sp"
+                        app:layout_constraintTop_toBottomOf="@+id/tasksLabel"
                         app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toBottomOf="@+id/pointsAndAchievmentsLabel" />
+                        tools:layout_editor_absoluteY="573dp" />
+
+                    <Button
+                        android:id="@+id/startHuntButton"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="272dp"
+                        android:layout_marginTop="12dp"
+                        android:backgroundTint="#528f8f"
+                        android:padding="12dp"
+                        android:text="Start Hunt"
+                        android:textColor="@android:color/white"
+                        android:textSize="18sp"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toBottomOf="@+id/username" />
 
                     <TextView
                         android:id="@+id/pointsAndAchievmentsLabel"

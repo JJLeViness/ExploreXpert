@@ -6,6 +6,7 @@ import android.graphics.BitmapFactory;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -30,6 +31,7 @@ public class selectedscavengerhunt_activity extends AppCompatActivity {
     private TextView usernameTextView;
     private TextView pointsTextView;
     private ImageView profileImageView;
+    private Button startHuntButton;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -53,6 +55,7 @@ public class selectedscavengerhunt_activity extends AppCompatActivity {
         usernameTextView = findViewById(R.id.username);
         pointsTextView = findViewById(R.id.totalPoints);
         profileImageView = findViewById(R.id.profileImage);
+        startHuntButton = findViewById(R.id.startHuntButton);
 
         huntNameView.setText(huntName);
         huntDescView.setText(huntDescription);
@@ -60,7 +63,7 @@ public class selectedscavengerhunt_activity extends AppCompatActivity {
         // Load user profile
         loadUserProfile();
 
-        tasksLabel.setOnClickListener(v -> { // FOR TESTING PURPOSES ONLY - REMOVE LATER
+        startHuntButton.setOnClickListener(v -> {
             Intent intent = new Intent(selectedscavengerhunt_activity.this, navigator.class);
             intent.putExtra("hunt", hunt);
             startActivity(intent);
