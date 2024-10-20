@@ -24,8 +24,6 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content">
 
-
-                <!-- Banner -->
                 <LinearLayout
                     android:id="@+id/banner"
                     android:layout_width="514dp"
@@ -36,7 +34,6 @@
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent">
                 </LinearLayout>
-
 
                 <ImageView
                     android:id="@+id/menuButton"
@@ -63,7 +60,6 @@
                     app:layout_constraintTop_toBottomOf="@id/banner"
                     app:layout_constraintVertical_bias="0.2" />
 
-
                 <TextView
                     android:id="@+id/totalPointsLabel"
                     android:layout_width="119dp"
@@ -76,7 +72,6 @@
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@id/totalPoints" />
 
-
                 <TextView
                     android:id="@+id/totalPoints"
                     android:layout_width="130dp"
@@ -84,7 +79,7 @@
                     android:layout_marginStart="40dp"
                     android:layout_marginTop="44dp"
                     android:fontFamily="@font/bungeeregular"
-                    android:text="50"
+                    android:text="0"
                     android:textColor="#528f8f"
                     android:textSize="36sp"
                     app:layout_constraintStart_toStartOf="parent"
@@ -126,9 +121,9 @@
 
                 <TextView
                     android:id="@+id/currentLocationLabel"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="32dp"
+                    android:layout_width="216dp"
+                    android:layout_height="40dp"
+                    android:layout_marginStart="40dp"
                     android:layout_marginTop="16dp"
                     android:fontFamily="@font/bungeeregular"
                     android:text="Current Location"

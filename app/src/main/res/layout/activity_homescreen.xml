@@ -71,17 +71,17 @@
         android:id="@+id/fromLabel"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="4dp"
         android:layout_marginTop="48dp"
+        android:layout_marginStart="20dp"
         android:text="From"
-        app:layout_constraintStart_toStartOf="@+id/toLabel"
+        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/banner" />
 
     <TextView
         android:id="@+id/toLabel"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="16dp"
+        android:layout_marginStart="20dp"
         android:layout_marginTop="4dp"
         android:text="To"
         app:layout_constraintStart_toStartOf="parent"
@@ -91,13 +91,11 @@
         android:id="@+id/toSearch"
         android:layout_width="366dp"
         android:layout_height="65dp"
-        android:layout_marginTop="24dp"
         android:background="@drawable/textbox"
         android:hint="Enter To Location"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.05"
-        app:layout_constraintStart_toStartOf="@+id/fromSearch"
-        app:layout_constraintTop_toBottomOf="@id/fromSearch" />
+        android:layout_marginStart="21dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/toLabel" />
 
     <androidx.appcompat.widget.AppCompatButton
         android:id="@+id/navigateButton"
@@ -105,24 +103,20 @@
         android:layout_height="52dp"
         android:layout_gravity="center"
         android:layout_marginTop="8dp"
+        android:layout_marginStart="21dp"
         android:background="@drawable/rounded_button"
-        android:padding="1dp"
         android:text="To the Destination"
         android:textColor="#FFFFFF"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.005"
-        app:layout_constraintStart_toStartOf="@+id/toSearch"
+        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/map" />
 
     <EditText
         android:id="@+id/fromSearch"
-        android:layout_width="369dp"
-        android:layout_height="60dp"
-        android:layout_marginTop="8dp"
+        android:layout_width="366dp"
+        android:layout_height="65dp"
+        android:layout_marginStart="21dp"
         android:background="@drawable/textbox"
         android:hint="Enter From Location"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.119"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/fromLabel" />
 

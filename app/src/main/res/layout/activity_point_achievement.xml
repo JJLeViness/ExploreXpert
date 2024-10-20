@@ -11,7 +11,6 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
-        <!-- Banner -->
         <LinearLayout
             android:id="@+id/banner"
             android:layout_width="514dp"
@@ -22,7 +21,6 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent">
         </LinearLayout>
-
 
         <ImageView
             android:id="@+id/menuButton"
@@ -95,36 +93,32 @@
             android:orientation="vertical"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/my_points_label">
-
         </LinearLayout>
 
         <TextView
             android:id="@+id/totalPointsLabel"
-            android:layout_width="121dp"
-            android:layout_height="58dp"
-            android:layout_gravity="center"
-            android:layout_marginStart="16dp"
-            android:layout_marginBottom="28dp"
+            android:layout_width="119dp"
+            android:layout_height="56dp"
+            android:layout_marginStart="40dp"
             android:fontFamily="@font/bungeeregular"
             android:text="TOTAL POINTS"
             android:textColor="#528f8f"
             android:textSize="18sp"
-            app:layout_constraintBottom_toTopOf="@+id/my_points_label"
-            app:layout_constraintStart_toStartOf="parent" />
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/totalPoints" />
 
         <TextView
             android:id="@+id/totalPoints"
-            android:layout_width="151dp"
-            android:layout_height="67dp"
-            android:layout_gravity="center"
-            android:layout_marginStart="28dp"
-            android:layout_marginBottom="8dp"
+            android:layout_width="130dp"
+            android:layout_height="65dp"
+            android:layout_marginStart="40dp"
+            android:layout_marginTop="44dp"
             android:fontFamily="@font/bungeeregular"
-            android:text="50"
+            android:text="0"
             android:textColor="#528f8f"
             android:textSize="36sp"
-            app:layout_constraintBottom_toTopOf="@+id/totalPointsLabel"
-            app:layout_constraintStart_toStartOf="parent" />
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/banner" />
 
         <TextView
             android:id="@+id/achievement_example"

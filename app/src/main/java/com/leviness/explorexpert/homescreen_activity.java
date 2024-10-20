@@ -117,27 +117,19 @@ public class homescreen_activity extends AppCompatActivity {
                 } else if (id == R.id.nav_map) {
                     startActivity(new Intent(homescreen_activity.this, Map_Activity.class));
                 } else if (id == R.id.nav_profile) {
-                    // Check if the user is logged in
                     FirebaseUser currentUser = FirebaseAuth.getInstance().getCurrentUser();
-
                     if (currentUser != null) {
-                        // User is logged in, proceed to profile screen
                         startActivity(new Intent(homescreen_activity.this, profile_Activity.class));
                     } else {
-                        // User is not logged in, redirect to login screen
-                        Intent loginIntent = new Intent(homescreen_activity.this, login_Activity.class);
-                        loginIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
-                        startActivity(loginIntent);
-                        finish();  // Optionally close the current activity so the user can't navigate back without logging in
+                        startActivity(new Intent(homescreen_activity.this, login_Activity.class));
                     }
                 } else if (id == R.id.nav_scavenger_hunt) {
                     startActivity(new Intent(homescreen_activity.this, selectyourhunt_activity.class));
                 } else if (id == R.id.nav_settings) {
                     startActivity(new Intent(homescreen_activity.this, settings_Activity.class));
-                    } else if (id == R.id.nav_login) {
+                } else if (id == R.id.nav_login) {
                     startActivity(new Intent(homescreen_activity.this, login_Activity.class));
                 }
-
                 menuNavigation.closeDrawer(GravityCompat.END);
                 return true;
             }

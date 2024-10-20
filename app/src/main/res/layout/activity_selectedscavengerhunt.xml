@@ -28,8 +28,6 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content">
 
-
-                    <!-- Banner -->
                     <LinearLayout
                         android:id="@+id/banner"
                         android:layout_width="514dp"
@@ -40,7 +38,6 @@
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toTopOf="parent">
                     </LinearLayout>
-
 
                     <ImageView
                         android:id="@+id/menuButton"
@@ -66,12 +63,12 @@
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toBottomOf="@id/banner"
                         app:layout_constraintVertical_bias="0.2" />
+
                     <TextView
                         android:id="@+id/totalPointsLabel"
-                        android:layout_width="185dp"
-                        android:layout_height="36dp"
-                        android:layout_marginStart="48dp"
-                        android:layout_marginTop="8dp"
+                        android:layout_width="119dp"
+                        android:layout_height="56dp"
+                        android:layout_marginStart="40dp"
                         android:fontFamily="@font/bungeeregular"
                         android:text="TOTAL POINTS"
                         android:textColor="#528f8f"
@@ -79,29 +76,18 @@
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toBottomOf="@id/totalPoints" />
 
-                    <View
-                        android:layout_width="159dp"
-                        android:layout_height="13dp"
-                        android:layout_marginTop="216dp"
-                        android:background="#ffea77"
-                        app:layout_constraintEnd_toEndOf="parent"
-                        app:layout_constraintHorizontal_bias="0.186"
-                        app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toTopOf="parent" />
-
                     <TextView
                         android:id="@+id/totalPoints"
-                        android:layout_width="70dp"
-                        android:layout_height="70dp"
-                        android:layout_marginStart="48dp"
-                        android:layout_marginTop="48dp"
+                        android:layout_width="130dp"
+                        android:layout_height="65dp"
+                        android:layout_marginStart="40dp"
+                        android:layout_marginTop="44dp"
                         android:fontFamily="@font/bungeeregular"
-                        android:text="50"
+                        android:text="0"
                         android:textColor="#528f8f"
                         android:textSize="36sp"
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toBottomOf="@id/banner" />
-
 
                     <TextView
                         android:id="@+id/username"
@@ -200,7 +186,7 @@
                         android:src="@drawable/profilepic"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintTop_toBottomOf="@+id/banner"
-                        android:layout_marginTop="48dp" /> <!-- Use a placeholder image here -->
+                        android:layout_marginTop="48dp" />
 
                 </androidx.constraintlayout.widget.ConstraintLayout>
             </ScrollView>

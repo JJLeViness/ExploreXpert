@@ -318,7 +318,12 @@ public class Map_Activity extends AppCompatActivity implements OnMapReadyCallbac
                 } else if (id == R.id.nav_map) {
                     startActivity(new Intent(Map_Activity.this, Map_Activity.class));
                 } else if (id == R.id.nav_profile) {
-                    startActivity(new Intent(Map_Activity.this, profile_Activity.class));
+                    FirebaseUser currentUser = FirebaseAuth.getInstance().getCurrentUser();
+                    if (currentUser != null) {
+                        startActivity(new Intent(Map_Activity.this, profile_Activity.class));
+                    } else {
+                        startActivity(new Intent(Map_Activity.this, login_Activity.class));
+                    }
                 } else if (id == R.id.nav_scavenger_hunt) {
                     startActivity(new Intent(Map_Activity.this, selectyourhunt_activity.class));
                 } else if (id == R.id.nav_settings) {
