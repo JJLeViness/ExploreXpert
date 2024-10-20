@@ -61,16 +61,17 @@ public class selectyourhunt_activity extends AppCompatActivity {
 
 
         // Creating and adding scavenger hunts
-        createScavengerHunt("Manhattan Landmarks Hunt", "tourist_attraction|museum|landmark", "Discover famous landmarks in Manhattan.", linksGrid);
+        createScavengerHunt("Manhattan Landmarks Hunt", "tourist_attraction|museum|point_of_interest", "Discover famous landmarks in Manhattan.", linksGrid);
         createScavengerHunt("Art Installations Hunt", "art_gallery", "Explore stunning art installations across Manhattan.", linksGrid);
         createScavengerHunt("Parks & Nature Hunt", "park", "Visit beautiful parks and green spaces in Manhattan.", linksGrid);
-        createScavengerHunt("Historic Buildings Hunt", "building", "Explore the historic buildings in Manhattan.", linksGrid);
+        createScavengerHunt("Historic Buildings Hunt", "point_of_interest", "Explore the historic buildings in Manhattan.", linksGrid); // 'building' replaced with 'point_of_interest'
         createScavengerHunt("Food & Drink Tour", "restaurant|cafe|bar", "Discover the best food and drink spots in the city.", linksGrid);
-        createScavengerHunt("Street Art Walk", "art_gallery|landmark", "Find the hidden street art murals across the city.", linksGrid);
-        createScavengerHunt("Theater District Hunt", "movie_theater|theater", "Explore the famous theaters and cultural spots.", linksGrid);
+        createScavengerHunt("Street Art Walk", "art_gallery|point_of_interest", "Find the hidden street art murals across the city.", linksGrid); // 'landmark' replaced with 'point_of_interest'
+        createScavengerHunt("Theater District Hunt", "movie_theater|point_of_interest", "Explore the famous theaters and cultural spots.", linksGrid); // 'theater' replaced with 'point_of_interest'
         createScavengerHunt("Shopping Spree Hunt", "shopping_mall|clothing_store", "Discover the best shopping destinations in Manhattan.", linksGrid);
-        createScavengerHunt("Bridges of Manhattan", "bridge", "Take a tour of the iconic bridges of Manhattan.", linksGrid);
+        createScavengerHunt("Bridges of Manhattan", "point_of_interest", "Take a tour of the iconic bridges of Manhattan.", linksGrid); // 'bridge' replaced with 'point_of_interest'
         createScavengerHunt("Hidden Gems Hunt", "point_of_interest", "Explore the lesser-known hidden gems of the city.", linksGrid);
+
     }
 
     private void createScavengerHunt(String huntName, String placeTypes, String huntDescription, GridLayout linksGrid) {
