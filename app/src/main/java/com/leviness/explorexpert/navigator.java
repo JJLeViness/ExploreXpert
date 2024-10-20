@@ -37,6 +37,9 @@ import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.material.navigation.NavigationView;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.firestore.FirebaseFirestore;
 import com.leviness.explorexpert.network.DirectionsAdapter;
 import com.leviness.explorexpert.network.RoutesTask;
 
@@ -60,6 +63,7 @@ public class navigator extends AppCompatActivity implements OnMapReadyCallback {
 
     private String fromLatLng;
     private String toLatLng;
+    private String toName;
     private int currentTaskIndex = 0;
     private TextView destinationNameTextView;
     private Button nextTaskButton;
@@ -105,6 +109,7 @@ public class navigator extends AppCompatActivity implements OnMapReadyCallback {
 
         fromLatLng = getIntent().getStringExtra("fromLatLng");
         toLatLng = getIntent().getStringExtra("toLatLng");
+    toName = getIntent().getStringExtra("toName");
 
          if (hunt != null) {
             isScavengerHuntActive = true;
@@ -191,10 +196,14 @@ public class navigator extends AppCompatActivity implements OnMapReadyCallback {
             LatLng fromLatLngParsed = parseLatLng(fromLatLng);
 
 
+
             // Move the camera to the "from" location
             if (mMap != null) {
                 mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(fromLatLngParsed, 15));
             }
+
+            String destinationName = "Destination: "+toName;
+            destinationNameTextView.setText(destinationName);
 
             // Start RoutesTask to navigate between "from" and "to" places
             new RoutesTask(this, mMap, directionsAdapter, "walking").execute(fromLatLng, toLatLng);
@@ -285,6 +294,12 @@ public class navigator extends AppCompatActivity implements OnMapReadyCallback {
 
             // Update the destination name and UI
             destinationNameTextView.setText("Destination: " + nextTask.getPlaceName());
+
+            FirebaseUser currentUser = FirebaseAuth.getInstance().getCurrentUser();
+            if (currentUser != null) {
+                String userId = currentUser.getUid();
+                updateUserPoints(userId, 100);  // Award 100 points for completing each task
+            }
         } else {
             // All tasks completed, update UI accordingly
             Toast.makeText(this, "All tasks completed!", Toast.LENGTH_SHORT).show();
@@ -297,6 +312,12 @@ public class navigator extends AppCompatActivity implements OnMapReadyCallback {
             scavengerHuntTask finalTask = hunt.getTasks().get(currentTaskIndex); // Get the final task
             LatLng finalTaskLocation = finalTask.getLocation(); // Get the final task location
             mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(finalTaskLocation, 15));
+
+            FirebaseUser currentUser = FirebaseAuth.getInstance().getCurrentUser();
+            if (currentUser != null) {
+                String userId = currentUser.getUid();
+                updateUserPoints(userId, 500);  // Award 500 points for completing the scavenger hunt
+            }
         }
     }
 
@@ -326,5 +347,33 @@ public class navigator extends AppCompatActivity implements OnMapReadyCallback {
         double lat = Double.parseDouble(parts[0]);
         double lng = Double.parseDouble(parts[1]);
         return new LatLng(lat, lng);
+    }
+
+    private void updateUserPoints(String userId, int points) {
+        FirebaseFirestore db = FirebaseFirestore.getInstance();
+
+        // Fetch the user's current points
+        db.collection("users").document(userId).get().addOnSuccessListener(documentSnapshot -> {
+            if (documentSnapshot.exists()) {
+                Long currentPoints = documentSnapshot.getLong("points");
+                if (currentPoints == null) {
+                    currentPoints = 0L;
+                }
+
+                // Add the new points
+                long updatedPoints = currentPoints + points;
+
+                // Update the user's points in Firestore
+                db.collection("users").document(userId).update("points", updatedPoints)
+                        .addOnSuccessListener(aVoid -> {
+                            Toast.makeText(navigator.this, "You earned " + points + " points!", Toast.LENGTH_SHORT).show();
+                        })
+                        .addOnFailureListener(e -> {
+                            Toast.makeText(navigator.this, "Failed to update points.", Toast.LENGTH_SHORT).show();
+                        });
+            }
+        }).addOnFailureListener(e -> {
+            Toast.makeText(navigator.this, "Failed to fetch user data.", Toast.LENGTH_SHORT).show();
+        });
     }
 }

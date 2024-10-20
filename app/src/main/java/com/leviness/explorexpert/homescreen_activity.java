@@ -48,6 +48,7 @@ public class homescreen_activity extends AppCompatActivity {
 
     private String fromLatLng = null;
     private String toLatLng = null;
+    private String toName = null;
 
 
     @Override
@@ -104,6 +105,7 @@ public class homescreen_activity extends AppCompatActivity {
             Intent intent = new Intent(homescreen_activity.this, navigator.class);
             intent.putExtra("fromLatLng", fromLatLng);
             intent.putExtra("toLatLng", toLatLng);
+            intent.putExtra("toName", toName);
             startActivity(intent);
         });
 
@@ -158,6 +160,7 @@ public class homescreen_activity extends AppCompatActivity {
                 } else if (requestCode == AUTOCOMPLETE_REQUEST_CODE_TO) {
                     toSearch.setText(place.getName());
                     toLatLng = Objects.requireNonNull(place.getLatLng()).latitude + "," + place.getLatLng().longitude;
+                    toName = place.getName();
                 }
             } else if (resultCode == AutocompleteActivity.RESULT_ERROR) {
                 Status status = Autocomplete.getStatusFromIntent(data);
