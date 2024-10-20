@@ -2,6 +2,7 @@ package com.leviness.explorexpert;
 
 import android.Manifest;
 import android.content.Intent;
+import android.content.pm.ActivityInfo;
 import android.content.pm.PackageManager;
 import android.location.Location;
 import android.os.Bundle;
@@ -88,6 +89,7 @@ public class navigator extends AppCompatActivity implements OnMapReadyCallback {
             return insets;
         });
 
+        this.setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
 
         // Set up RecyclerView for directions
         RecyclerView directionsRecyclerView = findViewById(R.id.directionsRecyclerView);
