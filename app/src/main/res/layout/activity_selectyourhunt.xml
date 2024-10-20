@@ -91,7 +91,7 @@
                     android:layout_marginTop="20dp"
                     android:textColor="#528F8F"
                     android:textSize="16sp"
-                    android:fontFamily="@font/bungeeshade"
+                    android:fontFamily="@font/merriweatherregular"
                     android:padding="8dp" />
 
                 <TextView
@@ -101,7 +101,7 @@
                     android:layout_marginTop="20dp"
                     android:textColor="#528F8F"
                     android:textSize="16sp"
-                    android:fontFamily="@font/bungeeshade"
+                    android:fontFamily="@font/merriweatherregular"
                     android:padding="8dp" />
                 <TextView
                     android:layout_width="wrap_content"
@@ -109,16 +109,7 @@
                     android:text="Example hunt"
                     android:textColor="#528F8F"
                     android:textSize="16sp"
-                    android:fontFamily="@font/bungeeshade"
-                    android:padding="8dp" />
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Example hunt"
-                    android:textColor="#528F8F"
-                    android:textSize="16sp"
-                    android:fontFamily="@font/bungeeshade"
+                    android:fontFamily="@font/merriweatherregular"
                     android:padding="8dp" />
 
                 <TextView
@@ -127,7 +118,7 @@
                     android:text="Example hunt"
                     android:textColor="#528F8F"
                     android:textSize="16sp"
-                    android:fontFamily="@font/bungeeshade"
+                    android:fontFamily="@font/merriweatherregular"
                     android:padding="8dp" />
 
                 <TextView
@@ -136,7 +127,7 @@
                     android:text="Example hunt"
                     android:textColor="#528F8F"
                     android:textSize="16sp"
-                    android:fontFamily="@font/bungeeshade"
+                    android:fontFamily="@font/merriweatherregular"
                     android:padding="8dp" />
 
                 <TextView
@@ -145,7 +136,7 @@
                     android:text="Example hunt"
                     android:textColor="#528F8F"
                     android:textSize="16sp"
-                    android:fontFamily="@font/bungeeshade"
+                    android:fontFamily="@font/merriweatherregular"
                     android:padding="8dp" />
 
                 <TextView
@@ -154,7 +145,7 @@
                     android:text="Example hunt"
                     android:textColor="#528F8F"
                     android:textSize="16sp"
-                    android:fontFamily="@font/bungeeshade"
+                    android:fontFamily="@font/merriweatherregular"
                     android:padding="8dp" />
 
                 <TextView
@@ -163,7 +154,7 @@
                     android:text="Example hunt"
                     android:textColor="#528F8F"
                     android:textSize="16sp"
-                    android:fontFamily="@font/bungeeshade"
+                    android:fontFamily="@font/merriweatherregular"
                     android:padding="8dp" />
 
                 <TextView
@@ -172,7 +163,16 @@
                     android:text="Example hunt"
                     android:textColor="#528F8F"
                     android:textSize="16sp"
-                    android:fontFamily="@font/bungeeshade"
+                    android:fontFamily="@font/merriweatherregular"
+                    android:padding="8dp" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Example hunt"
+                    android:textColor="#528F8F"
+                    android:textSize="16sp"
+                    android:fontFamily="@font/merriweatherregular"
                     android:padding="8dp" />
 
             </GridLayout>
