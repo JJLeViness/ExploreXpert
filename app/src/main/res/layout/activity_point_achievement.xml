@@ -49,6 +49,7 @@
             app:layout_constraintTop_toBottomOf="@id/banner"
             app:layout_constraintVertical_bias="0.2" />
 
+
         <TextView
             android:id="@+id/my_achievements_label"
             android:layout_width="wrap_content"

@@ -24,8 +24,6 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent">
         </LinearLayout>
-
-
         <ImageView
             android:id="@+id/menuButton"
             android:layout_width="50dp"
