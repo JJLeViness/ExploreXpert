@@ -2,6 +2,7 @@
 <androidx.constraintlayout.widget.ConstraintLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
@@ -47,31 +48,22 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="140dp"
+        android:layout_marginTop="144dp"
         android:orientation="vertical"
         android:padding="20dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent">
 
         <EditText
-            android:id="@+id/edit_username"
-            android:layout_width="384dp"
-            android:layout_height="59dp"
-            android:hint="Enter new username"
-            android:maxLength="20" />
-
-        <EditText
             android:id="@+id/edit_email"
             android:layout_width="384dp"
             android:layout_height="59dp"
-            android:layout_marginTop="16dp"
             android:hint="Enter new email" />
 
         <Button
             android:id="@+id/change_profile_pic"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="20dp"
             android:backgroundTint="@color/grey"
             android:text="Change Profile Picture"
             android:textColor="@color/black" />
@@ -83,6 +75,13 @@
             android:backgroundTint="@color/grey"
             android:text="Save"
             android:textColor="@color/black" />
+
+        <EditText
+            android:id="@+id/edit_username"
+            android:layout_width="384dp"
+            android:layout_height="59dp"
+            android:hint="Enter new username"
+            android:maxLength="20" />
 
     </LinearLayout>
 

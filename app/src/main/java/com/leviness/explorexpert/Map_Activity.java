@@ -1,6 +1,7 @@
 package com.leviness.explorexpert;
 
 import android.content.Intent;
+import android.content.pm.ActivityInfo;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.os.AsyncTask;
@@ -77,7 +78,18 @@ public class Map_Activity extends AppCompatActivity implements OnMapReadyCallbac
     private NavigationView navigationView;
     private PlacesClient placesClient;
     private LatLng currentLocation;
-    private String[] placeTypes = {"RESTAURANT", "CAFE", "BAR", "STORE", "SHOPPING_MALL", "MUSEUM", "AMUSEMENT_PARK", "PARK", "MOVIE_THEATER", "THINGS_TO_DO", "HOTEL", "TOURIST_ATTRACTION", "POINT_OF_INTEREST", "LOCAL_LANDMARK", "HISTORIC_SITE"};
+    //lowercase for filerting and uppercase for display
+    private String[] placeTypes = {
+            "restaurant", "cafe", "bar", "store", "shopping_mall", "museum",
+            "amusement_park", "park", "movie_theater", "things_to_do", "hotel",
+            "tourist_attraction", "point_of_interest", "local_landmark", "historic_site"
+    };
+
+    private String[] displayPlaceTypes = {
+            "Restaurant", "Cafe", "Bar", "Store", "Shopping Mall", "Museum",
+            "Amusement Park", "Park", "Movie Theater", "Things to Do", "Hotel",
+            "Tourist Attraction", "Point of Interest", "Local Landmark", "Historic Site"
+    };
     private KnowledgeGraphAPIClient knowledgeGraphAPIClient;
 
 
@@ -98,6 +110,8 @@ public class Map_Activity extends AppCompatActivity implements OnMapReadyCallbac
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
             return insets;
         });
+
+        this.setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
 
         menuButton = findViewById(R.id.map_menuButton);
         menuNavigation = findViewById(R.id.drawer_layout);
@@ -143,7 +157,7 @@ public class Map_Activity extends AppCompatActivity implements OnMapReadyCallbac
 
 
     private void setupFilterSpinner() {
-        ArrayAdapter<String> adapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, placeTypes);
+        ArrayAdapter<String> adapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, displayPlaceTypes);
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         filterSpinner.setAdapter(adapter);
         filterSpinner.setVisibility(View.VISIBLE);
@@ -318,7 +332,12 @@ public class Map_Activity extends AppCompatActivity implements OnMapReadyCallbac
                 } else if (id == R.id.nav_map) {
                     startActivity(new Intent(Map_Activity.this, Map_Activity.class));
                 } else if (id == R.id.nav_profile) {
-                    startActivity(new Intent(Map_Activity.this, profile_Activity.class));
+                    FirebaseUser currentUser = FirebaseAuth.getInstance().getCurrentUser();
+                    if (currentUser != null) {
+                        startActivity(new Intent(Map_Activity.this, profile_Activity.class));
+                    } else {
+                        startActivity(new Intent(Map_Activity.this, login_Activity.class));
+                    }
                 } else if (id == R.id.nav_scavenger_hunt) {
                     startActivity(new Intent(Map_Activity.this, selectyourhunt_activity.class));
                 } else if (id == R.id.nav_settings) {
@@ -401,6 +420,7 @@ public class Map_Activity extends AppCompatActivity implements OnMapReadyCallbac
                         JSONObject location = geometry.getJSONObject("location");
 
                         LatLng latLng = new LatLng(location.getDouble("lat"), location.getDouble("lng"));
+
 
                         // Add marker for each place
                         Marker marker = mMap.addMarker(new MarkerOptions().position(latLng).title(placeName).snippet(placeId).icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_AZURE)));
@@ -537,9 +557,10 @@ public class Map_Activity extends AppCompatActivity implements OnMapReadyCallbac
             String placeName = place.getName();
 
             List<PhotoMetadata> photoMetadataList = place.getPhotoMetadatas();
-            Log.d("PreloadImage", "Photo Metadata List Size: " + photoMetadataList.size());
+
 
             if (photoMetadataList != null && !photoMetadataList.isEmpty()) {
+                Log.d("PreloadImage", "Photo Metadata List Size: " + photoMetadataList.size());
                 PhotoMetadata photoMetadata = photoMetadataList.get(0);
                 FetchPhotoRequest photoRequest = FetchPhotoRequest.builder(photoMetadata)
                         .setMaxWidth(500)

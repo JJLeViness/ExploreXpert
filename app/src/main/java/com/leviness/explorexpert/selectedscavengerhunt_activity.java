@@ -1,11 +1,14 @@
 package com.leviness.explorexpert;
 
+import android.app.AlertDialog;
 import android.content.Intent;
+import android.content.pm.ActivityInfo;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -18,6 +21,7 @@ import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.io.InputStream;
 import java.net.URL;
+import java.util.List;
 
 public class selectedscavengerhunt_activity extends AppCompatActivity {
 
@@ -30,11 +34,15 @@ public class selectedscavengerhunt_activity extends AppCompatActivity {
     private TextView usernameTextView;
     private TextView pointsTextView;
     private ImageView profileImageView;
+    private Button startHuntButton;
+    private TextView pointsAndAchievements;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_selectedscavengerhunt);
+
+        this.setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
 
         // Initialize Firebase
         db = FirebaseFirestore.getInstance();
@@ -53,6 +61,8 @@ public class selectedscavengerhunt_activity extends AppCompatActivity {
         usernameTextView = findViewById(R.id.username);
         pointsTextView = findViewById(R.id.totalPoints);
         profileImageView = findViewById(R.id.profileImage);
+        startHuntButton = findViewById(R.id.startHuntButton);
+        pointsAndAchievements = findViewById(R.id.pointsAndAchievmentsLabel);
 
         huntNameView.setText(huntName);
         huntDescView.setText(huntDescription);
@@ -60,11 +70,25 @@ public class selectedscavengerhunt_activity extends AppCompatActivity {
         // Load user profile
         loadUserProfile();
 
-        tasksLabel.setOnClickListener(v -> { // FOR TESTING PURPOSES ONLY - REMOVE LATER
+        pointsAndAchievements.setOnClickListener(v -> {
+            Intent intent = new Intent(selectedscavengerhunt_activity.this, point_achievement_Activity.class);
+            startActivity(intent);
+
+        });
+
+        startHuntButton.setOnClickListener(v -> {
             Intent intent = new Intent(selectedscavengerhunt_activity.this, navigator.class);
             intent.putExtra("hunt", hunt);
             startActivity(intent);
         });
+
+        tasksLabel.setOnClickListener(v -> {
+
+            showTaskLocations(hunt.getTasks());
+
+        });
+
+
     }
 
     private void loadUserProfile() {
@@ -91,6 +115,23 @@ public class selectedscavengerhunt_activity extends AppCompatActivity {
                 }
             }).addOnFailureListener(e -> Log.e("SelectedHuntActivity", "Error fetching user profile", e));
         }
+    }
+
+    private void showTaskLocations(List<scavengerHuntTask> tasks) {
+        // Create an array of place names
+        String[] placeNames = new String[tasks.size()];
+        for (int i = 0; i < tasks.size(); i++) {
+            placeNames[i] = tasks.get(i).getPlaceName();
+        }
+
+        // Create an AlertDialog to display the place names
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle("Hunt Locations")
+                .setItems(placeNames, (dialog, which) -> {
+
+                })
+                .setPositiveButton("OK", (dialog, which) -> dialog.dismiss());
+        builder.create().show();
     }
 
     private static class DownloadImageTask extends AsyncTask<String, Void, Bitmap> {

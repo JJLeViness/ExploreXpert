@@ -1,6 +1,7 @@
 package com.leviness.explorexpert;
 
 import android.content.Intent;
+import android.content.pm.ActivityInfo;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.MenuItem;
@@ -48,12 +49,15 @@ public class homescreen_activity extends AppCompatActivity {
 
     private String fromLatLng = null;
     private String toLatLng = null;
+    private String toName = null;
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_homescreen);
+
+        this.setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
 
         if (!Places.isInitialized()) {
             Places.initialize(getApplicationContext(), getString(R.string.maps_api_key));
@@ -104,6 +108,7 @@ public class homescreen_activity extends AppCompatActivity {
             Intent intent = new Intent(homescreen_activity.this, navigator.class);
             intent.putExtra("fromLatLng", fromLatLng);
             intent.putExtra("toLatLng", toLatLng);
+            intent.putExtra("toName", toName);
             startActivity(intent);
         });
 
@@ -117,27 +122,19 @@ public class homescreen_activity extends AppCompatActivity {
                 } else if (id == R.id.nav_map) {
                     startActivity(new Intent(homescreen_activity.this, Map_Activity.class));
                 } else if (id == R.id.nav_profile) {
-                    // Check if the user is logged in
                     FirebaseUser currentUser = FirebaseAuth.getInstance().getCurrentUser();
-
                     if (currentUser != null) {
-                        // User is logged in, proceed to profile screen
                         startActivity(new Intent(homescreen_activity.this, profile_Activity.class));
                     } else {
-                        // User is not logged in, redirect to login screen
-                        Intent loginIntent = new Intent(homescreen_activity.this, login_Activity.class);
-                        loginIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
-                        startActivity(loginIntent);
-                        finish();  // Optionally close the current activity so the user can't navigate back without logging in
+                        startActivity(new Intent(homescreen_activity.this, login_Activity.class));
                     }
                 } else if (id == R.id.nav_scavenger_hunt) {
                     startActivity(new Intent(homescreen_activity.this, selectyourhunt_activity.class));
                 } else if (id == R.id.nav_settings) {
                     startActivity(new Intent(homescreen_activity.this, settings_Activity.class));
-                    } else if (id == R.id.nav_login) {
+                } else if (id == R.id.nav_login) {
                     startActivity(new Intent(homescreen_activity.this, login_Activity.class));
                 }
-
                 menuNavigation.closeDrawer(GravityCompat.END);
                 return true;
             }
@@ -166,6 +163,7 @@ public class homescreen_activity extends AppCompatActivity {
                 } else if (requestCode == AUTOCOMPLETE_REQUEST_CODE_TO) {
                     toSearch.setText(place.getName());
                     toLatLng = Objects.requireNonNull(place.getLatLng()).latitude + "," + place.getLatLng().longitude;
+                    toName = place.getName();
                 }
             } else if (resultCode == AutocompleteActivity.RESULT_ERROR) {
                 Status status = Autocomplete.getStatusFromIntent(data);

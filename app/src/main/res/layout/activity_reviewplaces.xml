@@ -129,6 +129,49 @@
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintVertical_bias="0.159" />
 
+
+
+        <TextView
+            android:id="@+id/place_one"
+            android:layout_width="268dp"
+            android:layout_height="69dp"
+            android:fontFamily="@font/bungeeshade"
+            android:padding="8dp"
+            android:text="review place"
+            android:textSize="22sp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintStart_toStartOf="@+id/reviewComment"
+            app:layout_constraintTop_toTopOf="@+id/banner"
+            app:layout_constraintVertical_bias="0.425" />
+
+        <EditText
+            android:id="@+id/reviewComment"
+            android:layout_width="323dp"
+            android:layout_height="74dp"
+            android:background="@drawable/textbox"
+            android:gravity="top"
+            android:hint="Write your review here"
+            android:minLines="4"
+
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_bias="0.564"
+            tools:layout_editor_absoluteX="13dp" />
+
+        <Button
+            android:id="@+id/submitReviewButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="4dp"
+            android:backgroundTint="#F4A460"
+            android:text="Submit Review"
+            android:textColor="#FFFFFF"
+            app:layout_constraintStart_toStartOf="@+id/reviewComment"
+            app:layout_constraintTop_toBottomOf="@id/reviewComment" />
+
         <RatingBar
             android:id="@+id/ratingBar"
             android:layout_width="wrap_content"
@@ -142,49 +185,8 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.0"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
-
-        <Button
-            android:id="@+id/submitReviewButton"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="12dp"
-            android:layout_marginTop="8dp"
-            android:backgroundTint="#F4A460"
-            android:text="Submit Review"
-            android:textColor="#FFFFFF"
-            app:layout_constraintStart_toStartOf="@+id/reviewComment"
-            app:layout_constraintTop_toBottomOf="@id/reviewComment" />
-
-        <EditText
-            android:id="@+id/reviewComment"
-            android:layout_width="323dp"
-            android:layout_height="74dp"
-            android:layout_marginStart="12dp"
-            android:background="@drawable/textbox"
-            android:gravity="top"
-            android:hint="Write your review here"
-            android:minLines="4"
-
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintStart_toStartOf="@+id/place_one"
             app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintVertical_bias="0.587" />
-
-        <TextView
-            android:id="@+id/place_one"
-            android:layout_width="268dp"
-            android:layout_height="69dp"
-            android:fontFamily="@font/bungeeshade"
-            android:padding="8dp"
-            android:text="review place"
-            android:textSize="22sp"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.068"
-            app:layout_constraintStart_toStartOf="@+id/reviewComment"
-            app:layout_constraintTop_toTopOf="@+id/banner"
-            app:layout_constraintVertical_bias="0.441" />
+            app:layout_constraintVertical_bias="0.485" />
 
         <TextView
             android:id="@+id/place_two"

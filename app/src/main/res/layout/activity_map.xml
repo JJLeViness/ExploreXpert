@@ -15,8 +15,8 @@
 
         <LinearLayout
             android:id="@+id/map_banner"
-            android:layout_width="match_parent"
-            android:layout_height="82dp"
+            android:layout_width="514dp"
+            android:layout_height="75dp"
             android:background="#F25858"
             android:orientation="horizontal"
             android:padding="16dp"
@@ -30,7 +30,7 @@
                 android:id="@+id/filterSpinner"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="16dp"
+                android:layout_marginStart="30dp"
                 android:layout_marginEnd="16dp"
                 android:padding="8dp"
                 android:visibility="gone"
@@ -39,18 +39,19 @@
                 android:spinnerMode="dropdown"
                 android:dropDownVerticalOffset="40dp" />
 
+
         </LinearLayout>
 
         <ImageView
             android:id="@+id/map_menuButton"
-            android:layout_width="63dp"
-            android:layout_height="55dp"
-            android:layout_marginTop="16dp"
-            android:layout_marginEnd="16dp"
+            android:layout_width="50dp"
+            android:layout_height="51dp"
+            android:layout_marginTop="15dp"
+            android:layout_marginEnd="18dp"
             android:clickable="true"
             android:contentDescription="@string/menu_button_desc"
             android:focusable="true"
-            android:src="@drawable/menubutton"
+            android:src="@drawable/menuicon"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
