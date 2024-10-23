@@ -2,79 +2,17 @@
 <androidx.constraintlayout.widget.ConstraintLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
 
-    <!-- Banner -->
-    <LinearLayout
-        android:id="@+id/banner"
-        android:layout_width="514dp"
-        android:layout_height="75dp"
-        android:background="#F25858"
-        android:orientation="horizontal"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent">
-    </LinearLayout>
-
-
-    <ImageView
-        android:id="@+id/menuButton"
-        android:layout_width="50dp"
-        android:layout_height="51dp"
-        android:layout_marginTop="15dp"
-        android:layout_marginEnd="18dp"
-        android:clickable="true"
-        android:contentDescription="@string/menu_button_desc"
-        android:focusable="true"
-        android:src="@drawable/menuicon"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-
-    <ImageView
-        android:id="@+id/bannerLogo"
-        android:layout_width="300dp"
-        android:layout_height="133dp"
-        android:layout_marginLeft="20dp"
-        android:layout_marginTop="-80dp"
-        android:contentDescription="@string/logo_desc"
-        android:src="@drawable/logoupdated"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/banner"
-        app:layout_constraintVertical_bias="0.2" />
-
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="144dp"
         android:orientation="vertical"
         android:padding="20dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent">
-
-        <EditText
-            android:id="@+id/edit_email"
-            android:layout_width="384dp"
-            android:layout_height="59dp"
-            android:hint="Enter new email" />
-
-        <Button
-            android:id="@+id/change_profile_pic"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:backgroundTint="@color/grey"
-            android:text="Change Profile Picture"
-            android:textColor="@color/black" />
-
-        <Button
-            android:id="@+id/save_changes"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:backgroundTint="@color/grey"
-            android:text="Save"
-            android:textColor="@color/black" />
 
         <EditText
             android:id="@+id/edit_username"
@@ -83,6 +21,19 @@
             android:hint="Enter new username"
             android:maxLength="20" />
 
+        <Button
+            android:id="@+id/change_profile_pic"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:backgroundTint="@color/grey"
+            android:text="Change Profile Picture"
+            android:textColor="@color/black" />
+        <Button
+            android:id="@+id/save_changes"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:backgroundTint="@color/grey"
+            android:text="Save"
+            android:textColor="@color/black" />
     </LinearLayout>
-
 </androidx.constraintlayout.widget.ConstraintLayout>

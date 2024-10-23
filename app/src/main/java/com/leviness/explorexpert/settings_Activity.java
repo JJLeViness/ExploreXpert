@@ -4,18 +4,22 @@ import android.content.Intent;
 import android.content.pm.ActivityInfo;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.LayoutInflater;
+import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.Toast;
 
 import androidx.appcompat.app.ActionBarDrawerToggle;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 
 import com.google.android.material.navigation.NavigationView;
 import com.google.android.material.snackbar.Snackbar;
+import com.google.android.material.textfield.TextInputEditText;
 import com.google.firebase.auth.AuthCredential;
 import com.google.firebase.auth.EmailAuthProvider;
 import com.google.firebase.auth.FirebaseAuth;
@@ -24,8 +28,6 @@ import com.google.firebase.firestore.FirebaseFirestore;
 
 public class settings_Activity extends AppCompatActivity {
 
-    private EditText newEmailEditText;
-    private EditText currentPasswordEditText;
     private Button updateEmailButton;
     private Button forgotPassword;
     private FirebaseAuth mAuth;
@@ -43,19 +45,16 @@ public class settings_Activity extends AppCompatActivity {
         // Initialize Firebase Auth
         mAuth = FirebaseAuth.getInstance();
 
-        newEmailEditText = findViewById(R.id.newEmail);
-        currentPasswordEditText = findViewById(R.id.currentPassword);
         updateEmailButton = findViewById(R.id.updateEmail);
         forgotPassword = findViewById(R.id.forgotPasswordButton);
         drawerLayout = findViewById(R.id.drawer_layout);
         navigationView = findViewById(R.id.menu_navigation);
         menuButton = findViewById(R.id.menuButton);
 
-        updateEmailButton.setOnClickListener(v -> reauthenticateAndUpdateEmail());
+        updateEmailButton.setOnClickListener(v -> showUpdateEmailDialog());
         forgotPassword.setOnClickListener(v -> {
             Intent intent = new Intent(settings_Activity.this, forgotpassword_activity.class);
             startActivity(intent);
-
         });
 
         // Set up DrawerLayout and NavigationView
@@ -98,22 +97,45 @@ public class settings_Activity extends AppCompatActivity {
         });
     }
 
-    private void reauthenticateAndUpdateEmail() {
-        String newEmail = newEmailEditText.getText().toString().trim();
-        String currentPassword = currentPasswordEditText.getText().toString().trim();
+    private void showUpdateEmailDialog() {
+        // Create a dialog builder
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        // Inflate the custom layout
+        LayoutInflater inflater = getLayoutInflater();
+        View dialogView = inflater.inflate(R.layout.dialog_update_email, null);
+        builder.setView(dialogView)
+                .setTitle("Update Email");
 
-        if (newEmail.isEmpty()) {
-            newEmailEditText.setError("New email is required!");
-            newEmailEditText.requestFocus();
-            return;
-        }
+        AlertDialog dialog = builder.create();
 
-        if (currentPassword.isEmpty()) {
-            currentPasswordEditText.setError("Current password is required!");
-            currentPasswordEditText.requestFocus();
-            return;
-        }
+        // Find the EditText fields and Apply button
+        TextInputEditText currentPasswordEditText = dialogView.findViewById(R.id.currentPassword);
+        TextInputEditText newEmailEditText = dialogView.findViewById(R.id.newEmail);
+        Button applyButton = dialogView.findViewById(R.id.applyButton);
 
+        applyButton.setOnClickListener(v -> {
+            String newEmail = newEmailEditText.getText().toString().trim();
+            String currentPassword = currentPasswordEditText.getText().toString().trim();
+
+            if (newEmail.isEmpty()) {
+                newEmailEditText.setError("New email is required!");
+                newEmailEditText.requestFocus();
+                return;
+            }
+
+            if (currentPassword.isEmpty()) {
+                currentPasswordEditText.setError("Current password is required!");
+                currentPasswordEditText.requestFocus();
+                return;
+            }
+
+            reauthenticateAndUpdateEmail(currentPassword, newEmail, dialog);
+        });
+
+        dialog.show();
+    }
+
+    private void reauthenticateAndUpdateEmail(String currentPassword, String newEmail, AlertDialog dialog) {
         FirebaseUser user = mAuth.getCurrentUser();
         if (user != null) {
             AuthCredential credential = EmailAuthProvider.getCredential(user.getEmail(), currentPassword);
@@ -126,6 +148,9 @@ public class settings_Activity extends AppCompatActivity {
                         if (emailTask.isSuccessful()) {
                             Toast.makeText(settings_Activity.this, "Verification email sent to " + newEmail + ". Please verify before we can update your email.", Toast.LENGTH_LONG).show();
 
+                            // Close the dialog after applying changes
+                            dialog.dismiss();
+
                             // Listen for changes to email verification status
                             mAuth.addAuthStateListener(authStateListener -> {
                                 FirebaseUser updatedUser = mAuth.getCurrentUser();
@@ -134,7 +159,6 @@ public class settings_Activity extends AppCompatActivity {
                                     updateEmailInFirestore(updatedUser, newEmail);
                                 }
                             });
-
                         } else {
                             Log.e("FirebaseError", emailTask.getException().getMessage());
                             Toast.makeText(settings_Activity.this, "Error: " + emailTask.getException().getMessage(), Toast.LENGTH_LONG).show();
@@ -148,6 +172,7 @@ public class settings_Activity extends AppCompatActivity {
             Toast.makeText(settings_Activity.this, "User not authenticated", Toast.LENGTH_SHORT).show();
         }
     }
+
     private void updateEmailInFirestore(FirebaseUser user, String newEmail) {
         String userId = user.getUid();
 
@@ -163,5 +188,4 @@ public class settings_Activity extends AppCompatActivity {
                     Toast.makeText(settings_Activity.this, "Failed to update email in Firestore.", Toast.LENGTH_LONG).show();
                 });
     }
-
 }

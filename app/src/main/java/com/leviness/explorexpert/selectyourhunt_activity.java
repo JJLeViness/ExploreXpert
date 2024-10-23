@@ -5,14 +5,24 @@ import android.content.pm.ActivityInfo;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.MenuItem;
+import android.view.View;
 import android.widget.GridLayout;
+import android.widget.ImageView;
 import android.widget.TextView;
 
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.view.GravityCompat;
+import androidx.drawerlayout.widget.DrawerLayout;
 
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.libraries.places.api.Places;
 import com.google.android.libraries.places.api.net.PlacesClient;
+import com.google.android.material.navigation.NavigationView;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.leviness.explorexpert.network.KnowledgeGraphAPIClient;
 
 import org.json.JSONArray;
@@ -32,6 +42,10 @@ public class selectyourhunt_activity extends AppCompatActivity {
     private KnowledgeGraphAPIClient knowledgeGraphAPIClient;
     private PlacesClient placesClient;
     private LatLng manhattanLocation = new LatLng(40.7831, -73.9712); // TESTING
+    private DrawerLayout menuNavigation;
+    private NavigationView navigationView;
+    private ImageView menuButton;
+    private ActionBarDrawerToggle toggle;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -41,8 +55,9 @@ public class selectyourhunt_activity extends AppCompatActivity {
         this.setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
 
         GridLayout linksGrid = findViewById(R.id.linksGrid);
-
-
+        menuNavigation = findViewById(R.id.drawer_layout);
+        navigationView = findViewById(R.id.menu_navigation);
+        menuButton = findViewById(R.id.menuButton);
 
         // Initialize the Google Places API
         String apiKey = getString(R.string.maps_api_key);
@@ -52,6 +67,48 @@ public class selectyourhunt_activity extends AppCompatActivity {
         placesClient = Places.createClient(this);
         knowledgeGraphAPIClient = new KnowledgeGraphAPIClient(apiKey);
 
+        toggle = new ActionBarDrawerToggle(this, menuNavigation, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
+        menuNavigation.addDrawerListener(toggle);
+        toggle.syncState();
+
+        menuButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (menuNavigation.isDrawerOpen(GravityCompat.END)) {
+                    menuNavigation.closeDrawer(GravityCompat.END);
+                } else {
+                    menuNavigation.openDrawer(GravityCompat.END);
+                }
+            }
+        });
+
+        navigationView.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
+            @Override
+            public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+                int id = item.getItemId();
+
+                if (id == R.id.nav_home) {
+                    startActivity(new Intent(selectyourhunt_activity.this, homescreen_activity.class));
+                } else if (id == R.id.nav_map) {
+                    startActivity(new Intent(selectyourhunt_activity.this, Map_Activity.class));
+                } else if (id == R.id.nav_profile) {
+                    FirebaseUser currentUser = FirebaseAuth.getInstance().getCurrentUser();
+                    if (currentUser != null) {
+                        startActivity(new Intent(selectyourhunt_activity.this, profile_Activity.class));
+                    } else {
+                        startActivity(new Intent(selectyourhunt_activity.this, login_Activity.class));
+                    }
+                } else if (id == R.id.nav_scavenger_hunt) {
+                    startActivity(new Intent(selectyourhunt_activity.this, selectyourhunt_activity.class));
+                } else if (id == R.id.nav_settings) {
+                    startActivity(new Intent(selectyourhunt_activity.this, settings_Activity.class));
+                } else if (id == R.id.nav_login) {
+                    startActivity(new Intent(selectyourhunt_activity.this, login_Activity.class));
+                }
+                menuNavigation.closeDrawer(GravityCompat.END);
+                return true;
+            }
+        });
         // Populate scavenger hunts into the GridLayout
         populateScavengerHunts(linksGrid);
     }

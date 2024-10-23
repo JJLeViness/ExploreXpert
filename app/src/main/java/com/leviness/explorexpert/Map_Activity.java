@@ -51,7 +51,9 @@ import com.google.android.libraries.places.api.net.PlacesClient;
 import com.google.android.material.navigation.NavigationView;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.leviness.explorexpert.network.KnowledgeGraphAPIClient;
 
@@ -78,6 +80,8 @@ public class Map_Activity extends AppCompatActivity implements OnMapReadyCallbac
     private NavigationView navigationView;
     private PlacesClient placesClient;
     private LatLng currentLocation;
+    private FirebaseFirestore db = FirebaseFirestore.getInstance();
+
     //lowercase for filerting and uppercase for display
     private String[] placeTypes = {
             "restaurant", "cafe", "bar", "store", "shopping_mall", "museum",
@@ -500,6 +504,22 @@ public class Map_Activity extends AppCompatActivity implements OnMapReadyCallbac
                             // Now update the user's points after rating submission
                             profile_Activity profileActivity = new profile_Activity();
                             profileActivity.updateUserPoints(userId);  // Call the updateUserPoints method here
+
+                            // Assuming updateUserPoints updates points in Firestore
+                            // Now, let's check the new points after updating
+                            profileActivity.getUserPoints(userId, newPoints -> {
+                                point_achievement_Activity achievementActivity = new point_achievement_Activity();
+                                incrementReviewCount(userId, achievementActivity);
+
+                                // Check for 5-star rating
+                                if (newRating >= 5) {
+                                    incrementFiveStarRatingCount(userId); // Increment the 5-star rating count
+                                }
+
+                                // Check for point milestone achievement
+                                checkForPointMilestoneAchievement(userId); // Pass the new points here
+                            });
+
                         })
                         .addOnFailureListener(e -> {
                             Log.e("RatingUpdate", "Error submitting review", e);
@@ -509,12 +529,98 @@ public class Map_Activity extends AppCompatActivity implements OnMapReadyCallbac
             } else {
                 Toast.makeText(Map_Activity.this, "You must be logged in to submit a rating.", Toast.LENGTH_SHORT).show();
             }
-
         });
 
         builder.setNegativeButton("Cancel", (dialog, which) -> dialog.dismiss());
 
         builder.show();
+    }
+
+    public void checkForPointMilestoneAchievement(String userId) {
+        FirebaseFirestore db = FirebaseFirestore.getInstance();
+        DocumentReference userDocRef = db.collection("users").document(userId);
+
+        userDocRef.get().addOnSuccessListener(documentSnapshot -> {
+            if (documentSnapshot.exists()) {
+                Long points = documentSnapshot.getLong("points"); // Make sure you have a field for user points
+                if (points != null) {
+                    point_achievement_Activity achievementActivity = new point_achievement_Activity();
+                    if (points >= 500) {
+                        achievementActivity.unlockAchievement(userId, "500 Points Milestone");
+                    }
+                    if (points >= 1000) {
+                        achievementActivity.unlockAchievement(userId, "1000 Points Milestone");
+                    }
+                }
+            }
+        }).addOnFailureListener(e -> {
+            Log.e("AchievementCheck", "Error fetching user points for milestone achievement", e);
+        });
+    }
+
+    private void incrementReviewCount(String userId, point_achievement_Activity achievementActivity) {
+        DocumentReference userDocRef = db.collection("users").document(userId);
+
+        // Atomically increment the reviewCount field by 1
+        userDocRef.update("reviewCount", FieldValue.increment(1))
+                .addOnSuccessListener(aVoid -> {
+                    Log.d("MapActivity", "Review count updated successfully");
+                    // Pass both userId and achievementActivity instance to the method
+                    checkForReviewAchievement(userId, achievementActivity);
+                })
+                .addOnFailureListener(e -> Log.w("MapActivity", "Error updating review count", e));
+    }
+
+    private void checkForReviewAchievement(String userId, point_achievement_Activity achievementActivity) {
+        DocumentReference userDocRef = db.collection("users").document(userId);
+
+        userDocRef.get().addOnSuccessListener(documentSnapshot -> {
+            if (documentSnapshot.exists()) {
+                Long reviewCount = documentSnapshot.getLong("reviewCount");
+
+                // Check for First Review achievement
+                if (reviewCount != null && reviewCount >= 1) {
+                    achievementActivity.unlockAchievement(userId, "First Review");
+                }
+
+                // Check for Rating Master achievement
+                if (reviewCount != null && reviewCount >= 4) {
+                    achievementActivity.unlockAchievement(userId, "Rating Master");
+                }
+            } else {
+                Log.d("AchievementCheck", "No user document found for review achievement check.");
+            }
+        }).addOnFailureListener(e -> {
+            Log.e("AchievementCheck", "Error fetching user document for review achievement", e);
+        });
+    }
+
+    private void incrementFiveStarRatingCount(String userId) {
+        DocumentReference userDocRef = db.collection("users").document(userId);
+        userDocRef.update("fiveStarRatings", FieldValue.increment(1))
+                .addOnSuccessListener(aVoid -> {
+                    Log.d("RatingActivity", "5-Star rating count updated successfully");
+                    checkForFiveStarRaterAchievement(userId); // Check if the user has unlocked the achievement
+                })
+                .addOnFailureListener(e -> Log.w("RatingActivity", "Error updating 5-Star rating count", e));
+    }
+
+    private void checkForFiveStarRaterAchievement(String userId) {
+        DocumentReference userDocRef = db.collection("users").document(userId);
+        point_achievement_Activity achievementActivity = new point_achievement_Activity();
+
+        userDocRef.get().addOnSuccessListener(documentSnapshot -> {
+            if (documentSnapshot.exists()) {
+                Long fiveStarRatings = documentSnapshot.getLong("fiveStarRatings");
+                if (fiveStarRatings != null && fiveStarRatings >= 3) {  // Threshold of 5 ratings
+                    achievementActivity.unlockAchievement(userId, "5-Star Rater");
+                }
+            } else {
+                Log.d("AchievementCheck", "No user document found for 5-Star Rater achievement check.");
+            }
+        }).addOnFailureListener(e -> {
+            Log.e("AchievementCheck", "Error fetching user document for 5-Star Rater achievement", e);
+        });
     }
 
     private void updateAverageRating(FirebaseFirestore db, String placeId) {

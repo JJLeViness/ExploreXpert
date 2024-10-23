@@ -26,14 +26,13 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent">
-
         </LinearLayout>
 
         <TextView
             android:id="@+id/destination_name"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:background="#FF4F4F"
+            android:background="#F25858"
             android:gravity="center"
             android:padding="8dp"
             android:text="Destination: Loading..."
@@ -46,14 +45,14 @@
         <!-- Menu button for navigation drawer -->
         <ImageView
             android:id="@+id/navigator_menuButton"
-            android:layout_width="63dp"
-            android:layout_height="55dp"
+            android:layout_width="50dp"
+            android:layout_height="51dp"
             android:layout_marginTop="16dp"
             android:layout_marginEnd="16dp"
             android:clickable="true"
             android:contentDescription="@string/menu_button_desc"
             android:focusable="true"
-            android:src="@drawable/menubutton"
+            android:src="@drawable/menuicon"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 

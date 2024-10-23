@@ -7,6 +7,7 @@ import android.content.pm.PackageManager;
 import android.location.Location;
 import android.os.Bundle;
 import android.os.Looper;
+import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
@@ -40,11 +41,14 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.material.navigation.NavigationView;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.leviness.explorexpert.network.DirectionsAdapter;
 import com.leviness.explorexpert.network.RoutesTask;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 public class navigator extends AppCompatActivity implements OnMapReadyCallback {
@@ -56,6 +60,7 @@ public class navigator extends AppCompatActivity implements OnMapReadyCallback {
     private DrawerLayout menuNavigation;
     private ActionBarDrawerToggle toggle;
     private NavigationView navigationView;
+    private FirebaseFirestore db = FirebaseFirestore.getInstance();
 
     private List<String> directionsList = new ArrayList<>();
     private List<LatLng> stepLatLngs = new ArrayList<>();
@@ -301,6 +306,10 @@ public class navigator extends AppCompatActivity implements OnMapReadyCallback {
             if (currentUser != null) {
                 String userId = currentUser.getUid();
                 updateUserPoints(userId, 100);  // Award 100 points for completing each task
+                checkForPointMilestoneAchievement(userId);
+
+                // Increment the hunt count
+                incrementHuntCount(userId); // This method will handle the achievement check inside it
             }
         } else {
             // All tasks completed, update UI accordingly
@@ -319,8 +328,91 @@ public class navigator extends AppCompatActivity implements OnMapReadyCallback {
             if (currentUser != null) {
                 String userId = currentUser.getUid();
                 updateUserPoints(userId, 500);  // Award 500 points for completing the scavenger hunt
+                checkForPointMilestoneAchievement(userId);
             }
         }
+    }
+
+    private void checkForPointMilestoneAchievement(String userId) {
+        FirebaseFirestore db = FirebaseFirestore.getInstance();
+        DocumentReference userDocRef = db.collection("users").document(userId);
+
+        userDocRef.get().addOnSuccessListener(documentSnapshot -> {
+            if (documentSnapshot.exists()) {
+                Long points = documentSnapshot.getLong("points"); // Make sure you have a field for user points
+                if (points != null) {
+                    point_achievement_Activity achievementActivity = new point_achievement_Activity();
+                    if (points >= 500) {
+                        achievementActivity.unlockAchievement(userId, "500 Points Milestone");
+                    }
+                    if (points >= 1000) {
+                        achievementActivity.unlockAchievement(userId, "1000 Points Milestone");
+                    }
+                }
+            }
+        }).addOnFailureListener(e -> {
+            Log.e("AchievementCheck", "Error fetching user points for milestone achievement", e);
+        });
+    }
+
+
+    private void incrementHuntCount(String userId) {
+        DocumentReference userDocRef = db.collection("users").document(userId);
+        point_achievement_Activity achievementActivity = new point_achievement_Activity();
+
+        // Fetch the user document first
+        userDocRef.get().addOnSuccessListener(documentSnapshot -> {
+            if (documentSnapshot.exists()) {
+                Long currentHuntCount = documentSnapshot.getLong("huntCount");
+                if (currentHuntCount == null) {
+                    currentHuntCount = 0L; // Initialize to 0 if null
+                }
+
+                // Increment huntCount
+                userDocRef.update("huntCount", FieldValue.increment(1))
+                        .addOnSuccessListener(aVoid -> {
+                            Log.d("Navigator", "Hunt count updated successfully");
+                            // Check for the first scavenger hunt achievement after increment
+                            checkForHuntAchievement(userId, achievementActivity); // Keep this if you still want to check for "Top Explorer"
+                        })
+                        .addOnFailureListener(e -> Log.w("Navigator", "Error updating hunt count", e));
+            } else {
+                // If the user document doesn't exist, create it with initial values
+                userDocRef.set(new HashMap<String, Object>() {{
+                    put("huntCount", 1); // Initialize huntCount to 1
+                    put("reviewCount", 0); // Initialize reviewCount if necessary
+                    // Add other fields as necessary
+                }}).addOnSuccessListener(aVoid -> {
+                    Log.d("Navigator", "User document created with initial huntCount.");
+                    // Check for the first scavenger hunt achievement after creating the user document
+                    checkForHuntAchievement(userId, achievementActivity); // Also check for other achievements
+                }).addOnFailureListener(e -> Log.e("Navigator", "Error creating user document", e));
+            }
+        }).addOnFailureListener(e -> Log.w("Navigator", "Error fetching user document", e));
+    }
+
+    private void checkForHuntAchievement(String userId, point_achievement_Activity achievementActivity) {
+        DocumentReference userDocRef = db.collection("users").document(userId);
+
+        userDocRef.get().addOnSuccessListener(documentSnapshot -> {
+            if (documentSnapshot.exists()) {
+                Long huntCount = documentSnapshot.getLong("huntCount");
+
+                // Check for First Scavenger Hunt achievement
+                if (huntCount != null && huntCount >= 1) {
+                    achievementActivity.unlockAchievement(userId, "First Scavenger Hunt Completed");
+                }
+
+                // Check for Top Explorer achievement (e.g., after 10 hunts)
+                if (huntCount != null && huntCount >= 10) {
+                    achievementActivity.unlockAchievement(userId, "Top Explorer");
+                }
+            } else {
+                Log.d("AchievementCheck", "No user document found for scavenger hunt achievement check.");
+            }
+        }).addOnFailureListener(e -> {
+            Log.e("AchievementCheck", "Error fetching user document for scavenger hunt achievement", e);
+        });
     }
 
     private void navigateToTask(LatLng from, LatLng to) {

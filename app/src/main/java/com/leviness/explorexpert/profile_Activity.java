@@ -16,7 +16,9 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.ScrollView;
 import android.widget.TextView;
 
 import androidx.activity.result.ActivityResultLauncher;
@@ -41,7 +43,6 @@ import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationServices;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
-import com.google.firebase.firestore.DocumentChange;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
@@ -55,13 +56,10 @@ import org.json.JSONObject;
 import java.io.BufferedReader;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.lang.ref.WeakReference;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 
@@ -85,7 +83,6 @@ public class profile_Activity extends AppCompatActivity implements OnMapReadyCal
     private TextView pointsTextView;
     private ReviewAdapter reviewsAdapter;
     private StorageReference storageReference;
-    private List<Review> reviews = new ArrayList<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -104,6 +101,30 @@ public class profile_Activity extends AppCompatActivity implements OnMapReadyCal
         pointsTextView = findViewById(R.id.totalPoints);
         profileImageView = findViewById(R.id.profileImage);
         usernameTextView = findViewById(R.id.username);
+
+        // Initialize ScrollView and ImageView for arrows
+        ScrollView scrollView = findViewById(R.id.scrollView);
+        ImageView arrowUp = findViewById(R.id.arrow_up);
+        ImageView arrowDown = findViewById(R.id.arrow_down);
+
+        // Set a scroll change listener on the ScrollView
+        scrollView.getViewTreeObserver().addOnScrollChangedListener(() -> {
+            // Check if the scroll view can scroll up or down
+            boolean canScrollUp = scrollView.canScrollVertically(-1); // Check for upward scroll
+            boolean canScrollDown = scrollView.canScrollVertically(1); // Check for downward scroll
+
+            // Show/hide arrows based on scroll capability
+            arrowUp.setVisibility(canScrollUp ? View.VISIBLE : View.GONE);
+            arrowDown.setVisibility(canScrollDown ? View.VISIBLE : View.GONE);
+        });
+
+        // Optional: To set initial visibility of arrows on load
+        scrollView.post(() -> {
+            boolean canScrollUp = scrollView.canScrollVertically(-1);
+            boolean canScrollDown = scrollView.canScrollVertically(1);
+            arrowUp.setVisibility(canScrollUp ? View.VISIBLE : View.GONE);
+            arrowDown.setVisibility(canScrollDown ? View.VISIBLE : View.GONE);
+        });
 
         // Set up RecyclerView for reviews
         RecyclerView recyclerView = findViewById(R.id.reviewsRecyclerView);
@@ -131,7 +152,7 @@ public class profile_Activity extends AppCompatActivity implements OnMapReadyCal
         }
 
         // Handle edit profile button click for changing profile picture
-        Button editButton = findViewById(R.id.edit_button);
+        ImageButton editButton = findViewById(R.id.edit_button);
         editButton.setOnClickListener(v -> {
             Intent intent = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
             pickImageLauncher.launch(intent);
@@ -327,7 +348,7 @@ public class profile_Activity extends AppCompatActivity implements OnMapReadyCal
             startActivity(intent);
         });
 
-        Button editButton = findViewById(R.id.edit_button);
+        ImageButton editButton = findViewById(R.id.edit_button);
         editButton.setOnClickListener(v -> showEditProfileDialog());
     }
 
@@ -381,7 +402,6 @@ public class profile_Activity extends AppCompatActivity implements OnMapReadyCal
         builder.setView(dialogView);
 
         EditText editUsername = dialogView.findViewById(R.id.edit_username);
-        EditText editEmail = dialogView.findViewById(R.id.edit_email);
         Button changeProfilePic = dialogView.findViewById(R.id.change_profile_pic);
         Button saveChanges = dialogView.findViewById(R.id.save_changes);
 
@@ -394,16 +414,10 @@ public class profile_Activity extends AppCompatActivity implements OnMapReadyCal
 
         saveChanges.setOnClickListener(view -> {
             String newUsername = editUsername.getText().toString().trim();
-            String newEmail = editEmail.getText().toString().trim();
 
             if (!newUsername.isEmpty()) {
                 TextView usernameTextView = findViewById(R.id.username);
                 usernameTextView.setText(newUsername);
-            }
-
-            if (!newEmail.isEmpty()) {
-                TextView emailTextView = findViewById(R.id.email);
-                emailTextView.setText(newEmail);
             }
 
             dialog.dismiss();
@@ -424,14 +438,13 @@ public class profile_Activity extends AppCompatActivity implements OnMapReadyCal
                     currentPoints = 0L; // Initialize to 0 if null
                 }
                 long newPoints = currentPoints + 100; // Add 100 points
+                Map_Activity mapActivity = new Map_Activity();
+                mapActivity.checkForPointMilestoneAchievement(userId);
 
                 // Update Firestore with the new points
                 userRef.update("points", newPoints)
                         .addOnSuccessListener(aVoid -> {
                             Log.d("PointsUpdate", "Points successfully updated!");
-                            // Update the points TextView in the UI
-                            TextView pointsTextView = findViewById(R.id.totalPoints);
-                            pointsTextView.setText(String.valueOf(newPoints));
                         })
                         .addOnFailureListener(e -> {
                             Log.e("PointsUpdate", "Error updating points", e);
@@ -440,6 +453,26 @@ public class profile_Activity extends AppCompatActivity implements OnMapReadyCal
         }).addOnFailureListener(e -> {
             Log.e("PointsFetch", "Error fetching user data", e);
         });
+    }
+
+    public void getUserPoints(String userId, OnPointsRetrievedListener listener) {
+        db = FirebaseFirestore.getInstance();
+        DocumentReference userDocRef = db.collection("users").document(userId);
+        userDocRef.get().addOnSuccessListener(documentSnapshot -> {
+            if (documentSnapshot.exists()) {
+                Long points = documentSnapshot.getLong("points"); // Assuming you have a points field
+                listener.onPointsRetrieved(points != null ? points : 0);
+            } else {
+                listener.onPointsRetrieved(0); // User document doesn't exist
+            }
+        }).addOnFailureListener(e -> {
+            Log.e("ProfileActivity", "Error fetching user points", e);
+            listener.onPointsRetrieved(0); // On error, return 0 points
+        });
+    }
+
+    public interface OnPointsRetrievedListener {
+        void onPointsRetrieved(long points);
     }
 
     @Override

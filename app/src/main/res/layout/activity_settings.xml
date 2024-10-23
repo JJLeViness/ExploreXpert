@@ -22,8 +22,7 @@
             android:orientation="horizontal"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent">
-        </LinearLayout>
+            app:layout_constraintTop_toTopOf="parent"></LinearLayout>
         <ImageView
             android:id="@+id/menuButton"
             android:layout_width="50dp"
@@ -51,62 +50,30 @@
             app:layout_constraintTop_toBottomOf="@id/banner"
             app:layout_constraintVertical_bias="0.2" />
 
-        <EditText
-            android:id="@+id/newEmail"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="4dp"
-            android:layout_marginTop="148dp"
-            android:hint="Enter new email"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/banner"
-            app:layout_constraintEnd_toEndOf="parent"/>
-
         <Button
             android:id="@+id/updateEmail"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginStart="4dp"
+            android:layout_marginStart="36dp"
+            android:layout_marginTop="80dp"
+            android:backgroundTint="@color/grey"
             android:text="Update Email"
             android:textColor="@color/black"
-            android:backgroundTint="@color/grey"
             android:textSize="18sp"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/newEmail"/>
+            app:layout_constraintTop_toBottomOf="@+id/banner" />
 
         <Button
             android:id="@+id/forgotPasswordButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginStart="4dp"
+            android:layout_marginStart="36dp"
+            android:backgroundTint="@color/grey"
             android:text="Forgot Password"
             android:textColor="@color/black"
-            android:backgroundTint="@color/grey"
             android:textSize="18sp"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/updateEmail"/>
-
-        <com.google.android.material.textfield.TextInputLayout
-            android:id="@+id/currentPasswordLayout"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:hint="Current Password"
-            android:textColorHint="@color/black"
-
-            app:passwordToggleEnabled="true"
-            android:layout_marginStart="4dp"
-            app:layout_constraintBottom_toTopOf="@+id/newEmail"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent">
-
-            <com.google.android.material.textfield.TextInputEditText
-                android:id="@+id/currentPassword"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:background="@drawable/textbox"
-                android:inputType="textPassword"
-                android:ems="15"/>
-        </com.google.android.material.textfield.TextInputLayout>
+            app:layout_constraintTop_toBottomOf="@+id/updateEmail" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
