@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.content.pm.ActivityInfo;
 import android.content.pm.PackageManager;
 import android.location.Location;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Looper;
 import android.util.Log;
@@ -73,6 +74,7 @@ public class navigator extends AppCompatActivity implements OnMapReadyCallback {
     private int currentTaskIndex = 0;
     private TextView destinationNameTextView;
     private Button nextTaskButton;
+    private TextView destinationInfoTextView;
 
     private Location currentLocation; // User's current location
     private boolean isTaskCompleted = false; // To avoid multiple triggers for the same task
@@ -109,6 +111,7 @@ public class navigator extends AppCompatActivity implements OnMapReadyCallback {
         navigationView = findViewById(R.id.menu_navigation);
         destinationNameTextView = findViewById(R.id.destination_name);
         nextTaskButton = findViewById(R.id.next_task_button);
+        destinationInfoTextView = findViewById(R.id.scavenger_hunt_location_details);
 
 
         // Fetch scavenger hunt from intent
@@ -122,7 +125,10 @@ public class navigator extends AppCompatActivity implements OnMapReadyCallback {
             isScavengerHuntActive = true;
             Toast.makeText(this, "Starting scavenger hunt: " + hunt.getName(), Toast.LENGTH_SHORT).show();
              nextTaskButton.setVisibility(View.VISIBLE);
+             destinationInfoTextView.setVisibility(View.VISIBLE);
+
          }
+
 
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.mapFragment);
         if (mapFragment != null) {
@@ -212,6 +218,7 @@ public class navigator extends AppCompatActivity implements OnMapReadyCallback {
             String destinationName = "Destination: "+toName;
             destinationNameTextView.setText(destinationName);
 
+
             // Start RoutesTask to navigate between "from" and "to" places
             new RoutesTask(this, mMap, directionsAdapter, "walking").execute(fromLatLng, toLatLng);
 
@@ -230,6 +237,7 @@ public class navigator extends AppCompatActivity implements OnMapReadyCallback {
                     mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(nycLocation, 15));
 
                     destinationNameTextView.setText("Destination: " + firstTask.getPlaceName());
+                    destinationInfoTextView.setText(firstTask.getDescription());
 
 
                     // Start RoutesTask to navigate between current location and first task, CHANGE TO CURRENT LOCATION FOR NON EMULATOR USE
@@ -301,6 +309,7 @@ public class navigator extends AppCompatActivity implements OnMapReadyCallback {
 
             // Update the destination name and UI
             destinationNameTextView.setText("Destination: " + nextTask.getPlaceName());
+            destinationInfoTextView.setText(nextTask.getDescription());
 
             FirebaseUser currentUser = FirebaseAuth.getInstance().getCurrentUser();
             if (currentUser != null) {
@@ -470,4 +479,5 @@ public class navigator extends AppCompatActivity implements OnMapReadyCallback {
             Toast.makeText(navigator.this, "Failed to fetch user data.", Toast.LENGTH_SHORT).show();
         });
     }
+
 }
