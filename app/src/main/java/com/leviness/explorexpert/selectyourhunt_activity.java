@@ -44,12 +44,8 @@ public class selectyourhunt_activity extends AppCompatActivity {
 
     private List<scavengerHunt> scavengerHuntList = new ArrayList<>();
     private KnowledgeGraphAPIClient knowledgeGraphAPIClient;
-    private PlacesClient placesClient;
     private LatLng manhattanLocation = new LatLng(40.7831, -73.9712); // TESTING
     private DrawerLayout menuNavigation;
-    private NavigationView navigationView;
-    private ImageView menuButton;
-    private ActionBarDrawerToggle toggle;
 
     private FirebaseFirestore db;
 
@@ -65,18 +61,18 @@ public class selectyourhunt_activity extends AppCompatActivity {
 
         GridLayout linksGrid = findViewById(R.id.linksGrid);
         menuNavigation = findViewById(R.id.drawer_layout);
-        navigationView = findViewById(R.id.menu_navigation);
-        menuButton = findViewById(R.id.menuButton);
+        NavigationView navigationView = findViewById(R.id.menu_navigation);
+        ImageView menuButton = findViewById(R.id.menuButton);
 
         // Initialize the Google Places API
         String apiKey = getString(R.string.maps_api_key);
         if (!Places.isInitialized()) {
             Places.initialize(getApplicationContext(), apiKey);
         }
-        placesClient = Places.createClient(this);
+        PlacesClient placesClient = Places.createClient(this);
         knowledgeGraphAPIClient = new KnowledgeGraphAPIClient(apiKey);
 
-        toggle = new ActionBarDrawerToggle(this, menuNavigation, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
+        ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(this, menuNavigation, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
         menuNavigation.addDrawerListener(toggle);
         toggle.syncState();
 

@@ -26,17 +26,10 @@ import java.util.List;
 public class selectedscavengerhunt_activity extends AppCompatActivity {
 
     private FirebaseFirestore db;
-    private FirebaseUser user;
     private String userId;
-    private TextView huntNameView;
-    private TextView huntDescView;
-    private TextView tasksLabel;
     private TextView usernameTextView;
     private TextView pointsTextView;
     private ImageView profileImageView;
-    private Button startHuntButton;
-    private TextView pointsAndAchievements;
-    private TextView checkPoints;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -47,7 +40,7 @@ public class selectedscavengerhunt_activity extends AppCompatActivity {
 
         // Initialize Firebase
         db = FirebaseFirestore.getInstance();
-        user = FirebaseAuth.getInstance().getCurrentUser();
+        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
         userId = user != null ? user.getUid() : null;
 
         // Get the hunt details from the intent
@@ -56,15 +49,15 @@ public class selectedscavengerhunt_activity extends AppCompatActivity {
         scavengerHunt hunt = getIntent().getParcelableExtra("hunt");
 
         // Set the hunt details in the TextViews
-        huntNameView = findViewById(R.id.myPointsLabel);
-        huntDescView = findViewById(R.id.huntDescription);
-        tasksLabel = findViewById(R.id.tasksLabel);
+        TextView huntNameView = findViewById(R.id.myPointsLabel);
+        TextView huntDescView = findViewById(R.id.huntDescription);
+        TextView tasksLabel = findViewById(R.id.tasksLabel);
         usernameTextView = findViewById(R.id.username);
         pointsTextView = findViewById(R.id.totalPoints);
         profileImageView = findViewById(R.id.profileImage);
-        startHuntButton = findViewById(R.id.startHuntButton);
-        pointsAndAchievements = findViewById(R.id.pointsAndAchievmentsLabel);
-        checkPoints = findViewById(R.id.checkpointslabel);
+        Button startHuntButton = findViewById(R.id.startHuntButton);
+        TextView pointsAndAchievements = findViewById(R.id.pointsAndAchievmentsLabel);
+        TextView checkPoints = findViewById(R.id.checkpointslabel);
 
         huntNameView.setText(huntName);
         huntDescView.setText(huntDescription);
@@ -86,6 +79,7 @@ public class selectedscavengerhunt_activity extends AppCompatActivity {
 
         tasksLabel.setOnClickListener(v -> {
 
+            assert hunt != null;
             showTaskLocations(hunt.getTasks());
 
         });
