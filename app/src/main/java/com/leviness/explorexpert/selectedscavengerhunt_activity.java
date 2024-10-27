@@ -36,6 +36,7 @@ public class selectedscavengerhunt_activity extends AppCompatActivity {
     private ImageView profileImageView;
     private Button startHuntButton;
     private TextView pointsAndAchievements;
+    private TextView checkPoints;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -63,6 +64,7 @@ public class selectedscavengerhunt_activity extends AppCompatActivity {
         profileImageView = findViewById(R.id.profileImage);
         startHuntButton = findViewById(R.id.startHuntButton);
         pointsAndAchievements = findViewById(R.id.pointsAndAchievmentsLabel);
+        checkPoints = findViewById(R.id.checkpointslabel);
 
         huntNameView.setText(huntName);
         huntDescView.setText(huntDescription);
@@ -87,6 +89,8 @@ public class selectedscavengerhunt_activity extends AppCompatActivity {
             showTaskLocations(hunt.getTasks());
 
         });
+
+        checkPoints.setOnClickListener(v -> loadSavedProgress(hunt));
 
 
     }
@@ -116,6 +120,42 @@ public class selectedscavengerhunt_activity extends AppCompatActivity {
             }).addOnFailureListener(e -> Log.e("SelectedHuntActivity", "Error fetching user profile", e));
         }
     }
+
+    private void loadSavedProgress(scavengerHunt hunt) {
+        if (userId != null && hunt != null) {
+            DocumentReference userDocRef = db.collection("users").document(userId)
+                    .collection("huntProgress").document(hunt.getName());
+
+            userDocRef.get().addOnSuccessListener(documentSnapshot -> {
+                if (documentSnapshot.exists()) {
+                    Long savedTaskIndex = documentSnapshot.getLong("taskIndex");
+                    int taskIndex = savedTaskIndex != null ? savedTaskIndex.intValue() : 0;
+
+                    Intent intent = new Intent(selectedscavengerhunt_activity.this, navigator.class);
+                    intent.putExtra("hunt", hunt);
+                    intent.putExtra("currentTaskIndex", taskIndex); // Pass the saved task index
+                    startActivity(intent);
+                } else {
+                    startNavigatorFromBeginning(hunt);
+                }
+            }).addOnFailureListener(e -> Log.e("SelectedHuntActivity", "Error fetching progress", e));
+        }
+    }
+
+    private void startNavigatorFromBeginning(scavengerHunt hunt) {
+        Intent intent = new Intent(selectedscavengerhunt_activity.this, navigator.class);
+        intent.putExtra("hunt", hunt);
+        intent.putExtra("currentTaskIndex", 0);
+        startActivity(intent);
+    }
+
+    private void startNavigator(scavengerHunt hunt, int startTaskIndex) {
+        Intent intent = new Intent(selectedscavengerhunt_activity.this, navigator.class);
+        intent.putExtra("hunt", hunt);
+        intent.putExtra("currentTaskIndex", startTaskIndex);
+        startActivity(intent);
+    }
+
 
     private void showTaskLocations(List<scavengerHuntTask> tasks) {
         // Create an array of place names

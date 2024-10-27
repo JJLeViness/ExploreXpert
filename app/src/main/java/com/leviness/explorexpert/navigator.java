@@ -76,11 +76,10 @@ public class navigator extends AppCompatActivity implements OnMapReadyCallback {
     private Button nextTaskButton;
     private TextView destinationInfoTextView;
 
-    private Location currentLocation; // User's current location
+    private Location currentLocation; // User's current location change when not using emulator
     private boolean isTaskCompleted = false; // To avoid multiple triggers for the same task
 
     private static final float PROXIMITY_THRESHOLD = 10f;
-
 
 
     @Override
@@ -116,18 +115,28 @@ public class navigator extends AppCompatActivity implements OnMapReadyCallback {
 
         // Fetch scavenger hunt from intent
         hunt = getIntent().getParcelableExtra("hunt");
+        int startTaskIndex = getIntent().getIntExtra("currentTaskIndex", 0);
 
         fromLatLng = getIntent().getStringExtra("fromLatLng");
         toLatLng = getIntent().getStringExtra("toLatLng");
-    toName = getIntent().getStringExtra("toName");
+        toName = getIntent().getStringExtra("toName");
 
-         if (hunt != null) {
+        if (hunt != null) {
             isScavengerHuntActive = true;
             Toast.makeText(this, "Starting scavenger hunt: " + hunt.getName(), Toast.LENGTH_SHORT).show();
-             nextTaskButton.setVisibility(View.VISIBLE);
-             destinationInfoTextView.setVisibility(View.VISIBLE);
+            nextTaskButton.setVisibility(View.VISIBLE);
+            destinationInfoTextView.setVisibility(View.VISIBLE);
 
-         }
+            currentTaskIndex = startTaskIndex; // Set the starting task index
+
+            if (currentTaskIndex != 0) {
+                Toast.makeText(this, "Resuming scavenger hunt: " + hunt.getName(), Toast.LENGTH_SHORT).show();
+            }
+
+
+            startTaskFromIndex(currentTaskIndex);
+
+        }
 
 
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.mapFragment);
@@ -209,35 +218,33 @@ public class navigator extends AppCompatActivity implements OnMapReadyCallback {
             LatLng fromLatLngParsed = parseLatLng(fromLatLng);
 
 
-
             // Move the camera to the "from" location
             if (mMap != null) {
                 mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(fromLatLngParsed, 15));
             }
 
-            String destinationName = "Destination: "+toName;
+            String destinationName = "Destination: " + toName;
             destinationNameTextView.setText(destinationName);
 
 
             // Start RoutesTask to navigate between "from" and "to" places
             new RoutesTask(this, mMap, directionsAdapter, "walking").execute(fromLatLng, toLatLng);
 
-        }
-        else if (isScavengerHuntActive && hunt != null && !hunt.getTasks().isEmpty()) {
+        } else if (isScavengerHuntActive && hunt != null && !hunt.getTasks().isEmpty()) {
             // Fetch current location
             fusedLocationClient.getLastLocation().addOnSuccessListener(location -> {
                 if (location != null) {
                     //uncomment current location for non emulator use
                     //LatLng currentLocation = new LatLng(location.getLatitude(), location.getLongitude());
                     LatLng nycLocation = new LatLng(40.7870, -73.9754);
-                    scavengerHuntTask firstTask = hunt.getTasks().get(0);
+                    scavengerHuntTask currentTask = hunt.getTasks().get(currentTaskIndex);
 
 
                     // Move camera to starting location, change to current location for non emulator use.
                     mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(nycLocation, 15));
 
-                    destinationNameTextView.setText("Destination: " + firstTask.getPlaceName());
-                    destinationInfoTextView.setText(firstTask.getDescription());
+                    destinationNameTextView.setText("Destination: " + currentTask.getPlaceName());
+                    destinationInfoTextView.setText(currentTask.getDescription());
 
 
                     // Start RoutesTask to navigate between current location and first task, CHANGE TO CURRENT LOCATION FOR NON EMULATOR USE
@@ -297,11 +304,26 @@ public class navigator extends AppCompatActivity implements OnMapReadyCallback {
         fusedLocationClient.requestLocationUpdates(locationRequest, locationCallback, Looper.getMainLooper());
     }
 
+    private void startTaskFromIndex(int taskIndex) {
+        if (hunt != null && taskIndex < hunt.getTasks().size()) {
+            scavengerHuntTask task = hunt.getTasks().get(taskIndex);
+            destinationNameTextView.setText("Destination: " + task.getPlaceName());
+            destinationInfoTextView.setText(task.getDescription());
+            LatLng nycLocation = new LatLng(40.7870, -73.9754); // Replace with user location if available
+
+            Log.d("Navigator", "Starting task " + taskIndex + " for hunt " + hunt.getName());
+            navigateToTask(nycLocation, task.getLocation());
+        } else {
+            Log.w("Navigator", "Invalid task index or hunt has no tasks.");
+        }
+    }
+
 
     private void moveToNextTask() {
         if (isScavengerHuntActive && hunt != null && currentTaskIndex < hunt.getTasks().size() - 1) {
             currentTaskIndex++;
             scavengerHuntTask nextTask = hunt.getTasks().get(currentTaskIndex);
+            saveHuntProgress(hunt.getName(), currentTaskIndex);
             LatLng previousTaskLocation = hunt.getTasks().get(currentTaskIndex - 1).getLocation();
 
             // Navigate from the previous task to the next task
@@ -445,6 +467,7 @@ public class navigator extends AppCompatActivity implements OnMapReadyCallback {
     private String formatLatLng(LatLng latLng) {
         return latLng.latitude + "," + latLng.longitude;
     }
+
     private LatLng parseLatLng(String latLngString) {
         String[] parts = latLngString.split(",");
         double lat = Double.parseDouble(parts[0]);
@@ -479,5 +502,49 @@ public class navigator extends AppCompatActivity implements OnMapReadyCallback {
             Toast.makeText(navigator.this, "Failed to fetch user data.", Toast.LENGTH_SHORT).show();
         });
     }
+
+    private void saveHuntProgress(String huntName, int taskIndex) {
+        FirebaseUser currentUser = FirebaseAuth.getInstance().getCurrentUser();
+        if (currentUser != null) {
+            String userId = currentUser.getUid();
+            DocumentReference userDocRef = db.collection("users").document(userId)
+                    .collection("huntProgress").document(huntName);
+
+            userDocRef.set(new HashMap<String, Object>() {{
+                        put("taskIndex", taskIndex);
+                    }})
+                    .addOnSuccessListener(aVoid -> Log.d("Navigator", "Hunt progress saved successfully for hunt: " + huntName + ", taskIndex: " + taskIndex))
+                    .addOnFailureListener(e -> Log.w("Navigator", "Error saving hunt progress", e));
+        }
+    }
+
+    private void loadSavedProgress() {
+        FirebaseUser currentUser = FirebaseAuth.getInstance().getCurrentUser();
+        if (currentUser != null && hunt != null) {
+            String userId = currentUser.getUid();
+            DocumentReference userDocRef = db.collection("users").document(userId)
+                    .collection("huntProgress").document(hunt.getName());
+
+            userDocRef.get().addOnSuccessListener(documentSnapshot -> {
+                if (documentSnapshot.exists()) {
+                    Long savedTaskIndex = documentSnapshot.getLong("taskIndex");
+                    if (savedTaskIndex != null) {
+                        currentTaskIndex = savedTaskIndex.intValue();
+                        Log.d("Navigator", "Resuming hunt: " + hunt.getName() + " at taskIndex: " + currentTaskIndex);
+                        startTaskFromIndex(currentTaskIndex);
+                    } else {
+                        Log.d("Navigator", "No saved taskIndex found; starting from the beginning.");
+                        startTaskFromIndex(0); // Start from beginning if no saved index
+                    }
+                } else {
+                    Log.d("Navigator", "No saved progress document found; starting from the beginning.");
+                    startTaskFromIndex(0);
+                }
+            }).addOnFailureListener(e -> Log.w("Navigator", "Error loading hunt progress", e));
+        }
+    }
+
+
+
 
 }

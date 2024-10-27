@@ -23,6 +23,8 @@ import com.google.android.libraries.places.api.net.PlacesClient;
 import com.google.android.material.navigation.NavigationView;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.FirebaseFirestore;
 import com.leviness.explorexpert.network.KnowledgeGraphAPIClient;
 
 import org.json.JSONArray;
@@ -34,7 +36,9 @@ import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class selectyourhunt_activity extends AppCompatActivity {
 
@@ -47,6 +51,8 @@ public class selectyourhunt_activity extends AppCompatActivity {
     private ImageView menuButton;
     private ActionBarDrawerToggle toggle;
 
+    private FirebaseFirestore db;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -55,6 +61,7 @@ public class selectyourhunt_activity extends AppCompatActivity {
         this.setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
 
 
+        db = FirebaseFirestore.getInstance();  // Initialize Firestore
 
         GridLayout linksGrid = findViewById(R.id.linksGrid);
         menuNavigation = findViewById(R.id.drawer_layout);
@@ -135,8 +142,17 @@ public class selectyourhunt_activity extends AppCompatActivity {
     }
 
     private void createScavengerHunt(String huntName, String placeTypes, String huntDescription, GridLayout linksGrid) {
-        String nearbySearchUrl = getNearbySearchUrl(manhattanLocation, placeTypes);
-        new NearbyPlacesTask(huntName, huntDescription, linksGrid).execute(nearbySearchUrl);
+        db.collection("scavengerHunts").document(huntName).get()
+                .addOnSuccessListener(documentSnapshot -> {
+                    if (!documentSnapshot.exists()) {
+                        // Only create a new hunt if it doesn't exist
+                        String nearbySearchUrl = getNearbySearchUrl(manhattanLocation, placeTypes);
+                        new NearbyPlacesTask(huntName, huntDescription, linksGrid).execute(nearbySearchUrl);
+                    } else {
+                        Log.d("Firestore", "Hunt \"" + huntName + "\" already exists in Firestore. Skipping creation.");
+                    }
+                })
+                .addOnFailureListener(e -> Log.e("Firestore", "Error checking for existing hunt", e));
     }
 
     private String getNearbySearchUrl(LatLng location, String placeTypes) {
@@ -187,6 +203,7 @@ public class selectyourhunt_activity extends AppCompatActivity {
                     JSONArray results = jsonObject.getJSONArray("results");
 
                     List<scavengerHuntTask> taskList = new ArrayList<>();
+                    DocumentReference huntDocRef = db.collection("scavengerHunts").document(huntName);
 
                     // Parse the places data and add to scavengerHuntTask list
                     for (int i = 0; i < Math.min(results.length(), 5); i++) {  // Limiting to 5 places for sample
@@ -195,10 +212,13 @@ public class selectyourhunt_activity extends AppCompatActivity {
                         JSONObject geometry = place.getJSONObject("geometry").getJSONObject("location");
                         LatLng placeLocation = new LatLng(geometry.getDouble("lat"), geometry.getDouble("lng"));
                         scavengerHuntTask task = new scavengerHuntTask(placeName," ", placeLocation);
+                        fetchAndSaveTaskDescription(huntDocRef, task, taskList);
 
-                        fetchDescriptionForTask(task);
+                       // fetchDescriptionForTask(task); //commented out functionality in new function to fetch description
 
                         taskList.add(task);
+
+
                     }
 
                     // Create the scavengerHunt object
@@ -262,5 +282,39 @@ public class selectyourhunt_activity extends AppCompatActivity {
                 }
             }
         }
+    }
+
+    private void fetchAndSaveTaskDescription(DocumentReference huntDocRef, scavengerHuntTask task, List<scavengerHuntTask> taskList) {
+        knowledgeGraphAPIClient.fetchGeneralInfoForPlace(task.getPlaceName(), new KnowledgeGraphAPIClient.OnKnowledgeGraphResultListener() {
+            @Override
+            public void onResult(String description) {
+                task.setDescription(description); // Set the fetched description
+
+                // Save task to Firestore within the specific hunt document
+                Map<String, Object> taskData = new HashMap<>();
+                taskData.put("placeName", task.getPlaceName());
+                taskData.put("description", task.getDescription());
+
+                // Convert LatLng to a map
+                Map<String, Double> locationMap = new HashMap<>();
+                locationMap.put("latitude", task.getLocation().latitude);
+                locationMap.put("longitude", task.getLocation().longitude);
+                taskData.put("location", locationMap);
+
+                // Add the task to the hunt's tasks subcollection
+                huntDocRef.collection("tasks").add(taskData)
+                        .addOnSuccessListener(aVoid -> Log.d("Firestore", "Task saved successfully!"))
+                        .addOnFailureListener(e -> Log.e("Firestore", "Error saving task", e));
+
+                // Add to task list after setting description
+                taskList.add(task);
+            }
+
+            @Override
+            public void onError(String errorMessage) {
+                task.setDescription("No description available.");
+                Log.e("selectyourhunt_activity", "Error fetching description: " + errorMessage);
+            }
+        });
     }
 }
