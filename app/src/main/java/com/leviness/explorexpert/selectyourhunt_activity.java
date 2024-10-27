@@ -114,39 +114,37 @@ public class selectyourhunt_activity extends AppCompatActivity {
     }
 
     private void populateScavengerHunts(GridLayout linksGrid) {
-
-
-
-        // Creating and adding scavenger hunts
-        createScavengerHunt("Manhattan Landmarks Hunt", "tourist_attraction|museum|point_of_interest", "Discover famous landmarks in Manhattan.", linksGrid);
-        createScavengerHunt("Art Installations Hunt", "art_gallery", "Explore stunning art installations across Manhattan.", linksGrid);
-        createScavengerHunt("Parks & Nature Hunt", "park", "Visit beautiful parks and green spaces in Manhattan.", linksGrid);
-        createScavengerHunt("Historic Buildings Hunt", "point_of_interest", "Explore the historic buildings in Manhattan.", linksGrid); // 'building' replaced with 'point_of_interest'
-        createScavengerHunt("Food & Drink Tour", "restaurant|cafe|bar", "Discover the best food and drink spots in the city.", linksGrid);
-        createScavengerHunt("Street Art Walk", "art_gallery|point_of_interest", "Find the hidden street art murals across the city.", linksGrid); // 'landmark' replaced with 'point_of_interest'
-        createScavengerHunt("Theater District Hunt", "movie_theater|point_of_interest", "Explore the famous theaters and cultural spots.", linksGrid); // 'theater' replaced with 'point_of_interest'
-        createScavengerHunt("Shopping Spree Hunt", "shopping_mall|clothing_store", "Discover the best shopping destinations in Manhattan.", linksGrid);
-        createScavengerHunt("Bridges of Manhattan", "point_of_interest", "Take a tour of the iconic bridges of Manhattan.", linksGrid); // 'bridge' replaced with 'point_of_interest'
-        createScavengerHunt("Hidden Gems Hunt", "point_of_interest", "Explore the lesser-known hidden gems of the city.", linksGrid);
-
+        // Creating scavenger hunts with valid Table A types only
+        createScavengerHunt("Manhattan Landmarks Hunt", new String[]{"tourist_attraction", "museum", "art_gallery"}, "Discover famous landmarks in Manhattan.", linksGrid);
+        createScavengerHunt("Art Installations Hunt", new String[]{"art_gallery", "museum", "tourist_attraction"}, "Explore stunning art installations across Manhattan.", linksGrid);
+        createScavengerHunt("Parks & Nature Hunt", new String[]{"park", "zoo", "campground"}, "Visit beautiful parks and green spaces in Manhattan.", linksGrid);
+        createScavengerHunt("Historic Buildings Hunt", new String[]{"museum", "city_hall", "embassy"}, "Explore the historic buildings in Manhattan.", linksGrid);
+        createScavengerHunt("Food & Drink Tour", new String[]{"restaurant", "cafe", "bar", "bakery"}, "Discover the best food and drink spots in the city.", linksGrid);
+        createScavengerHunt("Theater District Hunt", new String[]{"movie_theater", "night_club", "tourist_attraction"}, "Explore the famous theaters and cultural spots.", linksGrid);
+        createScavengerHunt("Shopping Spree Hunt", new String[]{"shopping_mall", "clothing_store", "shoe_store", "book_store"}, "Discover the best shopping destinations in Manhattan.", linksGrid);
+        createScavengerHunt("Bridges of Manhattan", new String[]{"tourist_attraction", "museum"}, "Take a tour of the iconic bridges of Manhattan.", linksGrid);
+        createScavengerHunt("Hidden Gems Hunt", new String[]{"bakery", "book_store", "pet_store", "library"}, "Explore the lesser-known hidden gems of the city.", linksGrid);
     }
 
-    private void createScavengerHunt(String huntName, String placeTypes, String huntDescription, GridLayout linksGrid) {
-        String nearbySearchUrl = getNearbySearchUrl(manhattanLocation, placeTypes);
-        new NearbyPlacesTask(huntName, huntDescription, linksGrid).execute(nearbySearchUrl);
+    private void createScavengerHunt(String huntName, String[] placeTypes, String huntDescription, GridLayout linksGrid) {
+        for (String placeType : placeTypes) {
+            String nearbySearchUrl = getNearbySearchUrl(manhattanLocation, placeType);
+            new NearbyPlacesTask(huntName, huntDescription, linksGrid).execute(nearbySearchUrl);
+        }
     }
 
-    private String getNearbySearchUrl(LatLng location, String placeTypes) {
+    private String getNearbySearchUrl(LatLng location, String placeType) {
         String apiKey = getString(R.string.maps_api_key);
         return "https://maps.googleapis.com/maps/api/place/nearbysearch/json?location=" + location.latitude + "," + location.longitude
-                + "&radius=2000&type=" + placeTypes + "&key=" + apiKey;
+                + "&radius=2000&type=" + placeType + "&key=" + apiKey;
     }
 
-    // AsyncTask to fetch places using Nearby Search and update the grid
+
     private class NearbyPlacesTask extends AsyncTask<String, Void, String> {
         private String huntName;
         private String huntDescription;
         private GridLayout linksGrid;
+        private int descriptionFetchCounter = 0; // Counter to track completed fetches
 
         public NearbyPlacesTask(String huntName, String huntDescription, GridLayout linksGrid) {
             this.huntName = huntName;
@@ -181,24 +179,34 @@ public class selectyourhunt_activity extends AppCompatActivity {
             if (result != null) {
                 try {
                     JSONObject jsonObject = new JSONObject(result);
+                    String status = jsonObject.getString("status");
+                    Log.e("NearbyPlacesTask", "API Status: " + status);
                     JSONArray results = jsonObject.getJSONArray("results");
 
                     List<scavengerHuntTask> taskList = new ArrayList<>();
 
-                    // Parse the places data and add to scavengerHuntTask list
-                    for (int i = 0; i < Math.min(results.length(), 5); i++) {  // Limiting to 5 places for sample
+                    // Limit to a certain number of places, e.g., 5
+                    for (int i = 0; i < Math.min(results.length(), 5); i++) {
                         JSONObject place = results.getJSONObject(i);
                         String placeName = place.getString("name");
+                        String vicinity = place.optString("vicinity", "No address available");
+                        double rating = place.optDouble("rating", -1);
+                        int userRatingsTotal = place.optInt("user_ratings_total", 0);
+
+                        // Extract location coordinates
                         JSONObject geometry = place.getJSONObject("geometry").getJSONObject("location");
                         LatLng placeLocation = new LatLng(geometry.getDouble("lat"), geometry.getDouble("lng"));
-                        taskList.add(new scavengerHuntTask(placeName, "Description of " + placeName, placeLocation));
+
+                        // Create a task with place details
+                        scavengerHuntTask task = new scavengerHuntTask(placeName, vicinity, placeLocation);
+
+
+                        taskList.add(task);
                     }
 
-                    // Create the scavengerHunt object
+                    // Use the task list to update UI
                     scavengerHunt hunt = new scavengerHunt(huntName, huntDescription, taskList);
                     scavengerHuntList.add(hunt);
-
-                    // Update the grid layout with the scavenger hunt titles only
                     updateGridWithHunts(linksGrid);
 
                 } catch (JSONException e) {
@@ -207,8 +215,43 @@ public class selectyourhunt_activity extends AppCompatActivity {
             } else {
                 Log.e("NearbyPlacesTask", "No result from Nearby Search");
             }
+        }
 
 
+        private void fetchDescriptionForTask(scavengerHuntTask task, List<scavengerHuntTask> taskList) {
+            knowledgeGraphAPIClient.fetchGeneralInfoForPlace(task.getPlaceName(), new KnowledgeGraphAPIClient.OnKnowledgeGraphResultListener() {
+                @Override
+                public void onResult(String description) {
+                    task.setDescription(description); // Update task with description
+                    Log.d("DescriptionFetch", "Description for " + task.getPlaceName() + ": " + description);
+
+                    taskList.add(task);
+                    descriptionFetchCounter--;
+
+                    // When all descriptions are fetched, update grid
+                    if (descriptionFetchCounter == 0) {
+                        scavengerHunt hunt = new scavengerHunt(huntName, huntDescription, taskList);
+                        scavengerHuntList.add(hunt);
+                        updateGridWithHunts(linksGrid); // Call to update grid only when all tasks are ready
+                    }
+                }
+
+                @Override
+                public void onError(String errorMessage) {
+                    task.setDescription("No description available.");
+                    Log.e("DescriptionFetch", "Error fetching description: " + errorMessage);
+
+                    taskList.add(task);
+                    descriptionFetchCounter--;
+
+                    // When all descriptions are fetched, update grid
+                    if (descriptionFetchCounter == 0) {
+                        scavengerHunt hunt = new scavengerHunt(huntName, huntDescription, taskList);
+                        scavengerHuntList.add(hunt);
+                        updateGridWithHunts(linksGrid);
+                    }
+                }
+            });
         }
 
         // Update GridLayout with just the scavenger hunt names

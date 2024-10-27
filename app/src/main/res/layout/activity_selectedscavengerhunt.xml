@@ -108,10 +108,11 @@
                         android:layout_width="282dp"
                         android:layout_height="101dp"
                         android:background="?android:attr/selectableItemBackground"
-                        android:fontFamily="@font/bungeeshade"
+                        android:fontFamily="@font/merriweatherregular"
                         android:text="example hunt"
                         android:textColor="@color/black"
                         android:textSize="24sp"
+                        android:typeface="normal"
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toBottomOf="@+id/totalPointsLabel" />
 

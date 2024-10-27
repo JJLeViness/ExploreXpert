@@ -78,103 +78,104 @@
                 android:id="@+id/linksGrid"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:columnCount="2"
-                android:rowCount="10"
-                android:orientation="horizontal"
                 android:layout_gravity="center"
-                android:gravity="center">
+                android:columnCount="1"
+                android:gravity="center"
+                android:orientation="horizontal"
+                android:rowCount="10">
 
                 <!-- Example links -->
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Example hunt"
                     android:layout_marginTop="20dp"
-                    android:textColor="#528F8F"
-                    android:textSize="16sp"
                     android:fontFamily="@font/merriweatherregular"
-                    android:padding="8dp" />
+                    android:padding="8dp"
+                    android:text="Example hunt"
+                    android:textColor="#528F8F"
+                    android:textSize="16sp" />
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Example hunt"
                     android:layout_marginTop="20dp"
-                    android:textColor="#528F8F"
-                    android:textSize="16sp"
                     android:fontFamily="@font/merriweatherregular"
-                    android:padding="8dp" />
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
+                    android:padding="8dp"
                     android:text="Example hunt"
                     android:textColor="#528F8F"
-                    android:textSize="16sp"
-                    android:fontFamily="@font/merriweatherregular"
-                    android:padding="8dp" />
+                    android:textSize="16sp" />
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:fontFamily="@font/merriweatherregular"
+                    android:padding="8dp"
                     android:text="Example hunt"
                     android:textColor="#528F8F"
-                    android:textSize="16sp"
-                    android:fontFamily="@font/merriweatherregular"
-                    android:padding="8dp" />
+                    android:textSize="16sp" />
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:fontFamily="@font/merriweatherregular"
+                    android:padding="8dp"
                     android:text="Example hunt"
                     android:textColor="#528F8F"
-                    android:textSize="16sp"
-                    android:fontFamily="@font/merriweatherregular"
-                    android:padding="8dp" />
+                    android:textSize="16sp" />
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:fontFamily="@font/merriweatherregular"
+                    android:padding="8dp"
                     android:text="Example hunt"
                     android:textColor="#528F8F"
-                    android:textSize="16sp"
-                    android:fontFamily="@font/merriweatherregular"
-                    android:padding="8dp" />
+                    android:textSize="16sp" />
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:fontFamily="@font/merriweatherregular"
+                    android:padding="8dp"
                     android:text="Example hunt"
                     android:textColor="#528F8F"
-                    android:textSize="16sp"
-                    android:fontFamily="@font/merriweatherregular"
-                    android:padding="8dp" />
+                    android:textSize="16sp" />
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:fontFamily="@font/merriweatherregular"
+                    android:padding="8dp"
                     android:text="Example hunt"
                     android:textColor="#528F8F"
-                    android:textSize="16sp"
-                    android:fontFamily="@font/merriweatherregular"
-                    android:padding="8dp" />
+                    android:textSize="16sp" />
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:fontFamily="@font/merriweatherregular"
+                    android:padding="8dp"
                     android:text="Example hunt"
                     android:textColor="#528F8F"
-                    android:textSize="16sp"
-                    android:fontFamily="@font/merriweatherregular"
-                    android:padding="8dp" />
+                    android:textSize="16sp" />
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:fontFamily="@font/merriweatherregular"
+                    android:padding="8dp"
                     android:text="Example hunt"
                     android:textColor="#528F8F"
-                    android:textSize="16sp"
+                    android:textSize="16sp" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
                     android:fontFamily="@font/merriweatherregular"
-                    android:padding="8dp" />
+                    android:padding="8dp"
+                    android:text="Example hunt"
+                    android:textColor="#528F8F"
+                    android:textSize="16sp" />
 
             </GridLayout>
         </ScrollView>
