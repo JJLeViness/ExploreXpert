@@ -1,5 +1,6 @@
 package com.leviness.explorexpert;
 
+import android.app.AlertDialog;
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
 import android.os.AsyncTask;
@@ -7,9 +8,11 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.ArrayAdapter;
 import android.widget.GridLayout;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBarDrawerToggle;
@@ -24,6 +27,7 @@ import com.google.android.material.navigation.NavigationView;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.leviness.explorexpert.network.KnowledgeGraphAPIClient;
 
@@ -45,19 +49,24 @@ public class selectyourhunt_activity extends AppCompatActivity {
     private List<scavengerHunt> scavengerHuntList = new ArrayList<>();
     private KnowledgeGraphAPIClient knowledgeGraphAPIClient;
     private LatLng manhattanLocation = new LatLng(40.7831, -73.9712); // TESTING
+    private LatLng LAlocation = new LatLng(34.0522, -118.2437); // TESTING
     private DrawerLayout menuNavigation;
 
     private FirebaseFirestore db;
+    private List<String> scavengerHuntNames = new ArrayList<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_selectyourhunt);
-        
+
         this.setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
 
 
         db = FirebaseFirestore.getInstance();  // Initialize Firestore
+        TextView viewSavedHunts = findViewById(R.id.view_saved_hunts);
+
+        viewSavedHunts.setOnClickListener(v -> showSavedHunts());
 
         GridLayout linksGrid = findViewById(R.id.linksGrid);
         menuNavigation = findViewById(R.id.drawer_layout);
@@ -118,6 +127,105 @@ public class selectyourhunt_activity extends AppCompatActivity {
         populateScavengerHunts(linksGrid);
     }
 
+    private void showSavedHunts() {
+        db.collection("scavengerHunts").get().addOnCompleteListener(task -> {
+            if (task.isSuccessful() && task.getResult() != null) {
+                List<String> huntNames = new ArrayList<>();
+
+                // Retrieve each hunt's document ID, which serves as the hunt name
+                for (DocumentSnapshot document : task.getResult()) {
+                    String huntName = document.getId();  // Document ID is the hunt name
+                    huntNames.add(huntName);
+                    Log.d("Firestore", "Fetched Hunt Name: " + huntName);
+                }
+
+                if (!huntNames.isEmpty()) {
+                    showHuntDialog(huntNames);  // Show dialog with hunt names
+                } else {
+                    Log.d("Firestore", "No hunts found in scavengerHunts collection.");
+                    Toast.makeText(this, "No hunts found", Toast.LENGTH_SHORT).show();
+                }
+            } else {
+                Exception e = task.getException();
+                Log.e("Firestore", "Error fetching hunts: ", e);
+                Toast.makeText(this, "Failed to load hunts: " + e.getMessage(), Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
+
+
+
+    private void showHuntDialog(List<String> huntNames) {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle("Select a Scavenger Hunt");
+
+        // Use an ArrayAdapter to display the hunt names in the dialog
+        ArrayAdapter<String> adapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, huntNames);
+
+        builder.setAdapter(adapter, (dialog, which) -> {
+            String selectedHunt = huntNames.get(which);
+            openHuntDetails(selectedHunt);  // Handle selected hunt
+        });
+
+        builder.setNegativeButton("CLOSE", (dialog, which) -> dialog.dismiss());
+        builder.create().show();
+    }
+
+
+    private void openHuntDetails(String huntName) {
+        DocumentReference huntDocRef = db.collection("scavengerHunts").document(huntName);
+
+        huntDocRef.get().addOnSuccessListener(documentSnapshot -> {
+            if (documentSnapshot.exists()) {
+                String huntDescription = documentSnapshot.getString("description");
+
+                // Fetch tasks associated with the hunt
+                huntDocRef.collection("tasks").get().addOnSuccessListener(taskSnapshots -> {
+                    List<scavengerHuntTask> taskList = new ArrayList<>();
+
+                    for (DocumentSnapshot taskDoc : taskSnapshots) {
+                        String placeName = taskDoc.getString("placeName");
+                        String description = taskDoc.getString("description");
+                        Map<String, Double> locationMap = (Map<String, Double>) taskDoc.get("location");
+
+                        if (locationMap != null) {
+                            double latitude = locationMap.get("latitude");
+                            double longitude = locationMap.get("longitude");
+                            LatLng location = new LatLng(latitude, longitude);
+
+                            scavengerHuntTask task = new scavengerHuntTask(placeName, description, location);
+                            taskList.add(task);
+                        } else {
+                            Log.e("Firestore", "Location data missing for task: " + placeName);
+                        }
+                    }
+
+                    // Reconstruct the scavengerHunt object
+                    scavengerHunt hunt = new scavengerHunt(huntName, huntDescription, taskList);
+
+
+
+                    // Pass the scavengerHunt object to selectedscavengerhunt_activity
+                    Intent intent = new Intent(selectyourhunt_activity.this, selectedscavengerhunt_activity.class);
+                    intent.putExtra("hunt", hunt);
+                    intent.putExtra("huntName", huntName);
+                    intent.putExtra("huntDescription", huntDescription);
+                    startActivity(intent);
+
+                }).addOnFailureListener(e -> Log.e("Firestore", "Error fetching tasks", e));
+            } else {
+                Log.e("Firestore", "Hunt document does not exist");
+                Toast.makeText(this, "Hunt not found", Toast.LENGTH_SHORT).show();
+            }
+        }).addOnFailureListener(e -> Log.e("Firestore", "Error fetching hunt document", e));
+    }
+
+
+
+
+
+
+
     private void populateScavengerHunts(GridLayout linksGrid) {
 
 
@@ -138,18 +246,58 @@ public class selectyourhunt_activity extends AppCompatActivity {
     }
 
     private void createScavengerHunt(String huntName, String placeTypes, String huntDescription, GridLayout linksGrid) {
-        db.collection("scavengerHunts").document(huntName).get()
-                .addOnSuccessListener(documentSnapshot -> {
-                    if (!documentSnapshot.exists()) {
-                        // Only create a new hunt if it doesn't exist
-                        String nearbySearchUrl = getNearbySearchUrl(manhattanLocation, placeTypes);
-                        new NearbyPlacesTask(huntName, huntDescription, linksGrid).execute(nearbySearchUrl);
-                    } else {
-                        Log.d("Firestore", "Hunt \"" + huntName + "\" already exists in Firestore. Skipping creation.");
-                    }
-                })
-                .addOnFailureListener(e -> Log.e("Firestore", "Error checking for existing hunt", e));
+        DocumentReference huntDocRef = db.collection("scavengerHunts").document(huntName);
+
+        huntDocRef.get().addOnSuccessListener(documentSnapshot -> {
+            if (documentSnapshot.exists()) {
+                // The hunt exists in Firestore; retrieve tasks and construct scavengerHunt object
+                fetchTasksForExistingHunt(huntDocRef, huntName, huntDescription, linksGrid);
+            } else {
+                // The hunt does not exist; create and save it
+                Map<String, Object> huntData = new HashMap<>();
+                huntData.put("name", huntName);
+                huntData.put("description", huntDescription);
+
+                huntDocRef.set(huntData).addOnSuccessListener(aVoid -> {
+                    // Only create a new hunt if it doesn't exist
+                    String nearbySearchUrl = getNearbySearchUrl(manhattanLocation, placeTypes);
+                    new NearbyPlacesTask(huntName, huntDescription, linksGrid).execute(nearbySearchUrl);
+                }).addOnFailureListener(e -> Log.e("Firestore", "Error saving scavenger hunt", e));
+            }
+        }).addOnFailureListener(e -> Log.e("Firestore", "Error checking for existing hunt", e));
     }
+
+    private void fetchTasksForExistingHunt(DocumentReference huntDocRef, String huntName, String huntDescription, GridLayout linksGrid) {
+        huntDocRef.collection("tasks").get().addOnSuccessListener(taskSnapshots -> {
+            List<scavengerHuntTask> taskList = new ArrayList<>();
+
+            for (DocumentSnapshot taskDoc : taskSnapshots) {
+                String placeName = taskDoc.getString("placeName");
+                String description = taskDoc.getString("description");
+                Map<String, Double> locationMap = (Map<String, Double>) taskDoc.get("location");
+
+                if (locationMap != null) {
+                    double latitude = locationMap.get("latitude");
+                    double longitude = locationMap.get("longitude");
+                    LatLng location = new LatLng(latitude, longitude);
+
+                    scavengerHuntTask task = new scavengerHuntTask(placeName, description, location);
+                    taskList.add(task);
+                } else {
+                    Log.e("Firestore", "Location data missing for task: " + placeName);
+                }
+            }
+
+            // Construct the scavengerHunt object
+            scavengerHunt hunt = new scavengerHunt(huntName, huntDescription, taskList);
+            scavengerHuntList.add(hunt);
+
+            // Update the grid layout with the scavenger hunt titles only
+            updateGridWithHunts(linksGrid);
+
+        }).addOnFailureListener(e -> Log.e("Firestore", "Error fetching tasks", e));
+    }
+
 
     private String getNearbySearchUrl(LatLng location, String placeTypes) {
         String apiKey = getString(R.string.maps_api_key);
@@ -251,34 +399,8 @@ public class selectyourhunt_activity extends AppCompatActivity {
             });
         }
 
-        // Update GridLayout with just the scavenger hunt names
-        private void updateGridWithHunts(GridLayout gridLayout) {
 
-            int childCount = gridLayout.getChildCount();
 
-            // Loop through the scavenger hunts and update the corresponding TextViews
-            for (int i = 0; i < scavengerHuntList.size(); i++) {
-                if (i < childCount) {
-                    // Get the current scavenger hunt
-                    scavengerHunt hunt = scavengerHuntList.get(i);
-
-                    // Find the corresponding TextView in the grid
-                    TextView textView = (TextView) gridLayout.getChildAt(i);
-
-                    // Update the text of the TextView with the hunt name
-                    textView.setText(hunt.getName());
-
-                    textView.setOnClickListener(v -> {
-                        Intent intent = new Intent(selectyourhunt_activity.this, selectedscavengerhunt_activity.class);
-                        intent.putExtra("huntName", hunt.getName());
-                        intent.putExtra("huntDescription", hunt.getDescription());
-                        intent.putExtra("hunt", hunt);
-                        startActivity(intent);
-                    });
-                }
-            }
-        }
-    }
 
     private void fetchAndSaveTaskDescription(DocumentReference huntDocRef, scavengerHuntTask task, List<scavengerHuntTask> taskList) {
         knowledgeGraphAPIClient.fetchGeneralInfoForPlace(task.getPlaceName(), new KnowledgeGraphAPIClient.OnKnowledgeGraphResultListener() {
@@ -312,5 +434,35 @@ public class selectyourhunt_activity extends AppCompatActivity {
                 Log.e("selectyourhunt_activity", "Error fetching description: " + errorMessage);
             }
         });
+    }
+
+
+}
+
+    public void updateGridWithHunts(GridLayout gridLayout) {
+
+        int childCount = gridLayout.getChildCount();
+
+        // Loop through the scavenger hunts and update the corresponding TextViews
+        for (int i = 0; i < scavengerHuntList.size(); i++) {
+            if (i < childCount) {
+                // Get the current scavenger hunt
+                scavengerHunt hunt = scavengerHuntList.get(i);
+
+                // Find the corresponding TextView in the grid
+                TextView textView = (TextView) gridLayout.getChildAt(i);
+
+                // Update the text of the TextView with the hunt name
+                textView.setText(hunt.getName());
+
+                textView.setOnClickListener(v -> {
+                    Intent intent = new Intent(selectyourhunt_activity.this, selectedscavengerhunt_activity.class);
+                    intent.putExtra("huntName", hunt.getName());
+                    intent.putExtra("huntDescription", hunt.getDescription());
+                    intent.putExtra("hunt", hunt);
+                    startActivity(intent);
+                });
+            }
+        }
     }
 }
