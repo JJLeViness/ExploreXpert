@@ -2,6 +2,7 @@ package com.leviness.explorexpert;
 
 import android.Manifest;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.ActivityInfo;
 import android.content.pm.PackageManager;
 import android.location.Location;
@@ -60,6 +61,7 @@ public class navigator extends AppCompatActivity implements OnMapReadyCallback {
     private ActionBarDrawerToggle toggle;
     private NavigationView navigationView;
     private FirebaseFirestore db = FirebaseFirestore.getInstance();
+    private List<String> completedHunts = new ArrayList<>();
 
     private List<String> directionsList = new ArrayList<>();
     private List<LatLng> stepLatLngs = new ArrayList<>();
@@ -311,6 +313,11 @@ public class navigator extends AppCompatActivity implements OnMapReadyCallback {
 
             Log.d("Navigator", "Starting task " + taskIndex + " for hunt " + hunt.getName());
             navigateToTask(nycLocation, task.getLocation());
+
+            // Send the task location name to profile_Activity
+            Intent intent = new Intent(navigator.this, profile_Activity.class);
+            intent.putExtra("currentHuntLocation", task.getPlaceName()); // Send the location name
+
         } else {
             Log.w("Navigator", "Invalid task index or hunt has no tasks.");
         }
@@ -319,10 +326,17 @@ public class navigator extends AppCompatActivity implements OnMapReadyCallback {
 
     private void moveToNextTask() {
         if (isScavengerHuntActive && hunt != null && currentTaskIndex < hunt.getTasks().size() - 1) {
+            // Store the current task as a completed hunt before moving to the next
+            scavengerHuntTask completedTask = hunt.getTasks().get(currentTaskIndex);
+            String completedHuntName = completedTask.getPlaceName();
+            Log.d("ProfileActivity", "Saving completed hunt task: " + completedHuntName);
+            saveCompletedHunt(completedHuntName);
+
+            // Move to the next task
             currentTaskIndex++;
             scavengerHuntTask nextTask = hunt.getTasks().get(currentTaskIndex);
             saveHuntProgress(hunt.getName(), currentTaskIndex);
-            LatLng previousTaskLocation = hunt.getTasks().get(currentTaskIndex - 1).getLocation();
+            LatLng previousTaskLocation = completedTask.getLocation();
 
             // Navigate from the previous task to the next task
             navigateToTask(previousTaskLocation, nextTask.getLocation());
@@ -349,8 +363,15 @@ public class navigator extends AppCompatActivity implements OnMapReadyCallback {
 
             // Update the destination name to show "Scavenger Hunt Complete"
             destinationNameTextView.setText("Scavenger Hunt Complete!");
-            scavengerHuntTask finalTask = hunt.getTasks().get(currentTaskIndex); // Get the final task
-            LatLng finalTaskLocation = finalTask.getLocation(); // Get the final task location
+
+            // Store the final task name as a completed hunt
+            scavengerHuntTask finalTask = hunt.getTasks().get(currentTaskIndex);
+            String finalHuntName = finalTask.getPlaceName();
+            Log.d("ProfileActivity", "Saving final completed hunt: " + finalHuntName);
+            saveCompletedHunt(finalHuntName);
+
+            // Move to the final task location on the map
+            LatLng finalTaskLocation = finalTask.getLocation();
             mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(finalTaskLocation, 15));
 
             FirebaseUser currentUser = FirebaseAuth.getInstance().getCurrentUser();
@@ -360,6 +381,21 @@ public class navigator extends AppCompatActivity implements OnMapReadyCallback {
                 checkForPointMilestoneAchievement(userId);
             }
         }
+    }
+
+    private void saveCompletedHunt(String huntName) {
+        SharedPreferences prefs = getSharedPreferences("CompletedHuntsPrefs", MODE_PRIVATE);
+        SharedPreferences.Editor editor = prefs.edit();
+
+        // Shift previous hunts down by one slot
+        editor.putString("hunt2", prefs.getString("hunt1", ""));
+        editor.putString("hunt1", prefs.getString("hunt0", ""));
+        editor.putString("hunt0", huntName);
+
+        // Log each hunt being saved
+        Log.d("ProfileActivity", "Saving completed hunt: " + huntName);
+
+        editor.apply();
     }
 
     private void checkForPointMilestoneAchievement(String userId) {
@@ -383,7 +419,6 @@ public class navigator extends AppCompatActivity implements OnMapReadyCallback {
             Log.e("AchievementCheck", "Error fetching user points for milestone achievement", e);
         });
     }
-
 
     private void incrementHuntCount(String userId) {
         DocumentReference userDocRef = db.collection("users").document(userId);
