@@ -52,13 +52,11 @@
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintTop_toTopOf="parent" />
 
-
-
                 <ImageView
                     android:id="@+id/bannerLogo"
                     android:layout_width="300dp"
                     android:layout_height="133dp"
-                    android:layout_marginLeft="20dp"
+                    android:layout_marginStart="20dp"
                     android:layout_marginTop="-80dp"
                     android:contentDescription="@string/logo_desc"
                     android:src="@drawable/logoupdated"
@@ -72,7 +70,7 @@
                     android:layout_height="56dp"
                     android:layout_marginStart="40dp"
                     android:fontFamily="@font/bungeeregular"
-                    android:text="TOTAL POINTS"
+                    android:text="@string/total_points"
                     android:textColor="#528f8f"
                     android:textSize="18sp"
                     app:layout_constraintStart_toStartOf="parent"
@@ -85,7 +83,7 @@
                     android:layout_marginStart="40dp"
                     android:layout_marginTop="44dp"
                     android:fontFamily="@font/bungeeregular"
-                    android:text="0"
+                    android:text="@string/_0"
                     android:textColor="#528f8f"
                     android:textSize="36sp"
                     app:layout_constraintStart_toStartOf="parent"
@@ -107,7 +105,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginTop="40dp"
                     android:background="@drawable/textbox"
-                    android:text="Username"
+                    android:text="@string/username"
                     android:textColor="@color/black"
                     android:textSize="14sp"
                     app:layout_constraintEnd_toStartOf="@+id/profileImage"
@@ -120,6 +118,7 @@
                     android:layout_marginTop="8dp"
                     android:layout_marginEnd="90dp"
                     android:background="@null"
+                    android:contentDescription="@string/edit_button"
                     android:src="@drawable/ic_action_name"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintTop_toBottomOf="@+id/username" />
@@ -131,7 +130,7 @@
                     android:layout_marginStart="40dp"
                     android:layout_marginTop="16dp"
                     android:fontFamily="@font/bungeeregular"
-                    android:text="Current Location"
+                    android:text="@string/current_location"
                     android:textColor="#528f8f"
                     android:textSize="20sp"
                     app:layout_constraintStart_toStartOf="parent"
@@ -152,9 +151,9 @@
                     android:layout_marginTop="4dp"
                     android:background="?android:attr/selectableItemBackground"
                     android:fontFamily="@font/merriweatherregular"
-                    android:text="My Points and Achievement"
+                    android:text="@string/my_points_and_achievement"
                     android:textColor="@color/black"
-                    android:textSize="28dp"
+                    android:textSize="28sp"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@id/map" />
@@ -163,8 +162,9 @@
                     android:id="@+id/myScavengerHuntsLabel"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:layout_marginTop="10dp"
                     android:fontFamily="@font/merriweatherregular"
-                    android:text="My Scavenger Hunts"
+                    android:text="Current Hunt"
                     android:textColor="@color/black"
                     android:textSize="24sp"
                     app:layout_constraintEnd_toEndOf="parent"
@@ -175,58 +175,49 @@
                     android:id="@+id/exampleHunt1"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:fontFamily="@font/bungeeregular"
-                    android:text="Example Hunt 1"
+                    android:text="@string/example_hunt_1"
                     android:textColor="#528f8f"
-                    android:textSize="18sp"
+                    android:textSize="20sp"
+                    android:fontFamily="@font/bungeeregular"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@id/myScavengerHuntsLabel" />
 
                 <TextView
-                    android:id="@+id/exampleHunt2"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:fontFamily="@font/bungeeregular"
-                    android:text="Example Hunt 2"
-                    android:textColor="#528f8f"
-                    android:textSize="18sp"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@id/exampleHunt1" />
-
-                <TextView
-                    android:id="@+id/exampleHunt3"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:fontFamily="@font/bungeeregular"
-                    android:text="Example Hunt 3"
-                    android:textColor="#528f8f"
-                    android:textSize="18sp"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@id/exampleHunt2" />
-
-                <TextView
                     android:id="@+id/pastScavengerHuntsLabel"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:layout_marginTop="10dp"
+                    android:layout_marginStart="62dp"
                     android:fontFamily="@font/merriweatherregular"
-                    android:text="Past Scavenger Hunts"
+                    android:text="@string/past_scavenger_hunts"
                     android:textColor="@color/black"
                     android:textSize="24sp"
-                    app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@id/exampleHunt3" />
+                    app:layout_constraintTop_toBottomOf="@id/exampleHunt1" />
+
+                <ImageView
+                    android:id="@+id/pastdropdownArrow"
+                    android:layout_width="30dp"
+                    android:layout_height="30dp"
+                    android:layout_marginStart="0dp"
+                    android:layout_marginEnd="66dp"
+                    android:contentDescription="@string/past_drop_down_arrow"
+                    android:src="@drawable/dropdownarrow"
+                    app:layout_constraintBottom_toBottomOf="@id/pastScavengerHuntsLabel"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toEndOf="@+id/pastScavengerHuntsLabel"
+                    app:layout_constraintTop_toTopOf="@id/pastScavengerHuntsLabel" />
 
                 <TextView
                     android:id="@+id/pastHunt1"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:fontFamily="@font/bungeeregular"
-                    android:text="Example Hunt 1"
+                    android:text="@string/example_hunt_1"
                     android:textColor="#528f8f"
-                    android:textSize="18sp"
+                    android:visibility="gone"
+                    android:textSize="20sp"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@id/pastScavengerHuntsLabel" />
@@ -236,9 +227,10 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:fontFamily="@font/bungeeregular"
-                    android:text="Example Hunt 2"
+                    android:text="@string/example_hunt_2"
                     android:textColor="#528f8f"
-                    android:textSize="18sp"
+                    android:visibility="gone"
+                    android:textSize="20sp"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@id/pastHunt1" />
@@ -248,21 +240,23 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:fontFamily="@font/bungeeregular"
-                    android:text="Example Hunt 3"
+                    android:text="@string/example_hunt_3"
                     android:textColor="#528f8f"
-                    android:textSize="18sp"
+                    android:textSize="20sp"
+                    android:visibility="gone"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@id/pastHunt2" />
 
                 <TextView
-                    android:id="@+id/textView"
+                    android:id="@+id/reviews"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Reviews"
+                    android:text="@string/reviews"
                     android:textSize="24sp"
                     android:fontFamily="@font/merriweatherregular"
                     android:textColor="@color/black"
+                    android:layout_marginTop="10dp"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@+id/pastHunt3" />
@@ -274,7 +268,7 @@
                     android:scrollbars="vertical"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/textView" />
+                    app:layout_constraintTop_toBottomOf="@+id/reviews" />
 
             </androidx.constraintlayout.widget.ConstraintLayout>
         </ScrollView>
@@ -283,12 +277,14 @@
                 android:layout_width="30dp"
                 android:layout_height="30dp"
                 android:layout_gravity="top|end"
+                android:contentDescription="@string/up_arrow"
                 android:src="@drawable/uparrow" />
             <ImageView
                 android:id="@+id/arrow_down"
                 android:layout_width="30dp"
                 android:layout_height="30dp"
                 android:layout_gravity="bottom|end"
+                android:contentDescription="@string/down_arrow"
                 android:src="@drawable/downarrow" />
         </FrameLayout>
     </androidx.constraintlayout.widget.ConstraintLayout>

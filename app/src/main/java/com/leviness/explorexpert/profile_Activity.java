@@ -4,6 +4,7 @@ import android.Manifest;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.ActivityInfo;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
@@ -25,6 +26,7 @@ import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.core.app.ActivityCompat;
 import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
@@ -83,6 +85,10 @@ public class profile_Activity extends AppCompatActivity implements OnMapReadyCal
     private TextView pointsTextView;
     private ReviewAdapter reviewsAdapter;
     private StorageReference storageReference;
+    private TextView exampleHunt1;
+    private TextView pastHunt1;
+    private TextView pastHunt2;
+    private TextView pastHunt3;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -101,6 +107,12 @@ public class profile_Activity extends AppCompatActivity implements OnMapReadyCal
         pointsTextView = findViewById(R.id.totalPoints);
         profileImageView = findViewById(R.id.profileImage);
         usernameTextView = findViewById(R.id.username);
+        exampleHunt1 = findViewById(R.id.exampleHunt1);
+        ImageView pastDropdownArrow = findViewById(R.id.pastdropdownArrow); // Create this ImageView for the past hunts dropdown arrow
+        pastHunt1 = findViewById(R.id.pastHunt1);
+        pastHunt2 = findViewById(R.id.pastHunt2);
+        pastHunt3 = findViewById(R.id.pastHunt3);
+        TextView reviews = findViewById(R.id.reviews);
 
         // Initialize ScrollView and ImageView for arrows
         ScrollView scrollView = findViewById(R.id.scrollView);
@@ -171,9 +183,63 @@ public class profile_Activity extends AppCompatActivity implements OnMapReadyCal
                 }
         );
 
+        String currentHuntLocation = getIntent().getStringExtra("currentHuntLocation");
+
+        // Display the location in the TextView if available
+        if (currentHuntLocation != null) {
+            exampleHunt1.setText(currentHuntLocation);
+            exampleHunt1.setVisibility(View.VISIBLE);  // Ensure it's visible
+        } else {
+            exampleHunt1.setText("No location available");
+        }
+        pastDropdownArrow.setOnClickListener(view -> {
+            boolean isPastVisible = pastHunt1.getVisibility() == View.VISIBLE;
+
+            // Toggle visibility for each "Past Scavenger Hunts" item
+            pastHunt1.setVisibility(isPastVisible ? View.GONE : View.VISIBLE);
+            pastHunt2.setVisibility(isPastVisible ? View.GONE : View.VISIBLE);
+            pastHunt3.setVisibility(isPastVisible ? View.GONE : View.VISIBLE);
+
+            // Rotate arrow based on visibility state
+            pastDropdownArrow.setRotation(isPastVisible ? 0f : 180f);
+
+            // Adjust position of the Reviews label
+            ConstraintLayout.LayoutParams pastLayoutParams =
+                    (ConstraintLayout.LayoutParams) reviews.getLayoutParams();
+            pastLayoutParams.topToBottom = isPastVisible ? R.id.pastScavengerHuntsLabel : R.id.pastHunt3;
+            reviews.setLayoutParams(pastLayoutParams);
+        });
+
         // Other UI and drawer setup
         setupUI();
         setupDrawer();
+        loadCompletedHunts();
+    }
+
+    private void loadCompletedHunts() {
+        // Access SharedPreferences
+        SharedPreferences prefs = getSharedPreferences("CompletedHuntsPrefs", MODE_PRIVATE);
+
+        // Log to check if SharedPreferences contains the expected keys
+        Log.d("ProfileActivity", "Loading completed hunts from SharedPreferences.");
+
+        // Retrieve and set the past hunts data
+        String hunt0 = prefs.getString("hunt0", "No recent hunt");
+        String hunt1 = prefs.getString("hunt1", "");
+        String hunt2 = prefs.getString("hunt2", "");
+
+        Log.d("ProfileActivity", "Hunt 0: " + hunt0);
+        Log.d("ProfileActivity", "Hunt 1: " + hunt1);
+        Log.d("ProfileActivity", "Hunt 2: " + hunt2);
+
+        pastHunt1.setText(hunt0);
+        pastHunt2.setText(hunt1);
+        pastHunt3.setText(hunt2);
+
+        // Log final text values for confirmation
+        Log.d("ProfileActivity", "Past Hunt 1 Text: " + pastHunt1.getText());
+        Log.d("ProfileActivity", "Past Hunt 2 Text: " + pastHunt2.getText());
+        Log.d("ProfileActivity", "Past Hunt 3 Text: " + pastHunt3.getText());
     }
 
     // Load user profile method (fetch username, profile image, and points)

@@ -55,4 +55,24 @@
     </string>
     <string name="place_photo" />
     <string name="title_activity_navigation">navigation</string>
+    <string name="location_name_placeholder">Location Name Placeholder</string>
+    <string name="rating_placeholder">Rating Placeholder</string>
+    <string name="text_review_placeholder">Text review Placeholder</string>
+    <string name="total_points">TOTAL POINTS</string>
+    <string name="_0">0</string>
+    <string name="username">Username</string>
+    <string name="current_location">Current Location</string>
+    <string name="my_points_and_achievement">My Points and Achievement</string>
+    <string name="my_scavenger_hunts">My Scavenger Hunts</string>
+    <string name="example_hunt_1">Example Hunt 1</string>
+    <string name="example_hunt_2">Example Hunt 2</string>
+    <string name="example_hunt_3">Example Hunt 3</string>
+    <string name="past_scavenger_hunts">Past Scavenger Hunts</string>
+    <string name="reviews">Reviews</string>
+    <string name="drop_down_arrow">drop down arrow</string>
+    <string name="edit_button">edit button</string>
+    <string name="past_drop_down_arrow">past drop down arrow</string>
+    <string name="up_arrow">up arrow</string>
+    <string name="down_arrow">down arrow</string>
+    <string name="my_scavenger_hunt" />
 </resources>

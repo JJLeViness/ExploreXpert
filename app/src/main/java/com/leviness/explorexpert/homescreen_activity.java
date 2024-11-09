@@ -112,32 +112,29 @@ public class homescreen_activity extends AppCompatActivity {
             startActivity(intent);
         });
 
-        navigationView.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
-            @Override
-            public boolean onNavigationItemSelected(@NonNull MenuItem item) {
-                int id = item.getItemId();
+        navigationView.setNavigationItemSelectedListener(item -> {
+            int id = item.getItemId();
 
-                if (id == R.id.nav_home) {
-                    startActivity(new Intent(homescreen_activity.this, homescreen_activity.class));
-                } else if (id == R.id.nav_map) {
-                    startActivity(new Intent(homescreen_activity.this, Map_Activity.class));
-                } else if (id == R.id.nav_profile) {
-                    FirebaseUser currentUser = FirebaseAuth.getInstance().getCurrentUser();
-                    if (currentUser != null) {
-                        startActivity(new Intent(homescreen_activity.this, profile_Activity.class));
-                    } else {
-                        startActivity(new Intent(homescreen_activity.this, login_Activity.class));
-                    }
-                } else if (id == R.id.nav_scavenger_hunt) {
-                    startActivity(new Intent(homescreen_activity.this, selectyourhunt_activity.class));
-                } else if (id == R.id.nav_settings) {
-                    startActivity(new Intent(homescreen_activity.this, settings_Activity.class));
-                } else if (id == R.id.nav_login) {
+            if (id == R.id.nav_home) {
+                startActivity(new Intent(homescreen_activity.this, homescreen_activity.class));
+            } else if (id == R.id.nav_map) {
+                startActivity(new Intent(homescreen_activity.this, Map_Activity.class));
+            } else if (id == R.id.nav_profile) {
+                FirebaseUser currentUser = FirebaseAuth.getInstance().getCurrentUser();
+                if (currentUser != null) {
+                    startActivity(new Intent(homescreen_activity.this, profile_Activity.class));
+                } else {
                     startActivity(new Intent(homescreen_activity.this, login_Activity.class));
                 }
-                menuNavigation.closeDrawer(GravityCompat.END);
-                return true;
+            } else if (id == R.id.nav_scavenger_hunt) {
+                startActivity(new Intent(homescreen_activity.this, selectyourhunt_activity.class));
+            } else if (id == R.id.nav_settings) {
+                startActivity(new Intent(homescreen_activity.this, settings_Activity.class));
+            } else if (id == R.id.nav_login) {
+                startActivity(new Intent(homescreen_activity.this, login_Activity.class));
             }
+            menuNavigation.closeDrawer(GravityCompat.END);
+            return true;
         });
 
 
