@@ -43,17 +43,17 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Random;
 
 public class selectyourhunt_activity extends AppCompatActivity {
 
     private List<scavengerHunt> scavengerHuntList = new ArrayList<>();
     private KnowledgeGraphAPIClient knowledgeGraphAPIClient;
     private LatLng manhattanLocation = new LatLng(40.7831, -73.9712); // TESTING
-    private LatLng LAlocation = new LatLng(34.0522, -118.2437); // TESTING
     private DrawerLayout menuNavigation;
+    private GridLayout linksGrid;
 
     private FirebaseFirestore db;
-    private List<String> scavengerHuntNames = new ArrayList<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -68,7 +68,7 @@ public class selectyourhunt_activity extends AppCompatActivity {
 
         viewSavedHunts.setOnClickListener(v -> showSavedHunts());
 
-        GridLayout linksGrid = findViewById(R.id.linksGrid);
+       linksGrid = findViewById(R.id.linksGrid);
         menuNavigation = findViewById(R.id.drawer_layout);
         NavigationView navigationView = findViewById(R.id.menu_navigation);
         ImageView menuButton = findViewById(R.id.menuButton);
@@ -140,7 +140,10 @@ public class selectyourhunt_activity extends AppCompatActivity {
                 }
 
                 if (!huntNames.isEmpty()) {
-                    showHuntDialog(huntNames);  // Show dialog with hunt names
+                    List<String> displayedHunts = getDisplayedHunts();
+                    List<String> availableHunts = new ArrayList<>(huntNames);
+                    availableHunts.removeAll(displayedHunts);
+                    showHuntDialog(availableHunts);   // Show dialog with hunt names
                 } else {
                     Log.d("Firestore", "No hunts found in scavengerHunts collection.");
                     Toast.makeText(this, "No hunts found", Toast.LENGTH_SHORT).show();
@@ -231,7 +234,7 @@ public class selectyourhunt_activity extends AppCompatActivity {
 
 
         // Creating and adding scavenger hunts
-        createScavengerHunt("Manhattan Landmarks Hunt", "tourist_attraction|museum|art_gallery", "Discover famous landmarks in Manhattan.", linksGrid);
+        /*createScavengerHunt("Manhattan Landmarks Hunt", "tourist_attraction|museum|art_gallery", "Discover famous landmarks in Manhattan.", linksGrid);
         createScavengerHunt("Art Installations Hunt", "art_gallery|museum|tourist_attraction", "Explore stunning art installations across Manhattan.", linksGrid);
         createScavengerHunt("Parks & Nature Hunt", "park|zoo|campground", "Visit beautiful parks and green spaces in Manhattan.", linksGrid);
         createScavengerHunt("Historic Buildings Hunt", "museum|city_hall|embassy", "Explore the historic buildings in Manhattan.", linksGrid);
@@ -241,6 +244,18 @@ public class selectyourhunt_activity extends AppCompatActivity {
         createScavengerHunt("Shopping Spree Hunt", "shopping_mall|clothing_store|shoe_store|book_store", "Discover the best shopping destinations in Manhattan.", linksGrid);
         createScavengerHunt("Bridges of Manhattan", "tourist_attraction|point_of_interest|museum", "Take a tour of the iconic bridges of Manhattan.", linksGrid);
         createScavengerHunt("Hidden Gems Hunt", "point_of_interest|bakery|book_store|pet_store|library", "Explore the lesser-known hidden gems of the city.", linksGrid);
+        */
+
+        createScavengerHunt("Riverside Retreats", "park|river|tourist_attraction", "Enjoy scenic riverside spots and tranquil parks along Manhattan's waterfront.", linksGrid);
+        createScavengerHunt("Cultural Hotspots Tour", "museum|art_gallery|cultural_center", "Discover diverse cultural landmarks showcasing art, history, and heritage.", linksGrid);
+        createScavengerHunt("Library & Literary Tour", "library|book_store|point_of_interest", "Visit famous libraries, bookstores, and literary landmarks in Manhattan.", linksGrid);
+        createScavengerHunt("Architectural Wonders", "architectural_building|landmark|tourist_attraction", "Explore Manhattan’s iconic and modern architectural marvels.", linksGrid);
+        createScavengerHunt("Outdoor Sculptures Hunt", "sculpture|public_art|point_of_interest", "Seek out incredible outdoor sculptures scattered across the city.", linksGrid);
+        createScavengerHunt("Historic Hotels & Inns", "hotel|historical_building|landmark", "Tour historic hotels and inns that have stood the test of time.", linksGrid);
+        createScavengerHunt("Underground NYC", "subway_station|speakeasy|museum", "Delve into New York’s underground scene with subway art and hidden gems.", linksGrid);
+        createScavengerHunt("Farmers Markets & Gardens", "market|botanical_garden|park", "Visit farmers markets and lush gardens for a fresh perspective of NYC.", linksGrid);
+        createScavengerHunt("Famous Film Locations", "movie_location|tourist_attraction|point_of_interest", "Discover the filming locations of iconic movies set in Manhattan.", linksGrid);
+        createScavengerHunt("Music & Jazz Clubs", "music_venue|jazz_club|night_club", "Explore legendary music venues and jazz clubs that shaped NYC’s sound.", linksGrid);
 
 
     }
@@ -393,10 +408,30 @@ public class selectyourhunt_activity extends AppCompatActivity {
 
                 @Override
                 public void onError(String errorMessage) {
-                    task.setDescription("No description available.");
+                    String description = "No description available. " + getRandomFunFact();
+                    task.setDescription(description);
+
                     Log.e("selectyourhunt_activity", "Error fetching description: " + errorMessage);
                 }
             });
+        }
+
+        private String getRandomFunFact() {
+            String[] funFacts = {
+                    "Did you know? The New York subway system is the largest in the world by number of stations.",
+                    "Fun fact: Manhattan’s Chinatown is one of the oldest in the United States.",
+                    "Did you know? Central Park is larger than the country of Monaco.",
+                    "Fun fact: The Empire State Building has its own zip code – 10118.",
+                    "Did you know? Times Square is named after The New York Times newspaper.",
+                    "Fun fact: New York was the first capital of the United States in 1789.",
+                    "Did you know? The Statue of Liberty was a gift from France in 1886.",
+                    "Fun fact: The Brooklyn Bridge was the first bridge to use steel wire in its construction.",
+                    "Did you know? Grand Central Terminal has a hidden tennis court on its top floor.",
+                    "Fun fact: New York City’s Federal Reserve Bank holds the world’s largest gold storage."
+            };
+
+            Random random = new Random();
+            return funFacts[random.nextInt(funFacts.length)];
         }
 
 
@@ -430,7 +465,9 @@ public class selectyourhunt_activity extends AppCompatActivity {
 
             @Override
             public void onError(String errorMessage) {
-                task.setDescription("No description available.");
+                String description = "No description available. " + getRandomFunFact();
+                task.setDescription(description);
+
                 Log.e("selectyourhunt_activity", "Error fetching description: " + errorMessage);
             }
         });
@@ -438,6 +475,15 @@ public class selectyourhunt_activity extends AppCompatActivity {
 
 
 }
+
+    private List<String> getDisplayedHunts() {
+        List<String> displayedHunts = new ArrayList<>();
+        for (int i = 0; i < linksGrid.getChildCount(); i++) {
+            TextView huntTextView = (TextView) linksGrid.getChildAt(i);
+            displayedHunts.add(huntTextView.getText().toString());
+        }
+        return displayedHunts;
+    }
 
     public void updateGridWithHunts(GridLayout gridLayout) {
 

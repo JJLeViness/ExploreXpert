@@ -4,13 +4,11 @@ import android.content.Intent;
 import android.content.pm.ActivityInfo;
 import android.os.Bundle;
 import android.util.Log;
-import android.view.MenuItem;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageView;
 
 
-import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.AppCompatButton;
@@ -104,7 +102,6 @@ public class homescreen_activity extends AppCompatActivity {
         });
 
         navigateButton.setOnClickListener(v -> {  //Currently moves the user  to map Activity with entered info from to and from text
-            //For testing purposes of places and routes API. Function will change later.
             Intent intent = new Intent(homescreen_activity.this, navigator.class);
             intent.putExtra("fromLatLng", fromLatLng);
             intent.putExtra("toLatLng", toLatLng);

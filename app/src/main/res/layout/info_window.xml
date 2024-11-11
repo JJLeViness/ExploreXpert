@@ -42,6 +42,8 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="8dp"
         android:textColor="@android:color/black"
-        android:text="Fun fact will appear here" />
+        android:text="@string/fun_fact_will_appear_here" />
+
+
 
 </LinearLayout>

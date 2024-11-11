@@ -11,6 +11,7 @@ import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.net.URLEncoder;
+import java.util.Random;
 
 public class KnowledgeGraphAPIClient {
 
@@ -25,6 +26,24 @@ public class KnowledgeGraphAPIClient {
     public interface OnKnowledgeGraphResultListener {
         void onResult(String description);
         void onError(String errorMessage);
+    }
+
+    private String getRandomFunFact() {
+        String[] funFacts = {
+                "Did you know? The New York subway system is the largest in the world by number of stations.",
+                "Fun fact: Manhattan’s Chinatown is one of the oldest in the United States.",
+                "Did you know? Central Park is larger than the country of Monaco.",
+                "Fun fact: The Empire State Building has its own zip code – 10118.",
+                "Did you know? Times Square is named after The New York Times newspaper.",
+                "Fun fact: New York was the first capital of the United States in 1789.",
+                "Did you know? The Statue of Liberty was a gift from France in 1886.",
+                "Fun fact: The Brooklyn Bridge was the first bridge to use steel wire in its construction.",
+                "Did you know? Grand Central Terminal has a hidden tennis court on its top floor.",
+                "Fun fact: New York City’s Federal Reserve Bank holds the world’s largest gold storage."
+        };
+
+        Random random = new Random();
+        return funFacts[random.nextInt(funFacts.length)];
     }
 
     // Fetch general information about a place using its name
@@ -70,13 +89,13 @@ public class KnowledgeGraphAPIClient {
                                 String articleBody = detailedDescription.optString("articleBody", "No description available.");
                                 listener.onResult(articleBody);
                             } else {
-                                listener.onResult("No description available.");
+                                listener.onResult("No description available. " + getRandomFunFact());
                             }
                         } else {
-                            listener.onResult("No description available.");
+                            listener.onResult("No description available. " + getRandomFunFact());
                         }
                     } else {
-                        listener.onResult("No general information available.");
+                        listener.onResult("No description available. " + getRandomFunFact());
                     }
                 } else {
                     listener.onError("Error fetching data.");

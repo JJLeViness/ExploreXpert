@@ -12,6 +12,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -81,6 +82,8 @@ public class Map_Activity extends AppCompatActivity implements OnMapReadyCallbac
     private PlacesClient placesClient;
     private LatLng currentLocation;
     private FirebaseFirestore db = FirebaseFirestore.getInstance();
+    private Button goHereButton;
+    private Marker selectedMarker;
 
     //lowercase for filerting and uppercase for display
     private String[] placeTypes = {
@@ -122,6 +125,7 @@ public class Map_Activity extends AppCompatActivity implements OnMapReadyCallbac
         navigationView = findViewById(R.id.menu_navigation);
         String apiKey = getString(R.string.maps_api_key);
         knowledgeGraphAPIClient = new KnowledgeGraphAPIClient(apiKey);
+        goHereButton = findViewById(R.id.go_here_button);
 
 
         filterSpinner = findViewById(R.id.filterSpinner);
@@ -153,6 +157,17 @@ public class Map_Activity extends AppCompatActivity implements OnMapReadyCallbac
             mapFragment.getMapAsync(this);
         }
         fusedLocationClient = LocationServices.getFusedLocationProviderClient(this);
+
+        goHereButton.setOnClickListener(v -> {
+            if (selectedMarker != null) { // Ensure there is a selected marker
+                LatLng destination = selectedMarker.getPosition();
+                Intent intent = new Intent(Map_Activity.this, navigator.class);
+                intent.putExtra("fromLatLng", currentLocation.latitude + "," + currentLocation.longitude);
+                intent.putExtra("toLatLng", destination.latitude + "," + destination.longitude);
+                intent.putExtra("toName", selectedMarker.getTitle());
+                startActivity(intent);
+            }
+        });
 
 
 
@@ -207,6 +222,7 @@ public class Map_Activity extends AppCompatActivity implements OnMapReadyCallbac
                 RatingBar placeRating = infoWindowView.findViewById(R.id.place_rating);
                 TextView funFactTextView = infoWindowView.findViewById(R.id.fun_fact);
 
+
                 title.setText(marker.getTitle());
 
                 // Use preloaded rating
@@ -236,15 +252,19 @@ public class Map_Activity extends AppCompatActivity implements OnMapReadyCallbac
 
         });
         mMap.setOnMarkerClickListener(marker -> {
-            // If the marker is tagged as 'non-clickable', prevent its default behavior
-            if ("non-clickable".equals(marker.getTag())) {
-                return true;
-            }
 
-            // Allow clicking on other markers
+
             marker.showInfoWindow(); // Show the InfoWindow for clickable markers
+
+
+
             return true;
         });
+        mMap.setOnMapClickListener(latLng -> {
+            goHereButton.setVisibility(View.GONE); // Hide the Go Here button when clicking on the map
+        });
+
+
 
 
         mMap.setOnInfoWindowClickListener(marker -> {
@@ -289,15 +309,13 @@ public class Map_Activity extends AppCompatActivity implements OnMapReadyCallbac
                             LatLng currentLocation = new LatLng(40.7870, -73.9754);
 
 
-                            mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(currentLocation, 20));
+                            mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(currentLocation, 15));
 
 
                             Marker marker = mMap.addMarker(new MarkerOptions()
                                     .position(currentLocation)
                                     .title("You are here"));
-                            if (marker != null) {
-                                marker.setTag("non-clickable");
-                            }
+                            marker.setTag("non-clickable");
 
 
                             this.currentLocation = currentLocation;
@@ -319,9 +337,10 @@ public class Map_Activity extends AppCompatActivity implements OnMapReadyCallbac
         mMap.setOnMarkerClickListener(marker -> {
             // Handle the marker click event here
             Map_Activity.this.onMarkerClick(marker);  // Call your custom onMarkerClick method
+            goHereButton.setVisibility(View.VISIBLE);
+            selectedMarker = marker;
 
             // Return false to indicate that we have not consumed the event
-            // and that we wish for the default behavior to occur (camera move, etc.).
             return false;
         });
 
@@ -446,6 +465,7 @@ public class Map_Activity extends AppCompatActivity implements OnMapReadyCallbac
         // Create a new dialog to let the user input a new rating and text review
         AlertDialog.Builder builder = new AlertDialog.Builder(Map_Activity.this);
         builder.setTitle("Rate " + placeName);
+
 
         // RatingBar for rating input
         final RatingBar ratingBar = new RatingBar(Map_Activity.this);

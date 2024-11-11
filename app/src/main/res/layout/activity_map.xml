@@ -33,11 +33,23 @@
                 android:layout_marginStart="30dp"
                 android:layout_marginEnd="16dp"
                 android:padding="8dp"
-                android:visibility="gone"
+                android:gravity="center"
+                android:visibility="visible"
                 android:background="@android:drawable/btn_dropdown"
                 android:prompt="@string/filter_prompt"
                 android:spinnerMode="dropdown"
                 android:dropDownVerticalOffset="40dp" />
+
+            <Button
+                android:id="@+id/go_here_button"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="16dp"
+                android:backgroundTint="@color/dark_teal"
+                android:text="@string/go_here"
+                android:textColor="@android:color/white"
+                android:visibility="gone"
+                tools:visibility="invisible" />
 
 
         </LinearLayout>
@@ -66,6 +78,9 @@
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent" />
+        
+
+
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
