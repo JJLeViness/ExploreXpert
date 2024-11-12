@@ -44,12 +44,14 @@ import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.SetOptions;
 import com.leviness.explorexpert.network.DirectionsAdapter;
 import com.leviness.explorexpert.network.RoutesTask;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class navigator extends AppCompatActivity implements OnMapReadyCallback {
 
@@ -314,15 +316,14 @@ public class navigator extends AppCompatActivity implements OnMapReadyCallback {
             Log.d("Navigator", "Starting task " + taskIndex + " for hunt " + hunt.getName());
             navigateToTask(nycLocation, task.getLocation());
 
-            // Send the task location name to profile_Activity
-            Intent intent = new Intent(navigator.this, profile_Activity.class);
-            intent.putExtra("currentHuntLocation", task.getPlaceName()); // Send the location name
-
+            FirebaseUser currentUser = FirebaseAuth.getInstance().getCurrentUser();
+            if (currentUser != null) {
+                updateCurrentHuntInFirebase(currentUser.getUid(), hunt.getName(), taskIndex, task.getPlaceName());
+            }
         } else {
             Log.w("Navigator", "Invalid task index or hunt has no tasks.");
         }
     }
-
 
     private void moveToNextTask() {
         if (isScavengerHuntActive && hunt != null && currentTaskIndex < hunt.getTasks().size() - 1) {
@@ -353,6 +354,9 @@ public class navigator extends AppCompatActivity implements OnMapReadyCallback {
 
                 // Increment the hunt count
                 incrementHuntCount(userId); // This method will handle the achievement check inside it
+
+                // Update Firebase with the current hunt progress
+                updateCurrentHuntInFirebase(userId, hunt.getName(), currentTaskIndex, nextTask.getPlaceName());
             }
         } else {
             // All tasks completed, update UI accordingly
@@ -379,9 +383,27 @@ public class navigator extends AppCompatActivity implements OnMapReadyCallback {
                 String userId = currentUser.getUid();
                 updateUserPoints(userId, 500);  // Award 500 points for completing the scavenger hunt
                 checkForPointMilestoneAchievement(userId);
+
+                // Clear current hunt data in Firebase after completing all tasks
+                updateCurrentHuntInFirebase(userId, null, -1, null);
             }
         }
     }
+
+
+
+    private void updateCurrentHuntInFirebase(String userId, String huntName, int taskIndex, String placeName) {
+        Map<String, Object> currentHuntData = new HashMap<>();
+        currentHuntData.put("currentHuntName", huntName);
+        currentHuntData.put("currentTaskIndex", taskIndex);
+        currentHuntData.put("currentLocationName", placeName);
+
+        db.collection("users").document(userId)
+                .set(currentHuntData, SetOptions.merge())
+                .addOnSuccessListener(aVoid -> Log.d("Navigator", "Current hunt updated in Firebase"))
+                .addOnFailureListener(e -> Log.e("Navigator", "Failed to update current hunt", e));
+    }
+
 
     private void saveCompletedHunt(String huntName) {
         SharedPreferences prefs = getSharedPreferences("CompletedHuntsPrefs", MODE_PRIVATE);

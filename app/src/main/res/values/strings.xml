@@ -75,6 +75,7 @@
     <string name="up_arrow">up arrow</string>
     <string name="down_arrow">down arrow</string>
     <string name="my_scavenger_hunt" />
+    <string name="current_hunt">Current Hunt</string>
     <string name="go_here">Go Here?</string>
     <string name="fun_fact_will_appear_here">Fun fact will appear here</string>
 </resources>

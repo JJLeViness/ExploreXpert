@@ -3,18 +3,22 @@ package com.leviness.explorexpert;
 import android.Manifest;
 import android.app.Activity;
 import android.app.AlertDialog;
+import android.app.Dialog;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.ActivityInfo;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.util.Log;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
@@ -64,7 +68,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import de.hdodenhof.circleimageview.CircleImageView;
-
 
 public class profile_Activity extends AppCompatActivity implements OnMapReadyCallback {
     private static final String TAG = "profile_Activity";
@@ -118,6 +121,11 @@ public class profile_Activity extends AppCompatActivity implements OnMapReadyCal
         ScrollView scrollView = findViewById(R.id.scrollView);
         ImageView arrowUp = findViewById(R.id.arrow_up);
         ImageView arrowDown = findViewById(R.id.arrow_down);
+
+        profileImageView.setOnClickListener(v -> {
+            // Open the image in full-screen mode (using a Dialog or another activity)
+            enlargeProfileImage();
+        });
 
         // Set a scroll change listener on the ScrollView
         scrollView.getViewTreeObserver().addOnScrollChangedListener(() -> {
@@ -183,15 +191,6 @@ public class profile_Activity extends AppCompatActivity implements OnMapReadyCal
                 }
         );
 
-        String currentHuntLocation = getIntent().getStringExtra("currentHuntLocation");
-
-        // Display the location in the TextView if available
-        if (currentHuntLocation != null) {
-            exampleHunt1.setText(currentHuntLocation);
-            exampleHunt1.setVisibility(View.VISIBLE);  // Ensure it's visible
-        } else {
-            exampleHunt1.setText("No location available");
-        }
         pastDropdownArrow.setOnClickListener(view -> {
             boolean isPastVisible = pastHunt1.getVisibility() == View.VISIBLE;
 
@@ -214,6 +213,53 @@ public class profile_Activity extends AppCompatActivity implements OnMapReadyCal
         setupUI();
         setupDrawer();
         loadCompletedHunts();
+        loadCurrentHunt();
+    }
+
+    private void loadCurrentHunt() {
+        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+        if (user != null) {
+            db.collection("users").document(user.getUid())
+                    .get()
+                    .addOnSuccessListener(documentSnapshot -> {
+                        if (documentSnapshot.exists()) {
+                            String currentHuntName = documentSnapshot.getString("currentHuntName");
+                            Long taskIndex = documentSnapshot.getLong("currentTaskIndex");
+                            String locationName = documentSnapshot.getString("currentLocationName");
+
+                            if (currentHuntName != null && taskIndex != null && locationName != null) {
+                                exampleHunt1.setText(currentHuntName + " - " + locationName);
+                                exampleHunt1.setVisibility(View.VISIBLE);
+                            } else {
+                                exampleHunt1.setText("No current hunt");
+                            }
+                        }
+                    })
+                    .addOnFailureListener(e -> Log.e("ProfileActivity", "Error fetching current hunt", e));
+        }
+    }
+
+
+    private void enlargeProfileImage() {
+        // Create an ImageView that will display the image in full-screen mode
+        ImageView fullScreenImageView = new ImageView(profile_Activity.this);
+        fullScreenImageView.setImageDrawable(profileImageView.getDrawable()); // Set the current profile image as the source
+
+        // Create a Dialog to show the ImageView in full screen
+        Dialog imageDialog = new Dialog(profile_Activity.this);
+        imageDialog.setContentView(fullScreenImageView);
+
+        // Optional: Make the background of the dialog transparent for a clean look
+        imageDialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+
+        // Set dialog width and height to match parent for full screen
+        imageDialog.getWindow().setLayout(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
+
+        // Set an OnClickListener to dismiss the dialog when tapped
+        fullScreenImageView.setOnClickListener(v -> imageDialog.dismiss());
+
+        // Show the dialog
+        imageDialog.show();
     }
 
     private void loadCompletedHunts() {
