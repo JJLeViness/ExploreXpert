@@ -25,6 +25,7 @@ import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.ScrollView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
@@ -47,6 +48,9 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationServices;
+import com.google.android.material.textfield.TextInputEditText;
+import com.google.firebase.auth.AuthCredential;
+import com.google.firebase.auth.EmailAuthProvider;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.DocumentReference;
@@ -138,7 +142,6 @@ public class profile_Activity extends AppCompatActivity implements OnMapReadyCal
             arrowDown.setVisibility(canScrollDown ? View.VISIBLE : View.GONE);
         });
 
-        // Optional: To set initial visibility of arrows on load
         scrollView.post(() -> {
             boolean canScrollUp = scrollView.canScrollVertically(-1);
             boolean canScrollDown = scrollView.canScrollVertically(1);
@@ -239,7 +242,6 @@ public class profile_Activity extends AppCompatActivity implements OnMapReadyCal
         }
     }
 
-
     private void enlargeProfileImage() {
         // Create an ImageView that will display the image in full-screen mode
         ImageView fullScreenImageView = new ImageView(profile_Activity.this);
@@ -263,29 +265,31 @@ public class profile_Activity extends AppCompatActivity implements OnMapReadyCal
     }
 
     private void loadCompletedHunts() {
-        // Access SharedPreferences
-        SharedPreferences prefs = getSharedPreferences("CompletedHuntsPrefs", MODE_PRIVATE);
+        FirebaseUser currentUser = FirebaseAuth.getInstance().getCurrentUser();
+        if (currentUser != null) {
+            String userId = currentUser.getUid();
+            FirebaseFirestore db = FirebaseFirestore.getInstance();
 
-        // Log to check if SharedPreferences contains the expected keys
-        Log.d("ProfileActivity", "Loading completed hunts from SharedPreferences.");
+            db.collection("users").document(userId)
+                    .collection("completedHunts")
+                    .limit(3) // Fetch last 3 hunts
+                    .get()
+                    .addOnSuccessListener(queryDocumentSnapshots -> {
+                        List<String> completedHunts = new ArrayList<>();
+                        for (DocumentSnapshot doc : queryDocumentSnapshots) {
+                            String huntName = doc.getString("huntName");
+                            completedHunts.add(huntName);
+                        }
 
-        // Retrieve and set the past hunts data
-        String hunt0 = prefs.getString("hunt0", "No recent hunt");
-        String hunt1 = prefs.getString("hunt1", "");
-        String hunt2 = prefs.getString("hunt2", "");
+                        // Display the hunts in your TextViews
+                        pastHunt1.setText(completedHunts.size() > 0 ? completedHunts.get(0) : "No recent hunt");
+                        pastHunt2.setText(completedHunts.size() > 1 ? completedHunts.get(1) : "");
+                        pastHunt3.setText(completedHunts.size() > 2 ? completedHunts.get(2) : "");
 
-        Log.d("ProfileActivity", "Hunt 0: " + hunt0);
-        Log.d("ProfileActivity", "Hunt 1: " + hunt1);
-        Log.d("ProfileActivity", "Hunt 2: " + hunt2);
-
-        pastHunt1.setText(hunt0);
-        pastHunt2.setText(hunt1);
-        pastHunt3.setText(hunt2);
-
-        // Log final text values for confirmation
-        Log.d("ProfileActivity", "Past Hunt 1 Text: " + pastHunt1.getText());
-        Log.d("ProfileActivity", "Past Hunt 2 Text: " + pastHunt2.getText());
-        Log.d("ProfileActivity", "Past Hunt 3 Text: " + pastHunt3.getText());
+                        Log.d("ProfileActivity", "Loaded completed hunts from Firebase.");
+                    })
+                    .addOnFailureListener(e -> Log.e("ProfileActivity", "Error loading completed hunts", e));
+        }
     }
 
     // Load user profile method (fetch username, profile image, and points)
@@ -498,8 +502,6 @@ public class profile_Activity extends AppCompatActivity implements OnMapReadyCal
                 }
             } else if (id == R.id.nav_scavenger_hunt) {
                 startActivity(new Intent(profile_Activity.this, selectyourhunt_activity.class));
-            } else if (id == R.id.nav_settings) {
-                startActivity(new Intent(profile_Activity.this, settings_Activity.class));
             } else if (id == R.id.nav_login) {
                 startActivity(new Intent(profile_Activity.this, login_Activity.class));
             }
@@ -515,6 +517,7 @@ public class profile_Activity extends AppCompatActivity implements OnMapReadyCal
 
         EditText editUsername = dialogView.findViewById(R.id.edit_username);
         Button changeProfilePic = dialogView.findViewById(R.id.change_profile_pic);
+        Button updateEmailButton = dialogView.findViewById(R.id.update_email_button); // New button
         Button saveChanges = dialogView.findViewById(R.id.save_changes);
 
         AlertDialog dialog = builder.create();
@@ -523,6 +526,8 @@ public class profile_Activity extends AppCompatActivity implements OnMapReadyCal
             Intent intent = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
             pickImageLauncher.launch(intent);
         });
+
+        updateEmailButton.setOnClickListener(view -> showUpdateEmailDialog()); // Show email dialog
 
         saveChanges.setOnClickListener(view -> {
             String newUsername = editUsername.getText().toString().trim();
@@ -536,6 +541,76 @@ public class profile_Activity extends AppCompatActivity implements OnMapReadyCal
         });
 
         dialog.show();
+    }
+
+    private void showUpdateEmailDialog() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        View dialogView = getLayoutInflater().inflate(R.layout.dialog_update_email, null);
+        builder.setView(dialogView).setTitle("Update Email");
+
+        AlertDialog dialog = builder.create();
+
+        TextInputEditText currentPasswordEditText = dialogView.findViewById(R.id.currentPassword);
+        TextInputEditText newEmailEditText = dialogView.findViewById(R.id.newEmail);
+        Button applyButton = dialogView.findViewById(R.id.applyButton);
+
+        applyButton.setOnClickListener(v -> {
+            String newEmail = newEmailEditText.getText().toString().trim();
+            String currentPassword = currentPasswordEditText.getText().toString().trim();
+
+            if (newEmail.isEmpty()) {
+                newEmailEditText.setError("New email is required!");
+                newEmailEditText.requestFocus();
+                return;
+            }
+
+            if (currentPassword.isEmpty()) {
+                currentPasswordEditText.setError("Current password is required!");
+                currentPasswordEditText.requestFocus();
+                return;
+            }
+
+            reauthenticateAndUpdateEmail(currentPassword, newEmail, dialog);
+        });
+
+        dialog.show();
+    }
+
+    private void reauthenticateAndUpdateEmail(String currentPassword, String newEmail, AlertDialog dialog) {
+        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+        if (user != null) {
+            AuthCredential credential = EmailAuthProvider.getCredential(user.getEmail(), currentPassword);
+            user.reauthenticate(credential).addOnCompleteListener(task -> {
+                if (task.isSuccessful()) {
+                    user.verifyBeforeUpdateEmail(newEmail).addOnCompleteListener(emailTask -> {
+                        if (emailTask.isSuccessful()) {
+                            Toast.makeText(this, "Verification email sent to " + newEmail, Toast.LENGTH_LONG).show();
+                            dialog.dismiss();
+                            FirebaseAuth.getInstance().addAuthStateListener(authStateListener -> {
+                                FirebaseUser updatedUser = FirebaseAuth.getInstance().getCurrentUser();
+                                if (updatedUser != null && updatedUser.isEmailVerified()) {
+                                    updateEmailInFirestore(updatedUser, newEmail);
+                                }
+                            });
+                        } else {
+                            Toast.makeText(this, "Error: " + emailTask.getException().getMessage(), Toast.LENGTH_LONG).show();
+                        }
+                    });
+                } else {
+                    Toast.makeText(this, "Reauthentication failed: " + task.getException().getMessage(), Toast.LENGTH_LONG).show();
+                }
+            });
+        } else {
+            Toast.makeText(this, "User not authenticated", Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    private void updateEmailInFirestore(FirebaseUser user, String newEmail) {
+        FirebaseFirestore db = FirebaseFirestore.getInstance();
+        db.collection("users").document(user.getUid())
+                .update("email", newEmail)
+                .addOnSuccessListener(aVoid -> Toast.makeText(this, "Email updated successfully!", Toast.LENGTH_LONG).show())
+                .addOnFailureListener(e -> Toast.makeText(this, "Failed to update email in Firestore.", Toast.LENGTH_LONG).show());
     }
 
     public void updateUserPoints(String userId) {

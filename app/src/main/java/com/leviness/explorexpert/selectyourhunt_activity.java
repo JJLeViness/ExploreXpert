@@ -114,8 +114,6 @@ public class selectyourhunt_activity extends AppCompatActivity {
                     }
                 } else if (id == R.id.nav_scavenger_hunt) {
                     startActivity(new Intent(selectyourhunt_activity.this, selectyourhunt_activity.class));
-                } else if (id == R.id.nav_settings) {
-                    startActivity(new Intent(selectyourhunt_activity.this, settings_Activity.class));
                 } else if (id == R.id.nav_login) {
                     startActivity(new Intent(selectyourhunt_activity.this, login_Activity.class));
                 }

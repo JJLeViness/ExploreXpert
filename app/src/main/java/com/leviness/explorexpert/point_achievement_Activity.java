@@ -97,14 +97,18 @@ public class point_achievement_Activity extends AppCompatActivity {
                 startActivity(new Intent(point_achievement_Activity.this, homescreen_activity.class));
             } else if (id == R.id.nav_map) {
                 startActivity(new Intent(point_achievement_Activity.this, Map_Activity.class));
+            } else if (id == R.id.nav_profile) {
+                FirebaseUser currentUser = FirebaseAuth.getInstance().getCurrentUser();
+                if (currentUser != null) {
+                    startActivity(new Intent(point_achievement_Activity.this, profile_Activity.class));
+                } else {
+                    startActivity(new Intent(point_achievement_Activity.this, login_Activity.class));
+                }
             } else if (id == R.id.nav_scavenger_hunt) {
                 startActivity(new Intent(point_achievement_Activity.this, selectyourhunt_activity.class));
-            } else if (id == R.id.nav_settings) {
-                startActivity(new Intent(point_achievement_Activity.this, settings_Activity.class));
-            } else if (id == R.id.nav_profile) {
-                startActivity(new Intent(point_achievement_Activity.this, profile_Activity.class));
+            } else if (id == R.id.nav_login) {
+                startActivity(new Intent(point_achievement_Activity.this, login_Activity.class));
             }
-
             drawerLayout.closeDrawer(GravityCompat.END);
             return true;
         });

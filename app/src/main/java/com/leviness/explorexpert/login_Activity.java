@@ -133,9 +133,7 @@ public class login_Activity extends AppCompatActivity {
                     }
                 } else if (id == R.id.nav_scavenger_hunt) {
                     startActivity(new Intent(login_Activity.this, selectyourhunt_activity.class));
-                } else if (id == R.id.nav_settings) {
-                    startActivity(new Intent(login_Activity.this, settings_Activity.class));
-                } else if (id == R.id.nav_login) {
+                }else if (id == R.id.nav_login) {
                     startActivity(new Intent(login_Activity.this, login_Activity.class));
                 }
 

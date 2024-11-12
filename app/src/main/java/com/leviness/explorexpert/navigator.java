@@ -173,11 +173,14 @@ public class navigator extends AppCompatActivity implements OnMapReadyCallback {
                 } else if (id == R.id.nav_map) {
                     startActivity(new Intent(navigator.this, Map_Activity.class));
                 } else if (id == R.id.nav_profile) {
-                    startActivity(new Intent(navigator.this, profile_Activity.class));
+                    FirebaseUser currentUser = FirebaseAuth.getInstance().getCurrentUser();
+                    if (currentUser != null) {
+                        startActivity(new Intent(navigator.this, profile_Activity.class));
+                    } else {
+                        startActivity(new Intent(navigator.this, login_Activity.class));
+                    }
                 } else if (id == R.id.nav_scavenger_hunt) {
                     startActivity(new Intent(navigator.this, selectyourhunt_activity.class));
-                } else if (id == R.id.nav_settings) {
-                    startActivity(new Intent(navigator.this, settings_Activity.class));
                 } else if (id == R.id.nav_login) {
                     startActivity(new Intent(navigator.this, login_Activity.class));
                 }
@@ -390,8 +393,6 @@ public class navigator extends AppCompatActivity implements OnMapReadyCallback {
         }
     }
 
-
-
     private void updateCurrentHuntInFirebase(String userId, String huntName, int taskIndex, String placeName) {
         Map<String, Object> currentHuntData = new HashMap<>();
         currentHuntData.put("currentHuntName", huntName);
@@ -406,19 +407,26 @@ public class navigator extends AppCompatActivity implements OnMapReadyCallback {
 
 
     private void saveCompletedHunt(String huntName) {
-        SharedPreferences prefs = getSharedPreferences("CompletedHuntsPrefs", MODE_PRIVATE);
-        SharedPreferences.Editor editor = prefs.edit();
+        FirebaseUser currentUser = FirebaseAuth.getInstance().getCurrentUser();
+        if (currentUser != null) {
+            String userId = currentUser.getUid();
+            FirebaseFirestore db = FirebaseFirestore.getInstance();
 
-        // Shift previous hunts down by one slot
-        editor.putString("hunt2", prefs.getString("hunt1", ""));
-        editor.putString("hunt1", prefs.getString("hunt0", ""));
-        editor.putString("hunt0", huntName);
+            // Create a new completed hunt entry
+            Map<String, String> completedHunt = new HashMap<>();
+            completedHunt.put("huntName", huntName);
 
-        // Log each hunt being saved
-        Log.d("ProfileActivity", "Saving completed hunt: " + huntName);
-
-        editor.apply();
+            // Store the completed hunt in the user's "completedHunts" subcollection
+            db.collection("users").document(userId)
+                    .collection("completedHunts")
+                    .add(completedHunt)
+                    .addOnSuccessListener(documentReference ->
+                            Log.d("ProfileActivity", "Completed hunt saved: " + huntName))
+                    .addOnFailureListener(e ->
+                            Log.e("ProfileActivity", "Error saving completed hunt", e));
+        }
     }
+
 
     private void checkForPointMilestoneAchievement(String userId) {
         FirebaseFirestore db = FirebaseFirestore.getInstance();

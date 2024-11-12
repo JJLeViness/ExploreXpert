@@ -344,7 +344,7 @@ public class Map_Activity extends AppCompatActivity implements OnMapReadyCallbac
             return false;
         });
 
-//Menu Drawer logic
+        //Menu Drawer logic
         navigationView.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
             @Override
             public boolean onNavigationItemSelected(@NonNull MenuItem item) {
@@ -363,8 +363,6 @@ public class Map_Activity extends AppCompatActivity implements OnMapReadyCallbac
                     }
                 } else if (id == R.id.nav_scavenger_hunt) {
                     startActivity(new Intent(Map_Activity.this, selectyourhunt_activity.class));
-                } else if (id == R.id.nav_settings) {
-                    startActivity(new Intent(Map_Activity.this, settings_Activity.class));
                 } else if (id == R.id.nav_login) {
                     startActivity(new Intent(Map_Activity.this, login_Activity.class));
                 }

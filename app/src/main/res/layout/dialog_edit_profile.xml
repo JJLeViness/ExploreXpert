@@ -28,6 +28,15 @@
             android:backgroundTint="@color/grey"
             android:text="Change Profile Picture"
             android:textColor="@color/black" />
+
+        <Button
+            android:id="@+id/update_email_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:backgroundTint="@color/grey"
+            android:text="Update Email"
+            android:textColor="@color/black" />
+
         <Button
             android:id="@+id/save_changes"
             android:layout_width="wrap_content"

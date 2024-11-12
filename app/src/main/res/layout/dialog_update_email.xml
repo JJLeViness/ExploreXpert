@@ -10,7 +10,8 @@
         android:id="@+id/currentPasswordLayout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:hint="Current Password"
+        android:hint="Enter Current Password"
+        android:layout_marginTop="16dp"
         android:textColorHint="@color/black"
         app:passwordToggleEnabled="true">
 
@@ -26,6 +27,8 @@
     <com.google.android.material.textfield.TextInputLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:textColorHint="@color/black"
         android:hint="Enter new email">
 
         <com.google.android.material.textfield.TextInputEditText
