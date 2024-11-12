@@ -40,9 +40,6 @@
             android:name=".profile_Activity"
             android:exported="false" />
         <activity
-            android:name=".settings_Activity"
-            android:exported="false" />
-        <activity
             android:name=".Map_Activity"
             android:exported="false" />
         <activity
