@@ -78,4 +78,11 @@
     <string name="current_hunt">Current Hunt</string>
     <string name="go_here">Go Here?</string>
     <string name="fun_fact_will_appear_here">Fun fact will appear here</string>
+    <string name="yes_sign_me_up_i_would_like_to_receive_email_updates_from_explorexpert">Yes, sign me up. I would like to receive email updates from ExploreXpert!</string>
+    <string name="check_this_box_to_receive_email_updates">Check this box to receive email updates</string>
+    <string name="register">Register</string>
+    <string name="email">Email</string>
+    <string name="dob">DOB</string>
+    <string name="password">Password</string>
+    <string name="name">Name</string>
 </resources>
