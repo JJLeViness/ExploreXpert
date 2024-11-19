@@ -21,8 +21,7 @@
             android:orientation="horizontal"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent">
-        </LinearLayout>
+            app:layout_constraintTop_toTopOf="parent"></LinearLayout>
 
 
         <ImageView
@@ -53,16 +52,16 @@
 
         <TextView
             android:id="@+id/forgotPasswordHeader"
-            android:layout_width="237dp"
-            android:layout_height="46dp"
-            android:layout_marginTop="60dp"
+            android:layout_width="230dp"
+            android:layout_height="129dp"
+            android:layout_marginTop="24dp"
             android:fontFamily="@font/bungeeshade"
-            android:text="EXAMPLE HUNT"
+            android:text="SAMPLE HUNT"
             android:textAlignment="center"
             android:textColor="#000000"
-            android:textSize="25sp"
+            android:textSize="35sp"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.091"
+            app:layout_constraintHorizontal_bias="0.16"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/banner" />
 
@@ -76,10 +75,37 @@
             android:textColor="#528F8F"
             android:textSize="13sp"
             app:layout_constraintBottom_toTopOf="@+id/textView2"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.103"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/forgotPasswordHeader" />
+            app:layout_constraintStart_toStartOf="@+id/textView4"
+            app:layout_constraintTop_toBottomOf="@+id/forgotPasswordHeader"
+            app:layout_constraintVertical_bias="0.666" />
+
+        <TextView
+            android:id="@+id/textView3"
+            android:layout_width="176dp"
+            android:layout_height="42dp"
+            android:fontFamily="@font/bungeespice"
+            android:padding="8dp"
+            android:text="CHECKPOINT"
+            android:textColor="#528F8F"
+            android:textSize="13sp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="@+id/textView5"
+            app:layout_constraintTop_toBottomOf="@+id/textView4"
+            app:layout_constraintVertical_bias="0.0" />
+
+        <TextView
+            android:id="@+id/textView4"
+            android:layout_width="176dp"
+            android:layout_height="42dp"
+            android:fontFamily="@font/bungeespice"
+            android:padding="8dp"
+            android:text="TASKS"
+            android:textColor="#528F8F"
+            android:textSize="13sp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="@+id/textView3"
+            app:layout_constraintTop_toTopOf="@+id/banner"
+            app:layout_constraintVertical_bias="0.547" />
 
         <TextView
             android:id="@+id/textView5"
@@ -92,42 +118,10 @@
             android:textSize="13sp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.173"
+            app:layout_constraintHorizontal_bias="0.144"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintVertical_bias="0.645" />
-
-        <TextView
-            android:id="@+id/textView4"
-            android:layout_width="176dp"
-            android:layout_height="42dp"
-            android:fontFamily="@font/bungeespice"
-            android:padding="8dp"
-            android:text="TASKS"
-            android:textColor="#528F8F"
-            android:textSize="13sp"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.102"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="@+id/banner"
-            app:layout_constraintVertical_bias="0.523" />
-
-        <TextView
-            android:id="@+id/textView3"
-            android:layout_width="176dp"
-            android:layout_height="42dp"
-            android:fontFamily="@font/bungeespice"
-            android:padding="8dp"
-            android:text="CHECKPOINT"
-            android:textColor="#528F8F"
-            android:textSize="13sp"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.102"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/textView4"
-            app:layout_constraintVertical_bias="0.066" />
+            app:layout_constraintVertical_bias="0.669" />
 
         <TextView
             android:id="@+id/textView2"
@@ -140,18 +134,17 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="@+id/banner"
-            app:layout_constraintVertical_bias="0.398" />
+            app:layout_constraintVertical_bias="0.428" />
 
         <ImageView
             android:id="@+id/exampleHuntImage"
-            android:layout_width="121dp"
-            android:layout_height="119dp"
-            android:layout_marginStart="4dp"
-            android:layout_marginTop="20dp"
+            android:layout_width="128dp"
+            android:layout_height="129dp"
+            android:layout_marginTop="24dp"
             android:contentDescription="Image next to Example Hunt"
             android:src="@drawable/huntphoto"
-            app:layout_constraintStart_toEndOf="@id/forgotPasswordHeader"
-            app:layout_constraintTop_toBottomOf="@id/banner" />
+            app:layout_constraintTop_toBottomOf="@id/banner"
+            tools:layout_editor_absoluteX="237dp" />
 
         <ImageView
             android:id="@+id/map"

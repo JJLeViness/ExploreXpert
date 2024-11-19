@@ -1,4 +1,4 @@
-<androidx.drawerlayout.widget.DrawerLayout
+                                                                                                                                                                                                                                                                                                                                                                                                                        FR<androidx.drawerlayout.widget.DrawerLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
@@ -7,257 +7,259 @@
     android:layout_height="match_parent"
     tools:context=".homescreen_activity">
 
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    tools:layout_editor_absoluteX="24dp"
-    tools:layout_editor_absoluteY="0dp">
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        tools:layout_editor_absoluteX="24dp"
+        tools:layout_editor_absoluteY="0dp">
 
-    <!-- Banner -->
-    <LinearLayout
-        android:id="@+id/banner"
-        android:layout_width="514dp"
-        android:layout_height="75dp"
-        android:background="#F25858"
-        android:orientation="horizontal"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent">
-    </LinearLayout>
+        <androidx.constraintlayout.widget.Guideline
+            android:id="@+id/labelEndGuideline"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            app:layout_constraintGuide_percent="0.31" />
 
+        <androidx.constraintlayout.widget.Guideline
+            android:id="@+id/inputStartGuideline"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            app:layout_constraintGuide_percent="0.34" />
 
-    <ImageView
-        android:id="@+id/menuButton"
-        android:layout_width="50dp"
-        android:layout_height="51dp"
-        android:layout_marginTop="15dp"
-        android:layout_marginEnd="18dp"
-        android:clickable="true"
-        android:contentDescription="@string/menu_button_desc"
-        android:focusable="true"
-        android:src="@drawable/menuicon"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-
-    <ImageView
-        android:id="@+id/bannerLogo"
-        android:layout_width="300dp"
-        android:layout_height="133dp"
-        android:layout_marginLeft="20dp"
-        android:layout_marginTop="-80dp"
-        android:contentDescription="@string/logo_desc"
-        android:src="@drawable/logoupdated"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/banner"
-        app:layout_constraintVertical_bias="0.2" />
+        <!-- Banner -->
+        <LinearLayout
+            android:id="@+id/banner"
+            android:layout_width="514dp"
+            android:layout_height="75dp"
+            android:background="#F25858"
+            android:orientation="horizontal"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"></LinearLayout>
 
 
+        <ImageView
+            android:id="@+id/menuButton"
+            android:layout_width="50dp"
+            android:layout_height="51dp"
+            android:layout_marginTop="15dp"
+            android:layout_marginEnd="18dp"
+            android:clickable="true"
+            android:contentDescription="@string/menu_button_desc"
+            android:focusable="true"
+            android:src="@drawable/menuicon"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <ImageView
+            android:id="@+id/bannerLogo"
+            android:layout_width="300dp"
+            android:layout_height="133dp"
+            android:layout_marginLeft="20dp"
+            android:layout_marginTop="-80dp"
+            android:contentDescription="@string/logo_desc"
+            android:src="@drawable/logoupdated"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/banner"
+            app:layout_constraintVertical_bias="0.2" />
 
 
-    <TextView
-        android:id="@+id/registerHeader"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="40dp"
-        android:fontFamily="@font/bungeeshade"
-        android:text="Register"
-        android:textColor="#000000"
-        android:textSize="50sp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/banner" />
+        <TextView
+            android:id="@+id/registerHeader"
+            android:layout_width="372dp"
+            android:layout_height="107dp"
+            android:layout_marginTop="16dp"
+            android:fontFamily="@font/bungeeshade"
+            android:text="Register"
+            android:textColor="#000000"
+            android:textSize="58sp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.615"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/banner" />
+
+        <EditText
+            android:id="@+id/username"
+            android:layout_width="0dp"
+            android:layout_height="51dp"
+            android:background="@drawable/textbox"
+            android:layout_marginEnd="40dp"
+            app:layout_constraintStart_toStartOf="@id/inputStartGuideline"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="@id/usernameHeader"
+            app:layout_constraintBottom_toBottomOf="@id/usernameHeader" />
 
 
-    <TextView
-        android:id="@+id/usernameHeader"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="20dp"
-        android:layout_marginEnd="4dp"
-        android:fontFamily="@font/bungeespice"
-        android:text="Username"
-        android:textColor="#528f8f"
-        android:textSize="15sp"
-        app:layout_constraintEnd_toStartOf="@+id/username"
-        app:layout_constraintTop_toBottomOf="@id/emailHeader" />
+        <EditText
+            android:id="@+id/name"
+            android:layout_width="0dp"
+            android:layout_height="51dp"
+            android:layout_marginEnd="40dp"
+            android:background="@drawable/textbox"
+            app:layout_constraintBottom_toBottomOf="@id/nameHeader"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintStart_toStartOf="@id/inputStartGuideline"
+            app:layout_constraintTop_toTopOf="@id/nameHeader"
+            app:layout_constraintVertical_bias="0.461" />
 
-    <TextView
-        android:id="@+id/emailHeader"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="32dp"
-        android:layout_marginEnd="8dp"
-        android:fontFamily="@font/bungeespice"
-        android:text="Email"
-        android:textColor="#528f8f"
-        android:textSize="15sp"
-        app:layout_constraintEnd_toStartOf="@+id/email"
-        app:layout_constraintTop_toBottomOf="@id/dobHeader" />
+        <TextView
+            android:id="@+id/nameHeader"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="32dp"
+            android:fontFamily="@font/bungeespice"
+            android:text="Name"
+            android:textColor="#528f8f"
+            android:textSize="15sp"
+            app:layout_constraintEnd_toEndOf="@id/labelEndGuideline"
+            app:layout_constraintTop_toBottomOf="@id/registerHeader" />
 
-    <TextView
-        android:id="@+id/dobHeader"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="12dp"
-        android:layout_marginEnd="8dp"
-        android:fontFamily="@font/bungeespice"
-        android:text="DOB"
-        android:textColor="#528f8f"
-        android:textSize="15sp"
-        app:layout_constraintEnd_toStartOf="@+id/dob"
-        app:layout_constraintTop_toBottomOf="@id/nameHeader" />
+        <EditText
+            android:id="@+id/dob"
+            android:layout_width="0dp"
+            android:layout_height="51dp"
+            android:background="@drawable/textbox"
+            android:layout_marginEnd="40dp"
+            app:layout_constraintStart_toStartOf="@id/inputStartGuideline"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="@id/dobHeader"
+            app:layout_constraintBottom_toBottomOf="@id/dobHeader" />
 
-    <TextView
-        android:id="@+id/nameHeader"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="28dp"
-        android:layout_marginEnd="4dp"
-        android:fontFamily="@font/bungeespice"
-        android:text="Name"
-        android:textColor="#528f8f"
-        android:textSize="15sp"
-        app:layout_constraintEnd_toStartOf="@+id/name"
-        app:layout_constraintTop_toBottomOf="@+id/registerHeader" />
+        <EditText
+            android:id="@+id/email"
+            android:layout_width="0dp"
+            android:layout_height="51dp"
+            android:background="@drawable/textbox"
+            android:layout_marginEnd="40dp"
+            app:layout_constraintStart_toStartOf="@id/inputStartGuideline"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="@id/emailHeader"
+            app:layout_constraintBottom_toBottomOf="@id/emailHeader" />
 
-    <EditText
-        android:id="@+id/password"
-        android:layout_width="242dp"
-        android:layout_height="51dp"
-        android:layout_marginBottom="24dp"
-        android:background="@drawable/textbox"
-        android:contentDescription="Enter your password"
-        android:importantForAccessibility="yes"
-        android:inputType="textPassword"
-        app:layout_constraintBottom_toTopOf="@+id/registerButton"
-        app:layout_constraintStart_toStartOf="@+id/username" />
 
-    <EditText
-        android:id="@+id/name"
-        android:layout_width="242dp"
-        android:layout_height="51dp"
-        android:layout_marginEnd="48dp"
-        android:layout_marginBottom="8dp"
-        android:background="@drawable/textbox"
-        android:contentDescription="Name input field"
-        app:layout_constraintBottom_toTopOf="@+id/dob"
-        app:layout_constraintEnd_toEndOf="parent" />
+        <EditText
+            android:id="@+id/password"
+            android:layout_width="0dp"
+            android:layout_height="51dp"
+            android:background="@drawable/textbox"
+            android:layout_marginEnd="40dp"
+            app:layout_constraintStart_toStartOf="@id/inputStartGuideline"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="@id/passwordHeader"
+            app:layout_constraintBottom_toBottomOf="@id/passwordHeader" />
 
-    <EditText
-        android:id="@+id/dob"
-        android:layout_width="242dp"
-        android:layout_height="51dp"
-        android:layout_marginBottom="8dp"
-        android:background="@drawable/textbox"
-        android:contentDescription="Date of Birth input field"
-        app:layout_constraintBottom_toTopOf="@+id/email"
-        app:layout_constraintStart_toStartOf="@+id/name" />
+        <TextView
+            android:id="@+id/passwordHeader"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Password"
+            android:textColor="#528f8f"
+            android:textSize="15sp"
+            android:fontFamily="@font/bungeespice"
+            app:layout_constraintEnd_toEndOf="@id/labelEndGuideline"
+            app:layout_constraintTop_toBottomOf="@id/username"
+            android:layout_marginTop="16dp" />
 
-    <EditText
-        android:id="@+id/email"
-        android:layout_width="242dp"
-        android:layout_height="51dp"
-        android:layout_marginBottom="8dp"
-        android:background="@drawable/textbox"
-        android:contentDescription="Email address input field"
-        app:layout_constraintBottom_toTopOf="@+id/username"
-        app:layout_constraintStart_toStartOf="@+id/dob" />
+        <TextView
+            android:id="@+id/dobHeader"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="DOB"
+            android:textColor="#528f8f"
+            android:textSize="15sp"
+            android:fontFamily="@font/bungeespice"
+            app:layout_constraintEnd_toEndOf="@id/labelEndGuideline"
+            app:layout_constraintTop_toBottomOf="@id/name"
+            android:layout_marginTop="16dp" />
 
-    <EditText
-        android:id="@+id/username"
-        android:layout_width="242dp"
-        android:layout_height="51dp"
-        android:layout_marginBottom="8dp"
-        android:background="@drawable/textbox"
-        android:contentDescription="Username input field"
-        app:layout_constraintBottom_toTopOf="@+id/password"
-        app:layout_constraintStart_toStartOf="@+id/email" />
+        <TextView
+            android:id="@+id/emailHeader"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Email"
+            android:textColor="#528f8f"
+            android:textSize="15sp"
+            android:fontFamily="@font/bungeespice"
+            app:layout_constraintEnd_toEndOf="@id/labelEndGuideline"
+            app:layout_constraintTop_toBottomOf="@id/dob"
+            android:layout_marginTop="16dp" />
 
-    <TextView
-        android:id="@+id/passwordHeader"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="36dp"
-        android:layout_marginTop="20dp"
-        android:fontFamily="@font/bungeespice"
-        android:text="PASSWORD"
-        android:textColor="#528f8f"
-        android:textSize="15sp"
-        app:layout_constraintEnd_toStartOf="@+id/password"
-        app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/usernameHeader" />
 
-    <androidx.appcompat.widget.AppCompatButton
-        android:id="@+id/registerButton"
-        android:layout_width="239dp"
-        android:layout_height="52dp"
-        android:layout_gravity="center"
-        android:layout_marginTop="572dp"
-        android:background="@drawable/rounded_button"
-        android:padding="1dp"
-        android:text="Register"
-        android:textColor="#FFFFFF"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.517"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/banner" />
+        <TextView
+            android:id="@+id/usernameHeader"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Username"
+            android:textColor="#528f8f"
+            android:textSize="15sp"
+            android:fontFamily="@font/bungeespice"
+            app:layout_constraintEnd_toEndOf="@id/labelEndGuideline"
+            app:layout_constraintTop_toBottomOf="@id/email"
+            android:layout_marginTop="16dp" />
 
-    <LinearLayout
-        android:id="@+id/emailUpdatesLayout"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="24dp"
-        android:gravity="center_vertical"
-        android:orientation="horizontal"
-        app:layout_constraintBottom_toTopOf="@id/registerButton"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"></LinearLayout>
+        <androidx.appcompat.widget.AppCompatButton
+            android:id="@+id/registerButton"
+            android:layout_width="337dp"
+            android:layout_height="51dp"
+            android:layout_gravity="center"
+            android:layout_marginTop="548dp"
+            android:background="@drawable/rounded_button"
+            android:padding="1dp"
+            android:text="Register"
+            android:textColor="#FFFFFF"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.513"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="@+id/banner" />
 
-    <RadioButton
-        android:id="@+id/emailUpdatesRadioButton"
-        android:layout_width="34dp"
-        android:layout_height="52dp"
-        android:layout_marginEnd="8dp"
-        android:contentDescription="Check this box to receive email updates"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toStartOf="@+id/emailUpdatesText"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/registerButton"
-        app:layout_constraintVertical_bias="0.196" />
+        <LinearLayout
+            android:id="@+id/emailUpdatesLayout"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="24dp"
+            android:gravity="center"
+            android:orientation="horizontal"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent">
 
-    <TextView
-        android:id="@+id/emailUpdatesText"
-        android:layout_width="358dp"
-        android:layout_height="46dp"
-        android:contentDescription="Text indicating user wants to receive email updates"
-        android:fontFamily="@font/bungeespice"
-        android:text="Yes, sign me up. I would like to receive email updates from ExploreXpert!"
-        android:textColor="#000000"
-        android:textSize="14sp"
-        app:layout_constraintBottom_toBottomOf="@+id/emailUpdatesRadioButton"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/emailUpdatesRadioButton"
-        app:layout_constraintTop_toTopOf="@+id/emailUpdatesRadioButton"
-        app:layout_constraintVertical_bias="1.0" />
+            <RadioButton
+                android:id="@+id/emailUpdatesRadioButton"
+                android:layout_width="26dp"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="8dp"
+                android:contentDescription="Check this box to receive email updates" />
 
-    <androidx.constraintlayout.widget.Guideline
-        android:id="@+id/guideline"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:orientation="vertical"
-        app:layout_constraintGuide_begin="20dp" />
+            <TextView
+                android:id="@+id/emailUpdatesText"
+                android:layout_width="274dp"
+                android:layout_height="wrap_content"
+                android:fontFamily="@font/bungeespice"
+                android:text="Yes, sign me up. I would like to receive email updates from ExploreXpert!"
+                android:textAlignment="center"
+                android:textColor="#000000"
+                android:textSize="14sp" />
 
-    <androidx.constraintlayout.widget.Guideline
-        android:id="@+id/guideline2"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:orientation="vertical"
-        app:layout_constraintGuide_begin="20dp" />
+        </LinearLayout>
 
-</androidx.constraintlayout.widget.ConstraintLayout>
+
+        <androidx.constraintlayout.widget.Guideline
+            android:id="@+id/guideline"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            app:layout_constraintGuide_begin="20dp" />
+
+        <androidx.constraintlayout.widget.Guideline
+            android:id="@+id/guideline2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            app:layout_constraintGuide_begin="20dp" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
 
     <com.google.android.material.navigation.NavigationView
         android:id="@+id/menu_navigation"
