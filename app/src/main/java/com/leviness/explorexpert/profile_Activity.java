@@ -586,12 +586,20 @@ public class profile_Activity extends AppCompatActivity implements OnMapReadyCal
                         if (emailTask.isSuccessful()) {
                             Toast.makeText(this, "Verification email sent to " + newEmail, Toast.LENGTH_LONG).show();
                             dialog.dismiss();
-                            FirebaseAuth.getInstance().addAuthStateListener(authStateListener -> {
-                                FirebaseUser updatedUser = FirebaseAuth.getInstance().getCurrentUser();
-                                if (updatedUser != null && updatedUser.isEmailVerified()) {
-                                    updateEmailInFirestore(updatedUser, newEmail);
-                                }
-                            });
+
+                            // Update the email in Firestore
+                            FirebaseUser updatedUser = FirebaseAuth.getInstance().getCurrentUser();
+                            if (updatedUser != null && updatedUser.isEmailVerified()) {
+                                updateEmailInFirestore(updatedUser, newEmail);
+                            }
+
+                            // Log out the user and redirect to the login screen
+                            FirebaseAuth.getInstance().signOut();
+                            Intent intent = new Intent(this, login_Activity.class);
+                            intent.putExtra("message", "Your email has been updated. Please log in again.");
+                            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
+                            startActivity(intent);
+                            finish(); // Close the current activity
                         } else {
                             Toast.makeText(this, "Error: " + emailTask.getException().getMessage(), Toast.LENGTH_LONG).show();
                         }
