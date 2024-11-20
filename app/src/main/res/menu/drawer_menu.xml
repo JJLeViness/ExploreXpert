@@ -12,9 +12,7 @@
     <item
         android:id="@+id/nav_scavenger_hunt"
         android:title="Scavenger Hunt" />
-    <item
-        android:id="@+id/nav_settings"
-        android:title="Settings" />
+
     <item
         android:id="@+id/nav_login"
         android:title="Login" />

@@ -2,10 +2,12 @@ package com.leviness.explorexpert;
 
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
+import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.Window;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -16,6 +18,9 @@ import androidx.activity.EdgeToEdge;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.AppCompatButton;
+import androidx.core.content.ContextCompat;
+import androidx.core.graphics.Insets;
 import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 
@@ -57,6 +62,9 @@ public class login_Activity extends AppCompatActivity {
         menuNavigation = findViewById(R.id.drawer_layout);
         navigationView = findViewById(R.id.menu_navigation);
         menuButton = findViewById(R.id.menuButton);
+
+        Window window = getWindow();
+        window.setStatusBarColor(ContextCompat.getColor(this, android.R.color.white));
 
         //Test to see if user is logged in
         FirebaseUser currentUser = FirebaseAuth.getInstance().getCurrentUser();
@@ -137,6 +145,12 @@ public class login_Activity extends AppCompatActivity {
                 return true;
             }
         });
+
+        Intent intent = getIntent();
+        String message = intent.getStringExtra("message");
+        if (message != null && !message.isEmpty()) {
+            Toast.makeText(this, message, Toast.LENGTH_LONG).show();
+        }
 
         }
 
