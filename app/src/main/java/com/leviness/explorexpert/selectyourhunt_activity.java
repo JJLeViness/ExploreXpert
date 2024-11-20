@@ -22,7 +22,6 @@ import androidx.drawerlayout.widget.DrawerLayout;
 
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.libraries.places.api.Places;
-import com.google.android.libraries.places.api.net.PlacesClient;
 import com.google.android.material.navigation.NavigationView;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -78,7 +77,6 @@ public class selectyourhunt_activity extends AppCompatActivity {
         if (!Places.isInitialized()) {
             Places.initialize(getApplicationContext(), apiKey);
         }
-        PlacesClient placesClient = Places.createClient(this);
         knowledgeGraphAPIClient = new KnowledgeGraphAPIClient(apiKey);
 
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(this, menuNavigation, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
@@ -393,25 +391,6 @@ public class selectyourhunt_activity extends AppCompatActivity {
             }
 
 
-        }
-
-        private void fetchDescriptionForTask(scavengerHuntTask task) {
-            knowledgeGraphAPIClient.fetchGeneralInfoForPlace(task.getPlaceName(), new KnowledgeGraphAPIClient.OnKnowledgeGraphResultListener() {
-                @Override
-                public void onResult(String description) {
-                    task.setDescription(description);  // Update task with description
-
-                    Log.d("selectyourhunt_activity", "Description for " + task.getPlaceName() + ": " + description);
-                }
-
-                @Override
-                public void onError(String errorMessage) {
-                    String description = "No description available. " + getRandomFunFact();
-                    task.setDescription(description);
-
-                    Log.e("selectyourhunt_activity", "Error fetching description: " + errorMessage);
-                }
-            });
         }
 
         private String getRandomFunFact() {

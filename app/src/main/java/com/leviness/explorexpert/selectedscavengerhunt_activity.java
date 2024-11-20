@@ -8,13 +8,11 @@ import android.graphics.BitmapFactory;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
-import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.view.GravityCompat;
@@ -38,9 +36,6 @@ public class selectedscavengerhunt_activity extends AppCompatActivity {
     private TextView pointsTextView;
     private ImageView profileImageView;
     private DrawerLayout menuNavigation;
-    private ActionBarDrawerToggle toggle;
-    private NavigationView navigationView;
-    private ImageView menuButton;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -70,8 +65,8 @@ public class selectedscavengerhunt_activity extends AppCompatActivity {
         TextView pointsAndAchievements = findViewById(R.id.pointsAndAchievmentsLabel);
         TextView checkPoints = findViewById(R.id.checkpointslabel);
         menuNavigation = findViewById(R.id.drawer_layout);
-        navigationView = findViewById(R.id.menu_navigation);
-        menuButton = findViewById(R.id.menuButton);
+        NavigationView navigationView = findViewById(R.id.menu_navigation);
+        ImageView menuButton = findViewById(R.id.menuButton);
 
         huntNameView.setText(huntName);
         huntDescView.setText(huntDescription);
@@ -99,7 +94,7 @@ public class selectedscavengerhunt_activity extends AppCompatActivity {
         });
 
         checkPoints.setOnClickListener(v -> loadSavedProgress(hunt));
-        toggle = new ActionBarDrawerToggle(this, menuNavigation, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
+        ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(this, menuNavigation, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
         menuNavigation.addDrawerListener(toggle);
         toggle.syncState();
 

@@ -31,11 +31,7 @@ public class registration_Activity extends AppCompatActivity {
     private FirebaseAuth mAuth;
     private FirebaseFirestore db;
     private EditText emailEditText, passwordEditText, nameEditText, dobEditText, usernameEditText;
-    private Button registerButton;
     private DrawerLayout menuNavigation;
-    private ActionBarDrawerToggle toggle;
-    private NavigationView navigationView;
-    private ImageView menuButton;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -55,12 +51,12 @@ public class registration_Activity extends AppCompatActivity {
         nameEditText = findViewById(R.id.name);
         dobEditText = findViewById(R.id.dob);
         usernameEditText = findViewById(R.id.username);
-        registerButton = findViewById(R.id.registerButton);
-        menuButton = findViewById(R.id.menuButton);
+        Button registerButton = findViewById(R.id.registerButton);
+        ImageView menuButton = findViewById(R.id.menuButton);
         menuNavigation = findViewById(R.id.drawer_layout);
-        navigationView = findViewById(R.id.menu_navigation);
+        NavigationView navigationView = findViewById(R.id.menu_navigation);
 
-        toggle = new ActionBarDrawerToggle(this, menuNavigation, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
+        ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(this, menuNavigation, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
         menuNavigation.addDrawerListener(toggle);
         toggle.syncState();
 

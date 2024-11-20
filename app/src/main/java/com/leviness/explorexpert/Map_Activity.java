@@ -74,9 +74,7 @@ import java.util.Map;
 public class Map_Activity extends AppCompatActivity implements OnMapReadyCallback {
     private GoogleMap mMap;
     private FusedLocationProviderClient fusedLocationClient;
-    private ImageView menuButton;
     private DrawerLayout menuNavigation;
-    private ActionBarDrawerToggle toggle;
     private Spinner filterSpinner;
     private NavigationView navigationView;
     private PlacesClient placesClient;
@@ -85,7 +83,7 @@ public class Map_Activity extends AppCompatActivity implements OnMapReadyCallbac
     private Button goHereButton;
     private Marker selectedMarker;
 
-    //lowercase for filerting and uppercase for display
+    //lowercase for filtering and uppercase for display
     private String[] placeTypes = {
             "restaurant", "cafe", "bar", "store", "shopping_mall", "museum",
             "amusement_park", "park", "movie_theater", "things_to_do", "hotel",
@@ -120,7 +118,7 @@ public class Map_Activity extends AppCompatActivity implements OnMapReadyCallbac
 
         this.setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
 
-        menuButton = findViewById(R.id.map_menuButton);
+        ImageView menuButton = findViewById(R.id.map_menuButton);
         menuNavigation = findViewById(R.id.drawer_layout);
         navigationView = findViewById(R.id.menu_navigation);
         String apiKey = getString(R.string.maps_api_key);
@@ -138,7 +136,7 @@ public class Map_Activity extends AppCompatActivity implements OnMapReadyCallbac
 
 
         //Menu drawer
-        toggle = new ActionBarDrawerToggle(this, menuNavigation, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
+        ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(this, menuNavigation, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
         menuNavigation.addDrawerListener(toggle);
         toggle.syncState();
         menuButton.setOnClickListener(new View.OnClickListener() {

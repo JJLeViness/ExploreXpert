@@ -58,12 +58,8 @@ public class navigator extends AppCompatActivity implements OnMapReadyCallback {
     private GoogleMap mMap;
     private scavengerHunt hunt;
     private boolean isScavengerHuntActive = false;
-    private ImageView menuButton;
     private DrawerLayout menuNavigation;
-    private ActionBarDrawerToggle toggle;
-    private NavigationView navigationView;
     private FirebaseFirestore db = FirebaseFirestore.getInstance();
-    private List<String> completedHunts = new ArrayList<>();
 
     private List<String> directionsList = new ArrayList<>();
     private List<LatLng> stepLatLngs = new ArrayList<>();
@@ -107,9 +103,9 @@ public class navigator extends AppCompatActivity implements OnMapReadyCallback {
         directionsAdapter = new DirectionsAdapter(directionsList, stepLatLngs, directionsRecyclerView, mMap);
         directionsRecyclerView.setAdapter(directionsAdapter);
 
-        menuButton = findViewById(R.id.navigator_menuButton);
+        ImageView menuButton = findViewById(R.id.navigator_menuButton);
         menuNavigation = findViewById(R.id.drawer_layout);
-        navigationView = findViewById(R.id.menu_navigation);
+        NavigationView navigationView = findViewById(R.id.menu_navigation);
         destinationNameTextView = findViewById(R.id.destination_name);
         nextTaskButton = findViewById(R.id.next_task_button);
         destinationInfoTextView = findViewById(R.id.scavenger_hunt_location_details);
@@ -149,7 +145,7 @@ public class navigator extends AppCompatActivity implements OnMapReadyCallback {
         // Initialize fused location provider client
         fusedLocationClient = LocationServices.getFusedLocationProviderClient(this);
 
-        toggle = new ActionBarDrawerToggle(this, menuNavigation, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
+        ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(this, menuNavigation, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
         menuNavigation.addDrawerListener(toggle);
         toggle.syncState();
         menuButton.setOnClickListener(new View.OnClickListener() {

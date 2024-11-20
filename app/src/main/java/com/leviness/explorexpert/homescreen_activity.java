@@ -35,12 +35,7 @@ public class homescreen_activity extends AppCompatActivity {
 
     private EditText fromSearch;
     private EditText toSearch;
-    private AppCompatButton navigateButton;
-    private ImageView map;
-    private ImageView menuButton;
     private DrawerLayout menuNavigation;
-    private ActionBarDrawerToggle toggle;
-    private NavigationView navigationView;
 
     private static final int AUTOCOMPLETE_REQUEST_CODE_FROM = 1;
     private static final int AUTOCOMPLETE_REQUEST_CODE_TO = 2;
@@ -66,11 +61,11 @@ public class homescreen_activity extends AppCompatActivity {
 
         fromSearch = findViewById(R.id.fromSearch);
         toSearch = findViewById(R.id.toSearch);
-        navigateButton = findViewById(R.id.navigateButton);
-        map = findViewById(R.id.map);
-        menuButton = findViewById(R.id.menuButton);
+        AppCompatButton navigateButton = findViewById(R.id.navigateButton);
+        ImageView map = findViewById(R.id.map);
+        ImageView menuButton = findViewById(R.id.menuButton);
         menuNavigation = findViewById(R.id.drawer_layout);
-        navigationView = findViewById(R.id.menu_navigation);
+        NavigationView navigationView = findViewById(R.id.menu_navigation);
 
         fromSearch.setOnFocusChangeListener((v, hasFocus) -> {
             if (hasFocus) {
@@ -86,7 +81,7 @@ public class homescreen_activity extends AppCompatActivity {
         });
         toSearch.setOnClickListener(v -> openAutocomplete(AUTOCOMPLETE_REQUEST_CODE_TO));
 
-        toggle = new ActionBarDrawerToggle(this, menuNavigation, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
+        ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(this, menuNavigation, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
         menuNavigation.addDrawerListener(toggle);
         toggle.syncState();
 
@@ -160,8 +155,6 @@ public class homescreen_activity extends AppCompatActivity {
             } else if (resultCode == AutocompleteActivity.RESULT_ERROR) {
                 Status status = Autocomplete.getStatusFromIntent(data);
                 Log.e("AutocompleteError", status.getStatusMessage());
-
-            } else if (resultCode == RESULT_CANCELED) {
 
             }
         }

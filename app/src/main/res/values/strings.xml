@@ -78,4 +78,7 @@
     <string name="current_hunt">Current Hunt</string>
     <string name="go_here">Go Here?</string>
     <string name="fun_fact_will_appear_here">Fun fact will appear here</string>
+    <string name="enter_your_username">Enter Your Username</string>
+    <string name="forgot_your_info">FORGOT YOUR INFO?</string>
+    <string name="enter_your_email_address">Enter Your Email Address</string>
 </resources>
